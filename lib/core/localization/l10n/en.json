@@ -1,5 +1,11 @@
 {
   "home": "Home",
+  "wallet_balance": "Wallet Balance",
+  "eco_points": "Eco Points",
+  "recycled_today": "Recycled Today",
+  "recycling_categories": "Recycling Categories",
+  "eco_tips": "Eco Tips",
+  "nearby_centers": "Nearby Centers",
   "explore": "Explore",
   "my_learning": "My Learning",
   "profile": "Profile",

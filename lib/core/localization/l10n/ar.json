@@ -1,5 +1,11 @@
 {
   "home": "الرئيسية",
+  "wallet_balance": "رصيد المحفظة",
+  "eco_points": "نقاط إيكو",
+  "recycled_today": "تم تدويره اليوم",
+  "recycling_categories": "فئات التدوير",
+  "eco_tips": "نصائح إيكو",
+  "nearby_centers": "مراكز التدوير القريبة",
   "explore": "استكشاف",
   "my_learning": "تعليمي",
   "profile": "الملف الشخصي",
