@@ -1,78 +1,77 @@
 import 'package:equatable/equatable.dart';
 
-class TrashCategoryModel extends Equatable {
+class OrderModel extends Equatable {
   final String id;
-  final String name;
-  final String image;
-  final double pricePerKg;
-
-  const TrashCategoryModel({
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.pricePerKg,
-  });
-
-  @override
-  List<Object?> get props => [id, name, image, pricePerKg];
-}
-
-class EcoTipModel extends Equatable {
   final String title;
-  final String description;
-  final String icon;
+  final String status;
+  final String points;
+  final String time;
 
-  const EcoTipModel({
+  const OrderModel({
+    required this.id,
     required this.title,
-    required this.description,
-    required this.icon,
+    required this.status,
+    required this.points,
+    required this.time,
   });
 
   @override
-  List<Object?> get props => [title, description, icon];
+  List<Object?> get props => [id, title, status, points, time];
 }
 
-class RecyclingCenterModel extends Equatable {
-  final String name;
-  final String address;
-  final double rating;
-  final double distanceKm;
+class CurrentOrderModel extends Equatable {
+  final String title;
+  final String timeLeft;
+  final String status;
+  final double progress;
 
-  const RecyclingCenterModel({
-    required this.name,
-    required this.address,
-    required this.rating,
-    required this.distanceKm,
+  const CurrentOrderModel({
+    required this.title,
+    required this.timeLeft,
+    required this.status,
+    required this.progress,
   });
 
   @override
-  List<Object?> get props => [name, address, rating, distanceKm];
+  List<Object?> get props => [title, timeLeft, status, progress];
 }
 
 class HomeDataModel extends Equatable {
   final String userName;
-  final double walletBalance;
-  final int ecoPoints;
-  final List<TrashCategoryModel> categories;
-  final List<EcoTipModel> ecoTips;
-  final List<RecyclingCenterModel> centers;
+  final int points;
+  final double levelProgress;
+  final int nextLevelCurrent;
+  final int nextLevelTotal;
+  final int monthlyImpactTrees;
+  final double monthlyImpactRecycledKg;
+  final double monthlyImpactCollectedKg;
+  final CurrentOrderModel? currentOrder;
+  final List<OrderModel> recentOrders;
 
   const HomeDataModel({
     required this.userName,
-    required this.walletBalance,
-    required this.ecoPoints,
-    required this.categories,
-    required this.ecoTips,
-    required this.centers,
+    required this.points,
+    required this.levelProgress,
+    required this.nextLevelCurrent,
+    required this.nextLevelTotal,
+    required this.monthlyImpactTrees,
+    required this.monthlyImpactRecycledKg,
+    required this.monthlyImpactCollectedKg,
+    required this.currentOrder,
+    required this.recentOrders,
   });
 
   @override
   List<Object?> get props => [
         userName,
-        walletBalance,
-        ecoPoints,
-        categories,
-        ecoTips,
-        centers,
+        points,
+        levelProgress,
+        nextLevelCurrent,
+        nextLevelTotal,
+        monthlyImpactTrees,
+        monthlyImpactRecycledKg,
+        monthlyImpactCollectedKg,
+        currentOrder,
+        recentOrders,
       ];
 }

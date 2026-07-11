@@ -6,24 +6,44 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<Either<String, HomeDataModel>> getHome() async {
     try {
-      await Future.delayed(const Duration(milliseconds: 800));
+      await Future.delayed(const Duration(milliseconds: 600));
       return const Right(HomeDataModel(
-        userName: "Mayoora",
-        walletBalance: 125.50,
-        ecoPoints: 450,
-        categories: [
-          TrashCategoryModel(id: "1", name: "Plastics", image: "assets/images/plastic.png", pricePerKg: 1.5),
-          TrashCategoryModel(id: "2", name: "Paper", image: "assets/images/paper.png", pricePerKg: 0.8),
-          TrashCategoryModel(id: "3", name: "Metal", image: "assets/images/metal.png", pricePerKg: 2.5),
-          TrashCategoryModel(id: "4", name: "Glass", image: "assets/images/glass.png", pricePerKg: 1.0),
-        ],
-        ecoTips: [
-          EcoTipModel(title: "Save Water", description: "Turn off the tap while brushing your teeth.", icon: "water_drop"),
-          EcoTipModel(title: "Recycle Paper", description: "1 ton of recycled paper saves 17 trees.", icon: "eco"),
-        ],
-        centers: [
-          RecyclingCenterModel(name: "Green Life Center", address: "123 Eco Way", rating: 4.8, distanceKm: 1.2),
-          RecyclingCenterModel(name: "Eco Cycle Depot", address: "456 Clean St", rating: 4.5, distanceKm: 3.4),
+        userName: "Abdallah",
+        points: 350,
+        levelProgress: 0.72,
+        nextLevelCurrent: 350,
+        nextLevelTotal: 500,
+        monthlyImpactTrees: 3,
+        monthlyImpactRecycledKg: 8.1,
+        monthlyImpactCollectedKg: 12.4,
+        currentOrder: CurrentOrderModel(
+          title: "بلاستيك مختلط",
+          timeLeft: "وصول خلال ~15 دقيقة",
+          status: "في الطريق",
+          progress: 0.4,
+        ),
+        recentOrders: [
+          OrderModel(
+            id: "#1042",
+            title: "ورق وكرتون",
+            status: "مكتمل",
+            points: "+45",
+            time: "أمس",
+          ),
+          OrderModel(
+            id: "#1041",
+            title: "بلاستيك مختلط",
+            status: "جاري",
+            points: "+30",
+            time: "اليوم",
+          ),
+          OrderModel(
+            id: "#1040",
+            title: "مخلفات عامة",
+            status: "مكتمل",
+            points: "+20",
+            time: "الجمعة",
+          ),
         ],
       ));
     } catch (e) {

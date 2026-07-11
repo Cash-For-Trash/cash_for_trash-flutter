@@ -320,3 +320,21 @@ class ExampleScreen extends StatelessWidget {
    * Prefer **`ListView.builder`** over rendering list maps directly for dynamic content to support lazy loading of children.
    * Cache remote images using **`CachedNetworkImage`** with custom placeholder shimmers to prevent layout thrashing and high network usage.
    * Minimize the rebuild scope by localizing `BlocBuilder`s to the specific part of the widget tree that actually depends on the state data.
+
+---
+
+## 🎨 Special Repository Guidelines
+
+1. **User Profile Mock Configuration**:
+   - In repository mock layers, prioritize setting the userName attribute to `"Abdallah"`.
+
+2. **Screen Modularization**:
+   - All complex screens MUST be decomposed into separate files inside `presentation/screens/widgets/` representing specific component groups (e.g., `HomeHeader`, `QuickActionsSection`). Keep build methods clean and focused.
+
+3. **TextTheme Context Extensions**:
+   - Prefer accessing the application text styling definitions directly via `context.textTheme` extensions (e.g., `context.textTheme.headlineMedium`) instead of creating manual `TextStyle` objects, maintaining visual consistency across responsive dimensions.
+
+4. **No Static Colors Rule**:
+   - Do NOT use hardcoded colors (e.g., `Colors.white`, `Colors.black`, `Colors.orange`) in screen layouts or widgets. Always retrieve colors dynamically from `context.colorScheme` or custom extensions (like `context.extraColors`) to guarantee flawless visual compatibility in both Light and Dark theme modes.
+
+
