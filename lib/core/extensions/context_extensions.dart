@@ -61,9 +61,21 @@ class CustomColors extends ThemeExtension<CustomColors> {
       warningContainer: Color.lerp(warningContainer, other.warningContainer, t),
       info: Color.lerp(info, other.info, t),
       infoContainer: Color.lerp(infoContainer, other.infoContainer, t),
-      headerGradient: LinearGradient.lerp(headerGradient, other.headerGradient, t),
-      progressGradient: LinearGradient.lerp(progressGradient, other.progressGradient, t),
-      ecoCardGradient: LinearGradient.lerp(ecoCardGradient, other.ecoCardGradient, t),
+      headerGradient: LinearGradient.lerp(
+        headerGradient,
+        other.headerGradient,
+        t,
+      ),
+      progressGradient: LinearGradient.lerp(
+        progressGradient,
+        other.progressGradient,
+        t,
+      ),
+      ecoCardGradient: LinearGradient.lerp(
+        ecoCardGradient,
+        other.ecoCardGradient,
+        t,
+      ),
     );
   }
 }
@@ -76,4 +88,4 @@ extension ThemeContext on BuildContext {
   TextTheme get textTheme => theme.textTheme;
 
   CustomColors get extraColors => theme.extension<CustomColors>()!;
-}
+}
