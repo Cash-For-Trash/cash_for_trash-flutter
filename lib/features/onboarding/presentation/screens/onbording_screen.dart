@@ -19,8 +19,6 @@ class OnbordingScreen extends StatefulWidget {
 class _OnbordingScreenState extends State<OnbordingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  bool _isFirstTime = false;
-
   final List<Map<String, String>> _pages = [
     {
       'title': 'النظافة تبدأ بخطوة',

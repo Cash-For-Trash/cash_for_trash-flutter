@@ -1,6 +1,6 @@
 class EndPoint {
   static String localUrl = "";
-  static String remoteUrl ="";
+  static String remoteUrl = "http://23.21.86.102:3000/api";
   static String baseUrl = remoteUrl;
   static String get mediaBaseUrl => baseUrl.replaceFirst('/api', '');
 
@@ -11,18 +11,17 @@ class EndPoint {
   static String logout = "/auth/logout/";
 
   static String forgotPassword = "/auth/forgot-password/";
-  static String resendOtp = "/auth/resend-otp/";
+  static String resendOtp = "/auth/resend-otp";
+  static String verifyOtp = "/auth/verify-otp";
   static String resetPassword = "/auth/reset-password/";
   static String refreshToken = "/auth/token/refresh/";
   static String verifyEmail = "/auth/verify-email/";
   static String checkToken = "/auth/check-token/";
-
-  
 }
 
 class ApiKey {
   static String message = "message";
-  static String authorization = "Authorization";
+  static String authorization = "Auhorization";
   static String firstName = "first_name";
   static String lastName = "last_name";
   static String email = "email";

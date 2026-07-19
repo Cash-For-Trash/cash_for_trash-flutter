@@ -37,6 +37,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_launcher_icons: ^0.14.4
+  animated_toggle_switch: ^0.8.7
+  pinput: ^6.0.2
 
 
 dev_dependencies:
@@ -53,6 +55,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/logo/
     - lib/core/localization/l10n/
 
 

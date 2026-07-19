@@ -99,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                 CacheHelper.getData(key: "onboarding") ?? false;
                             if (isOnboardingCompleted == true) {
                               //todo افتكر انك تعدل دى تخليها ال login screen لما تعمل ال auth علشان تتاكد
-                              context.go(AppRoutes.homeScreen);
+                              context.go(AppRoutes.loginScreen);
                             } else {
                               context.go(AppRoutes.onbordingScreen);
                             }
