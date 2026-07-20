@@ -1,50 +1,27 @@
 class EndPoint {
-  static String localUrl = "http://192.168.1.10:8000/api";
-  static String remoteUrl =
-      "http://lms-env.eba-8nbnpx42.us-east-1.elasticbeanstalk.com/api";
-
+  static String localUrl = "";
+  static String remoteUrl = "http://23.21.86.102:3000/api";
   static String baseUrl = remoteUrl;
   static String get mediaBaseUrl => baseUrl.replaceFirst('/api', '');
 
   // auth
-  static String login = "/auth/login/"; // done
-  static String register = "/auth/register/"; // done
+  static String login = "/auth/login/";
+  static String register = "/auth/register/";
   static String changePassword = "/auth/change-password/";
-  static String logout = "/auth/logout/"; //
+  static String logout = "/auth/logout/";
 
-  static String forgotPassword = "/auth/forgot-password/"; // done
-  static String resendOtp = "/auth/resend-otp/"; // done
-  static String resetPassword = "/auth/reset-password/"; // done
+  static String forgotPassword = "/auth/forgot-password/";
+  static String resendOtp = "/auth/resend-otp";
+  static String verifyOtp = "/auth/verify-otp";
+  static String resetPassword = "/auth/reset-password/";
   static String refreshToken = "/auth/token/refresh/";
-  static String verifyEmail = "/auth/verify-email/"; // done
+  static String verifyEmail = "/auth/verify-email/";
   static String checkToken = "/auth/check-token/";
-
-  // courses
-  static String allCourses = "/courses/all/";
-  static String courseBySlug = "/courses/";
-  static String myEnrollments = "/courses/myEnrollments/";
-  static String enrollCourse = "/courses/enroll/";
-  static String courseVideos(String slug) => "/courses/$slug/videos/";
-  static String courseMaterials(String slug) => "/courses/$slug/materials/";
-
-  // packages
-  static String allPackages = "/packages/all/";
-  static String packagesBySlug = "/packages/";
-
-  // student
-  static String studentProfile(String slug) => '/students/$slug/';
-  static String updateProfile(String slug) => '/students/$slug/';
-
-  // quiz
-  static String allQuizzzesByCourse(String courseSlug) =>"/courses/$courseSlug/quizzes/";
-  static String quizQuestions(String quizSlug) => "/quizzes/$quizSlug/questions/";
-  static String submitQuiz(String quizSlug) => "/quizzes/$quizSlug/submit/";
-  static String quizResults(String quizSlug) => "/quizzes/$quizSlug/my-results/";
 }
 
 class ApiKey {
   static String message = "message";
-  static String authorization = "Authorization";
+  static String authorization = "Auhorization";
   static String firstName = "first_name";
   static String lastName = "last_name";
   static String email = "email";

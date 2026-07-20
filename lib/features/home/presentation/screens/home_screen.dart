@@ -36,20 +36,31 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     HomeHeader(data: data),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-                      child: Column(
-                        children: [
-                          const QuickActionsSection(),
-                          SizedBox(height: 24.h),
-                          MonthlyImpactSection(data: data),
-                          SizedBox(height: 24.h),
-                          if (data.currentOrder != null) ...[
-                            CurrentOrderSection(order: data.currentOrder!),
-                            SizedBox(height: 24.h),
-                          ],
-                          RecentOrdersSection(orders: data.recentOrders),
-                        ],
-                      ).animate().fade(duration: 400.ms).slideY(begin: 0.05, curve: Curves.easeOut),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 16.h,
+                      ),
+                      child:
+                          Column(
+                                children: [
+                                  const QuickActionsSection(),
+                                  SizedBox(height: 24.h),
+                                  MonthlyImpactSection(data: data),
+                                  SizedBox(height: 24.h),
+                                  if (data.currentOrder != null) ...[
+                                    CurrentOrderSection(
+                                      order: data.currentOrder!,
+                                    ),
+                                    SizedBox(height: 24.h),
+                                  ],
+                                  RecentOrdersSection(
+                                    orders: data.recentOrders,
+                                  ),
+                                ],
+                              )
+                              .animate()
+                              .fade(duration: 400.ms)
+                              .slideY(begin: 0.05, curve: Curves.easeOut),
                     ),
                   ],
                 ),
@@ -66,7 +77,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 8.h),
                   ElevatedButton(
-                    onPressed: () => context.read<HomeBloc>().add(GetHomeData()),
+                    onPressed: () =>
+                        context.read<HomeBloc>().add(GetHomeData()),
                     child: Text(context.tr('retry')),
                   ),
                 ],

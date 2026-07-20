@@ -1,4 +1,3 @@
-import 'package:cash_for_trash/core/di/service_locator.dart';
 import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +10,7 @@ class ThemeCubit extends Cubit<ThemeMode> {
   static const String _themeKey = 'app_theme_mode';
 
   void _loadSavedTheme() {
-    final dynamic isDarkMode = sl<CacheHelper>().getData(key: _themeKey);
+    final dynamic isDarkMode = CacheHelper.getData(key: _themeKey);
     if (isDarkMode != null && isDarkMode is bool) {
       emit(isDarkMode ? ThemeMode.dark : ThemeMode.light);
     }
@@ -19,7 +18,7 @@ class ThemeCubit extends Cubit<ThemeMode> {
 
   void toggleTheme() {
     final bool isDarkMode = state == ThemeMode.dark;
-    sl<CacheHelper>().saveData(key: _themeKey, value: !isDarkMode);
+    CacheHelper.saveData(key: _themeKey, value: !isDarkMode);
     emit(isDarkMode ? ThemeMode.light : ThemeMode.dark);
   }
 }

@@ -5,13 +5,13 @@ import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:dio/dio.dart';
 
 class ApiInterceptor extends Interceptor {
-  final CacheHelper _cacheHelper = CacheHelper();
+
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (!options.path.contains('/auth/login') &&
         !options.path.contains('/auth/register')) {
-      final token = _cacheHelper.getData(key: ApiKey.accessToken);
+      final token = CacheHelper.getData(key: ApiKey.accessToken);
       if (token != null) {
         log('Token: $token');
         options.headers[ApiKey.authorization] = 'Bearer $token';
@@ -30,7 +30,7 @@ class ApiInterceptor extends Interceptor {
 
       if (!path.contains('/auth/login') &&
           !path.contains(EndPoint.refreshToken)) {
-        final refreshToken = _cacheHelper.getData(key: ApiKey.refreshToken);
+        final refreshToken = CacheHelper.getData(key: ApiKey.refreshToken);
 
         if (refreshToken != null) {
           try {
@@ -53,7 +53,7 @@ class ApiInterceptor extends Interceptor {
               }
 
               if (newAccessToken != null) {
-                await _cacheHelper.saveData(
+                await CacheHelper.saveData(
                   key: ApiKey.accessToken,
                   value: newAccessToken,
                 );
@@ -67,7 +67,7 @@ class ApiInterceptor extends Interceptor {
               }
             }
           } catch (e) {
-            await _cacheHelper.clearUserData();
+            await CacheHelper().clearUserData();
           }
         }
       }
