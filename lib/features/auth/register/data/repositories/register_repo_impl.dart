@@ -40,7 +40,6 @@ class RegisterRepoImpl implements RegisterRepository {
         await CacheHelper.saveData(key: ApiKey.firstName, value: firstName);
         await CacheHelper.saveData(key: ApiKey.lastName, value: lastName);
         await CacheHelper.saveData(key: ApiKey.email, value: email);
-        await CacheHelper.saveData(key: ApiKey.password, value: password);
         await CacheHelper.saveData(key: 'mobile', value: phone);
         await CacheHelper.saveData(key: ApiKey.role, value: role);
       },

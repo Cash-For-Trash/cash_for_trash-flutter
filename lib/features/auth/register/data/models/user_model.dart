@@ -5,20 +5,24 @@ part 'user_model.g.dart';
 
 @JsonSerializable(createJsonSchema: true)
 class UserModel {
-  final String? user_id;
-  final String first_name;
-  final String last_name;
+  @JsonKey(name: 'user_id')
+  final String? userId;
+  @JsonKey(name: 'first_name')
+  final String firstName;
+  @JsonKey(name: 'last_name')
+  final String lastName;
   final String email;
   final String role;
-  final bool? is_verified;
+  @JsonKey(name: 'is_verified')
+  final bool? isVerified;
 
   UserModel({
-    this.user_id,
-    required this.first_name,
-    required this.last_name,
+    this.userId,
+    required this.firstName,
+    required this.lastName,
     required this.email,
     required this.role,
-    this.is_verified,
+    this.isVerified,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

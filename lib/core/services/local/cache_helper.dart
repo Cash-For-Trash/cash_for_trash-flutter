@@ -1,12 +1,15 @@
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CacheHelper {
+  static late FlutterSecureStorage secureStorage;
   static late SharedPreferences sharedPreferences;
 
   //! Here The Initialize of cache .
-  init() async {
+  Future<void> init() async {
     sharedPreferences = await SharedPreferences.getInstance();
+    secureStorage = const FlutterSecureStorage();
   }
 
   static String? getDataString({required String key}) {
@@ -98,5 +101,40 @@ class CacheHelper {
     await removeData(key: ApiKey.image);
     await removeData(key: ApiKey.slug);
     await removeData(key: ApiKey.isLoggedIn);
+  }
+
+
+    /// Save secret data (JWT, Refresh Token, API Keys...)
+  static Future<void> saveSecretData({
+    required String key,
+    required String value,
+  }) async {
+    await secureStorage.write(
+      key: key,
+      value: value,
+    );
+  }
+
+  /// Read secret data
+  static Future<String?> getSecretData({
+    required String key,
+  }) async {
+    return await secureStorage.read(
+      key: key,
+    );
+  }
+
+  /// Remove one secret
+  static Future<void> removeSecretData({
+    required String key,
+  }) async {
+    await secureStorage.delete(
+      key: key,
+    );
+  }
+
+  /// Remove all secrets
+  static Future<void> removeAllSecretData() async {
+    await secureStorage.deleteAll();
   }
 }

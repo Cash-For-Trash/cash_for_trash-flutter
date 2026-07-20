@@ -46,5 +46,10 @@
     "error": "Error",
     "start_clean_journey": "start your clean journey",
     "sign_in_to_continue": "sign in to continue to clean journey",
-    "cash_for_trash": "Cash For Trash"
+    "cash_for_trash": "Cash For Trash",
+    "network_error": "Network error, please try again.",
+    "refresh": "Refresh",
+    "logout": "Logout",
+    "session_expired": "Session verification failed.",
+    "recycle_today_better_tomorrow": "Recycle Today, Better Tomorrow"
 }

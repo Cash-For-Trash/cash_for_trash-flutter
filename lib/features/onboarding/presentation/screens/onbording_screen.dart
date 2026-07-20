@@ -63,8 +63,7 @@ class _OnbordingScreenState extends State<OnbordingScreen> {
   }
 
   void _navigateToAuth() {
-    //todo عدلها لما تعمل ال auth screen
-    context.go(AppRoutes.homeScreen);
+    context.go(AppRoutes.loginScreen);
   }
 
   @override

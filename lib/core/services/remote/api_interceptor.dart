@@ -1,17 +1,21 @@
 import 'dart:developer';
 
+import 'package:cash_for_trash/core/models/refresh_token_response_model.dart';
+import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/core/routing/router_generator.dart';
 import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:dio/dio.dart';
 
 class ApiInterceptor extends Interceptor {
-
-
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     if (!options.path.contains('/auth/login') &&
         !options.path.contains('/auth/register')) {
-      final token = CacheHelper.getData(key: ApiKey.accessToken);
+      final token = await CacheHelper.getSecretData(key: ApiKey.accessToken);
       if (token != null) {
         log('Token: $token');
         options.headers[ApiKey.authorization] = 'Bearer $token';
@@ -30,32 +34,31 @@ class ApiInterceptor extends Interceptor {
 
       if (!path.contains('/auth/login') &&
           !path.contains(EndPoint.refreshToken)) {
-        final refreshToken = CacheHelper.getData(key: ApiKey.refreshToken);
+        final refreshToken = await CacheHelper.getSecretData(key: ApiKey.refreshToken);
 
         if (refreshToken != null) {
           try {
             final refreshDio = Dio(BaseOptions(baseUrl: EndPoint.baseUrl));
             final response = await refreshDio.post(
               EndPoint.refreshToken,
-              data: {'refresh': refreshToken},
+              data: {'refreshToken': refreshToken},
             );
 
             if (response.statusCode == 200 || response.statusCode == 201) {
               final responseData = response.data;
-              String? newAccessToken;
+              if (responseData != null) {
+                final refreshResponse = RefreshTokenResponseModel.fromJson(responseData);
+                
+                final newAccessToken = refreshResponse.data.accessToken;
+                final newRefreshToken = refreshResponse.data.refreshToken;
 
-              if (responseData is Map<String, dynamic>) {
-                if (responseData.containsKey('data')) {
-                  newAccessToken = responseData['data']['access'];
-                } else if (responseData.containsKey('access')) {
-                  newAccessToken = responseData['access'];
-                }
-              }
-
-              if (newAccessToken != null) {
-                await CacheHelper.saveData(
+                await CacheHelper.saveSecretData(
                   key: ApiKey.accessToken,
                   value: newAccessToken,
+                );
+                await CacheHelper.saveSecretData(
+                  key: ApiKey.refreshToken,
+                  value: newRefreshToken,
                 );
 
                 err.requestOptions.headers[ApiKey.authorization] =
@@ -67,7 +70,11 @@ class ApiInterceptor extends Interceptor {
               }
             }
           } catch (e) {
+            log('Token refresh failed: $e. Forcing logout.');
+            await CacheHelper.removeAllSecretData();
             await CacheHelper().clearUserData();
+            RouterGenerator.goRouter.go(AppRoutes.loginScreen);
+            return handler.next(err);
           }
         }
       }

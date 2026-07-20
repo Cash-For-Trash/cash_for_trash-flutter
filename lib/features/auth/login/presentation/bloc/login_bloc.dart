@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:cash_for_trash/features/auth/login/data/models/login_model.dart';
 import 'package:cash_for_trash/features/auth/login/domain/repositories/login_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';

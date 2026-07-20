@@ -46,5 +46,10 @@
     "start_clean_journey": "ابدأ رحلتك نحو التغيير! 🌍",
     "create_account_commit": "انضم إلينا في رحلة نحو مجتمع أكثر نظافة واستدامة.",
     "sign_in_to_continue": "قم بتسجيل الدخول لمواصلة رحلتك نحو التغيير!",
-    "cash_for_trash": "كاش فور تريش"
+    "cash_for_trash": "Cash For Trash",
+    "network_error": "حدث خطأ في الاتصال بالشبكة، يرجى المحاولة مرة أخرى.",
+    "refresh": "تحديث",
+    "logout": "تسجيل الخروج",
+    "session_expired": "فشل التحقق من الجلسة.",
+    "recycle_today_better_tomorrow": "أعد التدوير اليوم لغدٍ أفضل"
 }

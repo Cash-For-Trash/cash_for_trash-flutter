@@ -15,6 +15,9 @@ import 'package:cash_for_trash/features/auth/register/presentation/bloc/register
 import 'package:cash_for_trash/features/home/data/repository/home_repository_impl.dart';
 import 'package:cash_for_trash/features/home/domain/repository/home_repository.dart';
 import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
+import 'package:cash_for_trash/features/splash/data/repositories/splash_repo_impl.dart';
+import 'package:cash_for_trash/features/splash/domain/repositories/splash_repository.dart';
+import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -35,6 +38,12 @@ Future<void> setupServiceLocator() async {
   // Core Cubits
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
   sl.registerLazySingleton<LocaleCubit>(() => LocaleCubit());
+
+  // Splash Feature
+  sl.registerLazySingleton<SplashRepository>(
+    () => SplashRepoImpl(apiConsumer: sl(), cacheHelper: sl()),
+  );
+  sl.registerFactory<SplashBloc>(() => SplashBloc(repository: sl()));
 
   // Home Feature
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl());

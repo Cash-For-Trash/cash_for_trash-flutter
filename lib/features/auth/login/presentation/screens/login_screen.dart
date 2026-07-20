@@ -1,6 +1,7 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/core/theme/app_assets.dart';
 import 'package:cash_for_trash/core/utils/auth_validations.dart';
 import 'package:cash_for_trash/core/utils/get_responsive_size.dart';
 import 'package:cash_for_trash/core/widgets/auth_toggle_widget.dart';
@@ -60,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 50.h),
                       Center(
                         child: Image.asset(
-                          'assets/logo/app_logo.png',
+                          AppAssets.appLogoPng,
                           width: 120.w,
                           height: 120.w,
                         ),

@@ -1,7 +1,5 @@
 import 'package:cash_for_trash/core/di/service_locator.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
-import 'package:cash_for_trash/core/services/local/cache_helper.dart';
-import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/bloc/login_bloc.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/screens/login_screen.dart';
 import 'package:cash_for_trash/features/auth/otp/presentation/bloc/otp_bloc.dart';
@@ -10,6 +8,7 @@ import 'package:cash_for_trash/features/auth/register/presentation/bloc/register
 import 'package:cash_for_trash/features/auth/register/presentation/screens/register_screen.dart';
 import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
 import 'package:cash_for_trash/features/onboarding/presentation/screens/onbording_screen.dart';
+import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:cash_for_trash/features/splash/presentation/screens/splash_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
 // import 'package:flutter/widgets.dart';
@@ -26,7 +25,10 @@ class RouterGenerator {
     routes: [
       GoRoute(
         path: AppRoutes.splashScreen,
-        builder: (context, state) => const SplashScreen(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => sl<SplashBloc>(),
+          child: const SplashScreen(),
+        ),
       ),
       GoRoute(
         path: AppRoutes.onbordingScreen,

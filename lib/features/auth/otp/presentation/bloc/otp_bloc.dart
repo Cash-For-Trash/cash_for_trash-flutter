@@ -1,8 +1,8 @@
-import 'package:bloc/bloc.dart';
 import 'package:cash_for_trash/features/auth/otp/data/models/otp_resend_model.dart';
 import 'package:cash_for_trash/features/auth/otp/data/models/otp_verify_model.dart';
 import 'package:cash_for_trash/features/auth/otp/domain/repositories/otp_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'otp_event.dart';
 part 'otp_state.dart';
