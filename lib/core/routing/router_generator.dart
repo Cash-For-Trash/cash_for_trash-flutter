@@ -1,11 +1,13 @@
 import 'package:cash_for_trash/core/di/service_locator.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/features/auth/forgot-password/presentation/screens/forgot_password.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/bloc/login_bloc.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/screens/login_screen.dart';
 import 'package:cash_for_trash/features/auth/otp/presentation/bloc/otp_bloc.dart';
 import 'package:cash_for_trash/features/auth/otp/presentation/screens/otp_screen.dart';
 import 'package:cash_for_trash/features/auth/register/presentation/bloc/register_bloc.dart';
 import 'package:cash_for_trash/features/auth/register/presentation/screens/register_screen.dart';
+import 'package:cash_for_trash/features/auth/reset_password/presentation/screens/reset_password.dart';
 import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
 import 'package:cash_for_trash/features/onboarding/presentation/screens/onbording_screen.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
@@ -62,15 +64,21 @@ class RouterGenerator {
         },
       ),
       GoRoute(
+        path: AppRoutes.resetPasswordScreen,
+        builder: (context, state) => const ResetPassword(),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPasswordScreen,
+        builder: (context, state) => const ForgotPassword(),
+      ),
+      GoRoute(
         path: AppRoutes.homeScreen,
         builder: (context, state) => MultiBlocProvider(
           providers: [
             BlocProvider(
               create: (context) => sl<HomeBloc>()..add(GetHomeData()),
             ),
-            BlocProvider(
-              create: (context) => sl<ProfileBloc>(),
-            ),
+            BlocProvider(create: (context) => sl<ProfileBloc>()),
           ],
           child: const Root(),
         ),
