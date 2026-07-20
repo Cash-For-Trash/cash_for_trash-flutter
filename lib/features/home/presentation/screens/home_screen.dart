@@ -19,7 +19,6 @@ class HomeScreen extends StatelessWidget {
     final colorScheme = context.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           if (state is HomeLoading) {

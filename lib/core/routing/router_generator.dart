@@ -15,6 +15,9 @@ import 'package:cash_for_trash/root/root.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
+
 // final RouteObserver<ModalRoute<void>> homeRouteObserver =
 //     RouteObserver<ModalRoute<void>>();
 
@@ -60,9 +63,23 @@ class RouterGenerator {
       ),
       GoRoute(
         path: AppRoutes.homeScreen,
-        builder: (context, state) => BlocProvider(
-          create: (context) => sl<HomeBloc>()..add(GetHomeData()),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<HomeBloc>()..add(GetHomeData()),
+            ),
+            BlocProvider(
+              create: (context) => sl<ProfileBloc>(),
+            ),
+          ],
           child: const Root(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.profileScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => sl<ProfileBloc>(),
+          child: const ProfileScreen(),
         ),
       ),
     ],

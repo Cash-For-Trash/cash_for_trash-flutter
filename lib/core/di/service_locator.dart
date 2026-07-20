@@ -18,6 +18,9 @@ import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
 import 'package:cash_for_trash/features/splash/data/repositories/splash_repo_impl.dart';
 import 'package:cash_for_trash/features/splash/domain/repositories/splash_repository.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
+import 'package:cash_for_trash/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:cash_for_trash/features/profile/domain/repositories/profile_repository.dart';
+import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -44,6 +47,12 @@ Future<void> setupServiceLocator() async {
     () => SplashRepoImpl(apiConsumer: sl(), cacheHelper: sl()),
   );
   sl.registerFactory<SplashBloc>(() => SplashBloc(repository: sl()));
+
+  // Profile Feature
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(apiConsumer: sl(), cacheHelper: sl()),
+  );
+  sl.registerFactory<ProfileBloc>(() => ProfileBloc(repository: sl()));
 
   // Home Feature
   sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl());

@@ -14,7 +14,7 @@ class EndPoint {
   static String resendOtp = "/auth/resend-otp";
   static String verifyOtp = "/auth/verify-otp";
   static String resetPassword = "/auth/reset-password/";
-  static String refreshToken = "/auth/token/refresh";
+  static String refreshToken = "/auth/refresh-token";
   static String verifyEmail = "/auth/verify-email/";
   static String checkToken = "/auth/check-token";
 }
