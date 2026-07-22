@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:lms_student/features/<FTName | snakecase>/data/model/<FTName | snakecase>_model.dart';
-import 'package:lms_student/features/<FTName | snakecase>/domain/repository/<FTName | snakecase>_repository.dart';
+import 'package:cash_for_trash/features/<FTName | snakecase>/data/model/<FTName | snakecase>_model.dart';
+import 'package:cash_for_trash/features/<FTName | snakecase>/domain/repository/<FTName | snakecase>_repository.dart';
 
 class <FTName | pascalcase>RepositoryImpl implements <FTName | pascalcase>Repository {
   @override
