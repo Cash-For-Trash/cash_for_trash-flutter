@@ -337,4 +337,8 @@ class ExampleScreen extends StatelessWidget {
 4. **No Static Colors Rule**:
    - Do NOT use hardcoded colors (e.g., `Colors.white`, `Colors.black`, `Colors.orange`) in screen layouts or widgets. Always retrieve colors dynamically from `context.colorScheme` or custom extensions (like `context.extraColors`) to guarantee flawless visual compatibility in both Light and Dark theme modes.
 
+5. **Widget Naming and Structure**:
+   - In the widget folder relating to any feature, each widget must stand alone as a separate file.
+   - The file and class name must end with the feature name and its role (e.g., `SomeWidgetSplashWidget` for a widget, or `SomeSectionSplashSection` for a section).
+
 

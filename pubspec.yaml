@@ -34,9 +34,12 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_animate: ^4.5.2
   pretty_dio_logger: ^1.4.0
-  flutter_localization: ^0.4.1
   flutter_localizations:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
+  animated_toggle_switch: ^0.8.7
+  pinput: ^6.0.2
+  flutter_secure_storage: ^10.3.1
 
 
 dev_dependencies:
@@ -52,6 +55,8 @@ flutter:
 
   assets:
     - assets/
+    - assets/images/
+    - assets/logo/
     - lib/core/localization/l10n/
 
 
@@ -80,3 +85,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo/app_icon.png"
+  min_sdk_android: 21
+  assets:
+    - assets/images/
