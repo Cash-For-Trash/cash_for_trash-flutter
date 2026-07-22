@@ -19,6 +19,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/screens/request_collection_screen.dart';
 
 // final RouteObserver<ModalRoute<void>> homeRouteObserver =
 //     RouteObserver<ModalRoute<void>>();
@@ -88,6 +90,13 @@ class RouterGenerator {
         builder: (context, state) => BlocProvider(
           create: (context) => sl<ProfileBloc>(),
           child: const ProfileScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.requestCollectionScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => sl<RequestCollectionBloc>(),
+          child: const RequestCollectionScreen(),
         ),
       ),
     ],
