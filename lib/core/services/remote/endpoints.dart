@@ -17,6 +17,12 @@ class EndPoint {
   static String refreshToken = "/auth/refresh-token";
   static String verifyEmail = "/auth/verify-email/";
   static String checkToken = "/auth/check-token";
+  
+  // garbage types
+  static String garbageTypes = "/garbage-types";
+  
+  // addresses
+  static String addresses = "/addresses";
 }
 
 class ApiKey {

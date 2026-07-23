@@ -15,12 +15,14 @@ import 'package:cash_for_trash/features/auth/register/presentation/bloc/register
 import 'package:cash_for_trash/features/home/data/repository/home_repository_impl.dart';
 import 'package:cash_for_trash/features/home/domain/repository/home_repository.dart';
 import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
+import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:cash_for_trash/features/splash/data/repositories/splash_repo_impl.dart';
 import 'package:cash_for_trash/features/splash/domain/repositories/splash_repository.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:cash_for_trash/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:cash_for_trash/features/profile/domain/repositories/profile_repository.dart';
-import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/data/repositories/request_collection_repository_impl.dart';
+import 'package:cash_for_trash/features/request_collection/domain/repositories/request_collection_repository.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/maps/data/repository/maps_repository_impl.dart';
 import 'package:cash_for_trash/features/maps/domain/repository/maps_repository.dart';
@@ -76,13 +78,15 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<OtpRepository>(() => OtpRepoImpl(apiConsumer: sl()));
   sl.registerFactory<OtpBloc>(() => OtpBloc(otpRepository: sl()));
 
-  // Request Collection Feature
-  sl.registerFactory<RequestCollectionBloc>(() => RequestCollectionBloc());
-
   // Maps Feature
   sl.registerLazySingleton<MapsRepository>(() => MapsRepositoryImpl());
   sl.registerFactory<MapsBloc>(() => MapsBloc(repository: sl()));
 
   // Request Collection Feature
-  sl.registerFactory<RequestCollectionBloc>(() => RequestCollectionBloc());
+  sl.registerLazySingleton<RequestCollectionRepository>(
+    () => RequestCollectionRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<RequestCollectionBloc>(
+    () => RequestCollectionBloc(repository: sl()),
+  );
 }

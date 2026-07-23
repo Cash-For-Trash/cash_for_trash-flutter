@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/garbage_type_model.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
@@ -9,23 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
   const WasteTypeSelectionRequestCollectionSection({super.key});
-
-  static const List<Map<String, dynamic>> _wasteTypes = [
-    {'id': 'plastic', 'labelKey': 'plastic', 'icon': Icons.recycling_rounded},
-    {
-      'id': 'paper_and_cardboard',
-      'labelKey': 'paper_and_cardboard',
-      'icon': Icons.inventory_2_outlined,
-    },
-    {'id': 'metals', 'labelKey': 'metals', 'icon': Icons.hardware_outlined},
-    {'id': 'glass', 'labelKey': 'glass', 'icon': Icons.local_bar_outlined},
-    {
-      'id': 'electronic_waste',
-      'labelKey': 'electronic_waste',
-      'icon': Icons.devices_outlined,
-    },
-    {'id': 'mixed', 'labelKey': 'mixed', 'icon': Icons.delete_outline_rounded},
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,28 +41,68 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
           SizedBox(height: 16.h),
           BlocBuilder<RequestCollectionBloc, RequestCollectionState>(
             builder: (context, state) {
+              if (state.isGarbageTypesLoading) {
+                return SizedBox(
+                  height: 160.h,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: context.colorScheme.primary,
+                    ),
+                  ),
+                );
+              }
+
+              if (state.garbageTypesErrorMessage != null) {
+                return Column(
+                  children: [
+                    Text(
+                      state.garbageTypesErrorMessage!,
+                      style: TextStyle(
+                        color: context.colorScheme.error,
+                        fontSize: 13.sp,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 8.h),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<RequestCollectionBloc>().add(
+                          const GetGarbageTypesEvent(),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: context.colorScheme.primary,
+                        foregroundColor: context.colorScheme.onPrimary,
+                      ),
+                      child: Text(context.tr('retry')),
+                    ),
+                  ],
+                );
+              }
+
+              if (state.garbageTypes.isEmpty) {
+                return const SizedBox.shrink();
+              }
+
               return GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _wasteTypes.length,
+                itemCount: state.garbageTypes.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 10.w,
                   mainAxisSpacing: 10.h,
-                  childAspectRatio: 0.95,
+                  childAspectRatio: 0.82,
                 ),
                 itemBuilder: (context, index) {
-                  final item = _wasteTypes[index];
-                  final String id = item['id'] as String;
-                  final String labelKey = item['labelKey'] as String;
-                  final IconData icon = item['icon'] as IconData;
-                  final isSelected = state.selectedWasteTypes.contains(id);
+                  final item = state.garbageTypes[index];
+                  final isSelected = state.selectedWasteTypes.contains(
+                    item.garbageTypeId,
+                  );
 
                   return _buildTypeCard(
                     context,
-                    id: id,
-                    labelKey: labelKey,
-                    icon: icon,
+                    item: item,
                     isSelected: isSelected,
                   );
                 },
@@ -91,9 +116,7 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
 
   Widget _buildTypeCard(
     BuildContext context, {
-    required String id,
-    required String labelKey,
-    required IconData icon,
+    required GarbageTypeItemModel item,
     required bool isSelected,
   }) {
     final activeColor = context.colorScheme.primary;
@@ -104,12 +127,14 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.read<RequestCollectionBloc>().add(ToggleWasteTypeEvent(id));
+        context.read<RequestCollectionBloc>().add(
+          ToggleWasteTypeEvent(item.garbageTypeId),
+        );
       },
       borderRadius: BorderRadius.circular(14.r),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
+        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: isSelected ? activeBg : inactiveBg,
           borderRadius: BorderRadius.circular(14.r),
@@ -122,35 +147,68 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(10.r),
+              padding: EdgeInsets.all(8.r),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isSelected
                     ? activeColor
-                    : context.colorScheme.surfaceContainerHighest,
+                    : context.colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.5,
+                      ),
               ),
-              child: Icon(
-                icon,
-                size: 22.sp,
+              child: CachedNetworkImage(
+                imageUrl: item.garbageTypeImage,
+                width: 24.w,
+                height: 24.h,
+                fit: BoxFit.contain,
                 color: isSelected
                     ? context.colorScheme.onPrimary
                     : context.colorScheme.onSurfaceVariant.withValues(
                         alpha: 0.6,
                       ),
+                placeholder: (context, url) => SizedBox(
+                  width: 16.w,
+                  height: 16.h,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: context.colorScheme.primary,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Icon(
+                  Icons.recycling_rounded,
+                  size: 22.sp,
+                  color: isSelected
+                      ? context.colorScheme.onPrimary
+                      : context.colorScheme.primary,
+                ),
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 6.h),
             Text(
-              context.tr(labelKey),
+              item.garbageTypeName,
               style: context.textTheme.bodySmall?.copyWith(
                 fontSize: 11.sp,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 color: isSelected
                     ? activeColor
-                    : context.colorScheme.onSurface.withValues(alpha: 0.7),
+                    : context.colorScheme.onSurface.withValues(alpha: 0.8),
               ),
               textAlign: TextAlign.center,
-              maxLines: 2,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              '${item.pricePerKg} ${context.tr('currency_egp')}/${context.tr('kg')}',
+              style: context.textTheme.bodySmall?.copyWith(
+                fontSize: 9.5.sp,
+                fontWeight: FontWeight.w600,
+                color: isSelected
+                    ? activeColor.withValues(alpha: 0.9)
+                    : context.colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ],

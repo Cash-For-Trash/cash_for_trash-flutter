@@ -137,5 +137,8 @@
     "confirm_location": "Confirm Location",
     "fetching_address": "Fetching address...",
     "location_permission_denied": "Location permission denied. Showing default location.",
-    "selected_coordinates": "Selected location"
+    "selected_coordinates": "Selected location",
+    "building": "Building",
+    "floor": "Floor",
+    "choose_on_map": "Choose on Map"
 }
