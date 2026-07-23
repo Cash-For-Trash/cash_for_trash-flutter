@@ -54,8 +54,15 @@ class RemoveWasteImageEvent extends RequestCollectionEvent {
 class ChangeLocationEvent extends RequestCollectionEvent {
   final String street;
   final String city;
-  const ChangeLocationEvent({required this.street, required this.city});
+  final double? latitude;
+  final double? longitude;
+  const ChangeLocationEvent({
+    required this.street,
+    required this.city,
+    this.latitude,
+    this.longitude,
+  });
 
   @override
-  List<Object?> get props => [street, city];
+  List<Object?> get props => [street, city, latitude, longitude];
 }

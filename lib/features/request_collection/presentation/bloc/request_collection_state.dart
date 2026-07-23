@@ -8,6 +8,8 @@ class RequestCollectionState extends Equatable {
   final String? imagePath;
   final String streetKey;
   final String cityKey;
+  final double? latitude;
+  final double? longitude;
   final double cost;
 
   const RequestCollectionState({
@@ -18,6 +20,8 @@ class RequestCollectionState extends Equatable {
     this.imagePath,
     this.streetKey = 'default_address_street',
     this.cityKey = 'default_address_city',
+    this.latitude,
+    this.longitude,
     this.cost = 5.0,
   });
 
@@ -31,6 +35,8 @@ class RequestCollectionState extends Equatable {
     bool clearImage = false,
     String? streetKey,
     String? cityKey,
+    double? latitude,
+    double? longitude,
     double? cost,
   }) {
     return RequestCollectionState(
@@ -41,6 +47,8 @@ class RequestCollectionState extends Equatable {
       imagePath: clearImage ? null : (imagePath ?? this.imagePath),
       streetKey: streetKey ?? this.streetKey,
       cityKey: cityKey ?? this.cityKey,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       cost: cost ?? this.cost,
     );
   }
@@ -54,6 +62,8 @@ class RequestCollectionState extends Equatable {
     imagePath,
     streetKey,
     cityKey,
+    latitude,
+    longitude,
     cost,
   ];
 }

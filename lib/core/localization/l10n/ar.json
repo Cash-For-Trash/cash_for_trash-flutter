@@ -131,5 +131,11 @@
     "kg_unit": "كجم",
     "weight_out_of_bounds_small": "يرجى إدخال وزن أقل من 10 كجم",
     "weight_out_of_bounds_medium": "يرجى إدخال وزن بين 10 و 50 كجم",
-    "weight_out_of_bounds_large": "يرجى إدخال وزن 50 كجم أو أكثر"
+    "weight_out_of_bounds_large": "يرجى إدخال وزن 50 كجم أو أكثر",
+    "select_location": "اختر الموقع",
+    "select_location_subtitle": "حرّك الخريطة لتحديد موقعك",
+    "confirm_location": "تأكيد الموقع",
+    "fetching_address": "جارٍ تحديد العنوان...",
+    "location_permission_denied": "تم رفض إذن الموقع. يتم عرض الموقع الافتراضي.",
+    "selected_coordinates": "الموقع المحدد"
 }
