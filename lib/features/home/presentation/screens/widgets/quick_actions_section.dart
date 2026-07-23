@@ -1,7 +1,9 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/routing/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class QuickActionsSection extends StatelessWidget {
   const QuickActionsSection({super.key});
@@ -25,6 +27,9 @@ class QuickActionsSection extends StatelessWidget {
               context,
               icon: Icons.delete_outline_rounded,
               label: context.tr('request_collection'),
+              onTap: () {
+                context.push(AppRoutes.requestCollectionScreen);
+              },
             ),
             _buildActionItem(
               context,
@@ -51,35 +56,40 @@ class QuickActionsSection extends StatelessWidget {
     BuildContext context, {
     required IconData icon,
     required String label,
+    VoidCallback? onTap,
   }) {
     return Expanded(
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(16.r),
-            decoration: BoxDecoration(
-              color: context.colorScheme.primary.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(16.r),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16.r),
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(16.r),
+              decoration: BoxDecoration(
+                color: context.colorScheme.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Icon(
+                icon,
+                color: context.colorScheme.primary,
+                size: 26.sp,
+              ),
             ),
-            child: Icon(
-              icon,
-              color: context.colorScheme.primary,
-              size: 26.sp,
+            SizedBox(height: 8.h),
+            Text(
+              label,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colorScheme.onSurface,
+                fontWeight: FontWeight.w500,
+                fontSize: 11.sp,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          SizedBox(height: 8.h),
-          Text(
-            label,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: context.colorScheme.onSurface,
-              fontWeight: FontWeight.w500,
-              fontSize: 11.sp,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

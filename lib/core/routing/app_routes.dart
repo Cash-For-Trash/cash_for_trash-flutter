@@ -9,9 +9,9 @@ class AppRoutes {
   static const String courseDetailsScreen = '/course_details_screen';
   static const String loginScreen = '/login_screen';
   static const String registerScreen = '/register_screen';
-  static const String forgotPasswordScreen = '/forgot_password_screen';
+  static const String forgotPasswordScreen = '/forgot_password';
   static const String verifyOtpScreen = '/otp_screen';
-  static const String resetPasswordScreen = '/reset_password_screen';
+  static const String resetPasswordScreen = '/reset_password';
   static const String settingsScreen = '/settings_screen';
   static const String studentProfileScreen = '/student_profile_screen';
   static const String changePasswordScreen = '/change_password_screen';
@@ -27,4 +27,5 @@ class AppRoutes {
   static const String pdfViewerScreen = '/pdf_viewer_screen';
   static const String myCoursesScreen = '/my_courses_screen';
   static const String profileScreen = '/profile_screen';
+  static const String requestCollectionScreen = '/request_collection_screen';
 }

@@ -21,6 +21,7 @@ import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dar
 import 'package:cash_for_trash/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:cash_for_trash/features/profile/domain/repositories/profile_repository.dart';
 import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -77,4 +78,7 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory<OtpBloc>(
     () => OtpBloc(otpRepository: sl()),
   );
+
+  // Request Collection Feature
+  sl.registerFactory<RequestCollectionBloc>(() => RequestCollectionBloc());
 }
