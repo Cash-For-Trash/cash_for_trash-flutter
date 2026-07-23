@@ -21,6 +21,13 @@ import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dar
 import 'package:cash_for_trash/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:cash_for_trash/features/profile/domain/repositories/profile_repository.dart';
 import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:cash_for_trash/features/maps/data/repository/maps_repository_impl.dart';
+import 'package:cash_for_trash/features/maps/domain/repository/maps_repository.dart';
+import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+>>>>>>> Stashed changes
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -77,4 +84,14 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory<OtpBloc>(
     () => OtpBloc(otpRepository: sl()),
   );
+<<<<<<< Updated upstream
+=======
+
+  // Maps Feature
+  sl.registerLazySingleton<MapsRepository>(() => MapsRepositoryImpl());
+  sl.registerFactory<MapsBloc>(() => MapsBloc(repository: sl()));
+
+  // Request Collection Feature
+  sl.registerFactory<RequestCollectionBloc>(() => RequestCollectionBloc());
+>>>>>>> Stashed changes
 }

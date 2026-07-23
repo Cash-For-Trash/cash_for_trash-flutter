@@ -15,6 +15,8 @@ import 'package:cash_for_trash/root/root.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
+import 'package:cash_for_trash/features/maps/presentation/screens/maps_screen.dart';
 import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
 
@@ -82,6 +84,23 @@ class RouterGenerator {
           child: const ProfileScreen(),
         ),
       ),
+<<<<<<< Updated upstream
+=======
+      GoRoute(
+        path: AppRoutes.requestCollectionScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => sl<RequestCollectionBloc>(),
+          child: const RequestCollectionScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.mapsScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => sl<MapsBloc>()..add(const MapsInitializedEvent()),
+          child: const MapsScreen(),
+        ),
+      ),
+>>>>>>> Stashed changes
     ],
   );
 }
