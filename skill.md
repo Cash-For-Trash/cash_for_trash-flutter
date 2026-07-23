@@ -1,25 +1,35 @@
-<!-- markdownlint-disable -->
+---
+name: flutter-feature-screen-implementation
+description: Comprehensive standards and step-by-step implementation guide for building modular, high-performance, responsive screens and features in Flutter following Clean Architecture, BLoC pattern, GetIt DI, GoRouter, and Dio.
+---
 
-# Flutter Feature & Screen Implementation Guide
+# Flutter Feature & Screen Implementation Skill
 
-This guide describes how to implement a new feature/screen in the Flutter application following Clean Architecture, BLoC pattern, GetIt dependency injection, and GoRouter navigation. It ensures adherence to SOLID principles, design patterns, and high-performance practices.
+This skill defines the mandatory standards and step-by-step workflow for implementing new features and screens in the Flutter application. It enforces Clean Architecture, the BLoC pattern, GetIt dependency injection, GoRouter navigation, Dio networking, ScreenUtil responsiveness, and strict UI/UX design standards.
+
+---
+
+## 🎯 Objective
+
+Deliver high-performance, fully responsive screens through a clean, robust, and maintainable codebase following a unified architecture across all features.
 
 ---
 
 ## 🏗 Architectural Directory Layout
 
-Each feature resides under `lib/features/[feature_name]/` and contains:
+Each feature resides under `lib/features/[feature_name]/` structured into clean layers:
+
 ```text
 lib/features/[feature_name]/
 ├── data/
 │   ├── model/         # Data transfer objects (DTOs), request & response models
-│   └── repositories/  # Implementation of domain repository interfaces
+│   └── repository/    # Repository implementations (using Dio / ApiConsumer)
 ├── domain/
-│   └── repositories/  # Repository contracts/interfaces
+│   └── repository/    # Repository interfaces/contracts (& entities if needed)
 └── presentation/
-    ├── bloc/          # State management (events, states, BLoC)
+    ├── bloc/          # State management (Events, States, BLoC)
     ├── screens/       # Main screen view(s)
-    └── widgets/       # Component-specific sub-widgets (modularized)
+    └── widgets/       # Feature-specific modular sub-widgets
 ```
 
 ---
@@ -28,317 +38,319 @@ lib/features/[feature_name]/
 
 ### Phase 1: Foundation (Data & Domain)
 
-#### 1. Data Modeling
-Define the data structures under `data/model/` using the latest Dart features (like records or pattern matching if applicable) and standard JSON serialization.
-* Use `@JsonSerializable()`.
-* Extend `Equatable` for request models if they need comparisons (e.g., in unit testing).
-* Make fields `final` to ensure immutability.
+1. **Directory Structure Setup**:
+   Create `data/` (models, repo impl), `domain/` (repo interface, entity if needed), and `presentation/` (bloc, screens, widgets).
 
-*Example: `features/[feature_name]/data/model/example_response_model.dart`*
-```dart
-import 'package:equatable/equatable.dart';
+2. **Data Modeling**:
+   - Create model classes in `data/model/` using immutable fields (`final`).
+   - Use `@JsonSerializable()` or factory constructors (`fromJson`/`toJson`) for JSON serialization.
+   - Extend `Equatable` for testing and comparison efficiency.
 
-class ExampleResponseModel extends Equatable {
-  final int id;
-  final String title;
+   *Example (`features/[feature_name]/data/model/example_model.dart`)*:
+   ```dart
+   import 'package:equatable/equatable.dart';
 
-  const ExampleResponseModel({
-    required this.id,
-    required this.title,
-  });
+   class ExampleModel extends Equatable {
+     final int id;
+     final String title;
 
-  factory ExampleResponseModel.fromJson(Map<String, dynamic> json) {
-    return ExampleResponseModel(
-      id: json['id'] as int,
-      title: json['title'] as String,
-    );
-  }
+     const ExampleModel({
+       required this.id,
+       required this.title,
+     });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-    };
-  }
+     factory ExampleModel.fromJson(Map<String, dynamic> json) {
+       return ExampleModel(
+         id: json['id'] as int,
+         title: json['title'] as String,
+       );
+     }
 
-  @override
-  List<Object?> get props => [id, title];
-}
-```
+     Map<String, dynamic> toJson() {
+       return {
+         'id': id,
+         'title': title,
+       };
+     }
 
-#### 2. Domain Repository Contract
-Under `domain/repositories/`, define an abstract class outlining operations. 
-* Use the functional programming package `dartz` to return `Either<String, T>` (where `String` is the failure/error message and `T` is the success payload).
-* Follow the **Dependency Inversion Principle** (high-level policy domain should not depend on low-level data implementation).
+     @override
+     List<Object?> get props => [id, title];
+   }
+   ```
 
-*Example: `features/[feature_name]/domain/repositories/example_repository.dart`*
-```dart
-import 'package:dartz/dartz.dart';
-import '../data/model/example_response_model.dart';
+3. **Domain Repository Interface**:
+   - Define abstract repository contracts in `domain/repository/`.
+   - Use `dartz` package returning `Either<String, T>` (where Left is the failure message and Right is the success model/data).
+   - Enforce the **Dependency Inversion Principle**.
 
-abstract class ExampleRepository {
-  Future<Either<String, ExampleResponseModel>> getExampleData(int id);
-}
-```
+   *Example (`features/[feature_name]/domain/repository/example_repository.dart`)*:
+   ```dart
+   import 'package:dartz/dartz.dart';
+   import '../../data/model/example_model.dart';
 
-#### 3. Data Repository Implementation
-Under `data/repositories/`, implement the contract. Inject the remote `ApiConsumer` or local helper.
-* Always define network endpoints in `core/services/remote/endpoints.dart`.
-* Use the injected `ApiConsumer` to execute requests.
+   abstract class ExampleRepository {
+     Future<Either<String, ExampleModel>> getExampleData(int id);
+   }
+   ```
 
-*Example: `features/[feature_name]/data/repositories/example_repository_impl.dart`*
-```dart
-import 'package:dartz/dartz.dart';
-import '../../core/services/remote/api_consumer.dart';
-import '../../core/services/remote/endpoints.dart';
-import '../domain/repositories/example_repository.dart';
-import '../model/example_response_model.dart';
+4. **API Endpoints**:
+   - Define any new network paths in `lib/core/services/remote/endpoints.dart`.
 
-class ExampleRepositoryImpl implements ExampleRepository {
-  final ApiConsumer apiConsumer;
+5. **Data Repository Implementation**:
+   - Implement domain contracts in `data/repository/` utilizing `Dio` / `ApiConsumer`.
 
-  ExampleRepositoryImpl({required this.apiConsumer});
+   *Example (`features/[feature_name]/data/repository/example_repository_impl.dart`)*:
+   ```dart
+   import 'package:dartz/dartz.dart';
+   import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
+   import 'package:cash_for_trash/core/services/remote/endpoints.dart';
+   import '../../domain/repository/example_repository.dart';
+   import '../model/example_model.dart';
 
-  @override
-  Future<Either<String, ExampleResponseModel>> getExampleData(int id) async {
-    return await apiConsumer.get<ExampleResponseModel>(
-      '${EndPoint.examplePath}/$id',
-      fromJson: (json) => ExampleResponseModel.fromJson(json),
-    );
-  }
-}
-```
+   class ExampleRepositoryImpl implements ExampleRepository {
+     final ApiConsumer apiConsumer;
+
+     ExampleRepositoryImpl({required this.apiConsumer});
+
+     @override
+     Future<Either<String, ExampleModel>> getExampleData(int id) async {
+       return await apiConsumer.get<ExampleModel>(
+         '${EndPoint.examplePath}/$id',
+         fromJson: (json) => ExampleModel.fromJson(json),
+       );
+     }
+   }
+   ```
 
 ---
 
 ### Phase 2: Logic & Dependency Injection
 
-#### 1. State Management (BLoC)
-Write the event, state, and BLoC files. Ensure all states extend `Equatable` to prevent redundant UI rebuilds.
+1. **BLoC Implementation**:
+   - Define Events (e.g., `GetExampleDataEvent`) and States (e.g., `ExampleInitialState`, `ExampleLoadingState`, `ExampleLoadedState`, `ExampleErrorState`).
+   - Extend `Equatable` across all events and states to prevent unnecessary rebuilds.
+   - Inject repository into the BLoC via named parameters.
 
-*Example BLoC Event:*
-```dart
-import 'package:equatable/equatable.dart';
+   *Event (`features/[feature_name]/presentation/bloc/example_event.dart`)*:
+   ```dart
+   import 'package:equatable/equatable.dart';
 
-abstract class ExampleEvent extends Equatable {
-  const ExampleEvent();
+   abstract class ExampleEvent extends Equatable {
+     const ExampleEvent();
 
-  @override
-  List<Object?> get props => [];
-}
+     @override
+     List<Object?> get props => [];
+   }
 
-class GetExampleDataEvent extends ExampleEvent {
-  final int id;
-  const GetExampleDataEvent(this.id);
+   class GetExampleDataEvent extends ExampleEvent {
+     final int id;
+     const GetExampleDataEvent(this.id);
 
-  @override
-  List<Object?> get props => [id];
-}
-```
+     @override
+     List<Object?> get props => [id];
+   }
+   ```
 
-*Example BLoC State:*
-```dart
-import 'package:equatable/equatable.dart';
-import '../../data/model/example_response_model.dart';
+   *State (`features/[feature_name]/presentation/bloc/example_state.dart`)*:
+   ```dart
+   import 'package:equatable/equatable.dart';
+   import '../../data/model/example_model.dart';
 
-abstract class ExampleState extends Equatable {
-  const ExampleState();
+   abstract class ExampleState extends Equatable {
+     const ExampleState();
 
-  @override
-  List<Object?> get props => [];
-}
+     @override
+     List<Object?> get props => [];
+   }
 
-class ExampleInitialState extends ExampleState {}
-class ExampleLoadingState extends ExampleState {}
-class ExampleLoadedState extends ExampleState {
-  final ExampleResponseModel data;
-  const ExampleLoadedState(this.data);
+   class ExampleInitialState extends ExampleState {}
+   class ExampleLoadingState extends ExampleState {}
+   class ExampleLoadedState extends ExampleState {
+     final ExampleModel data;
+     const ExampleLoadedState(this.data);
 
-  @override
-  List<Object?> get props => [data];
-}
-class ExampleErrorState extends ExampleState {
-  final String errorMessage;
-  const ExampleErrorState(this.errorMessage);
+     @override
+     List<Object?> get props => [data];
+   }
+   class ExampleErrorState extends ExampleState {
+     final String errorMessage;
+     const ExampleErrorState(this.errorMessage);
 
-  @override
-  List<Object?> get props => [errorMessage];
-}
-```
+     @override
+     List<Object?> get props => [errorMessage];
+   }
+   ```
 
-*Example BLoC:*
-```dart
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/repositories/example_repository.dart';
-import 'example_event.dart';
-import 'example_state.dart';
+   *BLoC (`features/[feature_name]/presentation/bloc/example_bloc.dart`)*:
+   ```dart
+   import 'package:flutter_bloc/flutter_bloc.dart';
+   import '../../domain/repository/example_repository.dart';
+   import 'example_event.dart';
+   import 'example_state.dart';
 
-class ExampleBloc extends Bloc<ExampleEvent, ExampleState> {
-  final ExampleRepository repository;
+   class ExampleBloc extends Bloc<ExampleEvent, ExampleState> {
+     final ExampleRepository repository;
 
-  ExampleBloc({required this.repository}) : super(ExampleInitialState()) {
-    on<GetExampleDataEvent>(_onGetExampleData);
-  }
+     ExampleBloc({required this.repository}) : super(ExampleInitialState()) {
+       on<GetExampleDataEvent>(_onGetExampleData);
+     }
 
-  Future<void> _onGetExampleData(
-    GetExampleDataEvent event,
-    Emitter<ExampleState> emit,
-  ) async {
-    emit(ExampleLoadingState());
-    final result = await repository.getExampleData(event.id);
-    result.fold(
-      (error) => emit(ExampleErrorState(error)),
-      (data) => emit(ExampleLoadedState(data)),
-    );
-  }
-}
-```
+     Future<void> _onGetExampleData(
+       GetExampleDataEvent event,
+       Emitter<ExampleState> emit,
+     ) async {
+       emit(ExampleLoadingState());
+       final result = await repository.getExampleData(event.id);
+       result.fold(
+         (error) => emit(ExampleErrorState(error)),
+         (data) => emit(ExampleLoadedState(data)),
+       );
+     }
+   }
+   ```
 
-#### 2. Service Locator (Dependency Injection)
-Register the repository and BLoC inside `lib/core/di/service_locator.dart`.
-* Use `registerLazySingleton` for repositories (one instance persisted).
-* Use `registerFactory` for BLoCs to instantiate a fresh controller whenever needed, avoiding stale states.
+2. **Service Locator Registration**:
+   - Register Repository using `sl.registerLazySingleton`.
+   - Register BLoC using `sl.registerLazySingleton` (or `sl.registerFactory` when fresh instances are needed) in `lib/core/di/service_locator.dart`.
 
-```dart
-// Features - Example
-sl.registerLazySingleton<ExampleRepository>(
-  () => ExampleRepositoryImpl(apiConsumer: sl()),
-);
-sl.registerFactory(() => ExampleBloc(repository: sl()));
-```
+   ```dart
+   // Service Locator Registration in service_locator.dart
+   sl.registerLazySingleton<ExampleRepository>(
+     () => ExampleRepositoryImpl(apiConsumer: sl()),
+   );
+   sl.registerLazySingleton<ExampleBloc>(
+     () => ExampleBloc(repository: sl()),
+   );
+   ```
 
-#### 3. Routing (GoRouter Registration)
-Register the path in `lib/core/routing/app_routes.dart` and bind the route logic in `lib/core/routing/router_generator.dart`.
-Provide the BLoC at the routing level to scoped widgets.
+3. **Routing Configuration**:
+   - Register path constants in `lib/core/routing/app_routes.dart`.
+   - Configure route logic in `lib/core/routing/router_generator.dart`, binding BLoC via `BlocProvider`.
 
-```dart
-// Under lib/core/routing/router_generator.dart:
-GoRoute(
-  path: AppRoutes.exampleScreen,
-  builder: (context, state) => BlocProvider(
-    create: (context) => sl<ExampleBloc>()..add(const GetExampleDataEvent(1)),
-    child: const ExampleScreen(),
-  ),
-);
-```
+   ```dart
+   // Under lib/core/routing/router_generator.dart:
+   GoRoute(
+     path: AppRoutes.exampleScreen,
+     builder: (context, state) => BlocProvider(
+       create: (context) => sl<ExampleBloc>()..add(const GetExampleDataEvent(1)),
+       child: const ExampleScreen(),
+     ),
+   );
+   ```
 
 ---
 
 ### Phase 3: Assets & Localization
 
-#### 1. Multi-Language Strings
-Add localizations for English (`lib/core/localization/l10n/en.json`) and Arabic (`lib/core/localization/l10n/ar.json`).
-* Reference string in UI: `context.tr('key')` (ensure necessary localization extensions or packages are imported).
+1. **Multi-Language Support**:
+   - Add new strings to `assets/translations/en.json` and `assets/translations/ar.json`.
+   - Access translated strings in UI using `context.tr('key_name')`.
 
-#### 2. Image and Icon Declarations
-Add asset constant paths to central classes like `AppIcons` or `AppImages` under `lib/core/constants/` or equivalent configuration files.
-
----
-
-### Phase 4: UI Development (High Performance & Responsive Design)
-
-#### 1. Styling Guidelines
-* **Responsive Layouts**: Always wrap dimensions with `ScreenUtil` using extensions `.w` for width, `.h` for height, `.r` for radii, and `.sp` for fonts.
-* **Theme-Based Styling**: Never hardcode colors. Use theme context selectors such as `context.colorScheme` or custom theme color abstractions.
-
-#### 2. Modular Widgets
-Avoid large build methods. Split complex layouts into smaller, isolated private or public widgets located inside the feature's `widgets/` folder.
-* Utilize `const` constructors on all stateless/stateful child widgets to facilitate cache recycling and prevent unnecessary framework redraws.
-
-#### 3. State-Driven UI Lifecycle
-Handle the state transitions smoothly with `BlocBuilder`. Use loading indicators (`LoadingIndicatorWidget` / Shimmers) and friendly state representations for error/empty outcomes.
-
-*Example screen layout:*
-```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../core/extensions/theme_extensions.dart'; // Example extension
-import '../bloc/example_bloc.dart';
-import '../bloc/example_state.dart';
-
-class ExampleScreen extends StatelessWidget {
-  const ExampleScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Example')),
-      body: BlocBuilder<ExampleBloc, ExampleState>(
-        builder: (context, state) {
-          if (state is ExampleLoadingState) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ExampleLoadedState) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-              key: ValueKey(state.data.id),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    state.data.title,
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.onBackground,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          } else if (state is ExampleErrorState) {
-            return Center(
-              child: Text(
-                state.errorMessage,
-                style: TextStyle(color: context.colorScheme.error),
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
-    );
-  }
-}
-```
+2. **Icons, Images, and Assets**:
+   - Add new icon paths to `app_icons.dart` if needed.
+   - Add new image paths to `app_images.dart` if needed.
+   - Register asset paths in `app_assets.dart` / `pubspec.yaml` when necessary.
 
 ---
 
-## ⚡ SOLID & Performance Best Practices
+### Phase 4: UI Development
+
+1. **Screen Modularization**:
+   - Decompose complex screens into small, specialized sub-widgets stored in the feature's `presentation/widgets/` folder.
+   - Every sub-widget must reside in its own dedicated file.
+   - Follow strict naming: The file and class name must end with the feature name and role (e.g., `ProfileHeaderProfileWidget` for a widget, or `HomeQuickActionsHomeSection` for a section).
+
+2. **Shared UI Components**:
+   - Reuse common widgets from `lib/core/widgets/` or `features/widgets/` folder (e.g., `CustomPrimaryButton`, `LoadingIndicatorWidget`).
+
+3. **Styling & Responsiveness**:
+   - **Dimensions**: Wrap ALL sizing values using `ScreenUtil` extensions (`.w` for width, `.h` for height, `.r` for radius, `.sp` for text size).
+   - **Colors**: **No Static Colors Rule**. Never use hardcoded colors (`Colors.white`, `Colors.black`, `Colors.orange`). Retrieve colors exclusively via `context.colorScheme` or `AppTheme` extensions to guarantee light/dark mode compatibility.
+   - **Typography**: Prefer `context.textTheme` extensions (e.g., `context.textTheme.headlineMedium`) over manual `TextStyle` declarations.
+
+4. **State Handling**:
+   - Wrap interactive UI components with `BlocBuilder` to reactively render Loading, Loaded, Error, and Empty states cleanly.
+
+   *Example Screen View (`features/[feature_name]/presentation/screens/example_screen.dart`)*:
+   ```dart
+   import 'package:flutter/material.dart';
+   import 'package:flutter_bloc/flutter_bloc.dart';
+   import 'package:flutter_screenutil/flutter_screenutil.dart';
+   import 'package:cash_for_trash/core/extensions/theme_extensions.dart';
+   import '../bloc/example_bloc.dart';
+   import '../bloc/example_state.dart';
+
+   class ExampleScreen extends StatelessWidget {
+     const ExampleScreen({super.key});
+
+     @override
+     Widget build(BuildContext context) {
+       return Scaffold(
+         appBar: AppBar(
+           title: Text(
+             context.tr('example_title'),
+             style: context.textTheme.titleLarge,
+           ),
+         ),
+         body: BlocBuilder<ExampleBloc, ExampleState>(
+           builder: (context, state) {
+             if (state is ExampleLoadingState) {
+               return const Center(child: LoadingIndicatorWidget());
+             } else if (state is ExampleLoadedState) {
+               return Padding(
+                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                 key: ValueKey(state.data.id),
+                 child: Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     Text(
+                       state.data.title,
+                       style: context.textTheme.headlineMedium?.copyWith(
+                         color: context.colorScheme.onBackground,
+                       ),
+                     ),
+                   ],
+                 ),
+               );
+             } else if (state is ExampleErrorState) {
+               return Center(
+                 child: Text(
+                   state.errorMessage,
+                   style: context.textTheme.bodyMedium?.copyWith(
+                     color: context.colorScheme.error,
+                   ),
+                 ),
+               );
+             }
+             return const SizedBox.shrink();
+           },
+         ),
+       );
+     }
+   }
+   ```
+
+---
+
+## ⚡ SOLID Principles & Performance Rules
 
 1. **Single Responsibility Principle (SRP)**:
-   * Keep widgets small and specialized.
-   * Business logic should live strictly in BLoC.
-   * Networking must remain encapsulated within the data sources and repository.
+   - Keep build methods short and widgets isolated.
+   - Retain all business logic inside BLoCs.
+   - Encapsulate network calls inside repository implementations using `Dio`.
 
 2. **Open/Closed Principle (OCP)**:
-   * Program to abstract interfaces (`ExampleRepository`) rather than implementations (`ExampleRepositoryImpl`).
-   * Add new behaviors by creating subclass or decorator classes rather than modifying stable core implementation.
+   - Program against abstract repository interfaces (`ExampleRepository`) instead of direct concrete classes.
 
-3. **Performance Optimization (Flutter-Specific)**:
-   * Use **`const` constructors** wherever possible to reduce widget rebuild cycles.
-   * Prefer **`ListView.builder`** over rendering list maps directly for dynamic content to support lazy loading of children.
-   * Cache remote images using **`CachedNetworkImage`** with custom placeholder shimmers to prevent layout thrashing and high network usage.
-   * Minimize the rebuild scope by localizing `BlocBuilder`s to the specific part of the widget tree that actually depends on the state data.
+3. **Flutter Performance Optimization**:
+   - Use `const` constructors on all stateless/stateful child widgets to minimize rebuild cycles.
+   - Use `ListView.builder` for dynamic lists to support lazy child loading.
+   - Localize `BlocBuilder` scopes to only the widgets that require state updates.
+   - If any screen/widget can be `StatelessWidget`, prefer stateless over stateful.
+   - **Map & Interactive View Optimization**: Avoid dispatching BLoC state updates on high-frequency gesture callbacks like `onCameraMove` during map dragging. Instead, update local state or use `onCameraIdle` to trigger BLoC state changes only when movement completes, preserving 60/120fps native performance.
+   - **Theme Extensions Usage**: Retrieve styling exclusively using `context.colorScheme` and `context.textTheme` extensions instead of verbose `Theme.of(context)` calls.
 
----
-
-## 🎨 Special Repository Guidelines
-
-1. **User Profile Mock Configuration**:
-   - In repository mock layers, prioritize setting the userName attribute to `"Abdallah"`.
-
-2. **Screen Modularization**:
-   - All complex screens MUST be decomposed into separate files inside `presentation/screens/widgets/` representing specific component groups (e.g., `HomeHeader`, `QuickActionsSection`). Keep build methods clean and focused.
-
-3. **TextTheme Context Extensions**:
-   - Prefer accessing the application text styling definitions directly via `context.textTheme` extensions (e.g., `context.textTheme.headlineMedium`) instead of creating manual `TextStyle` objects, maintaining visual consistency across responsive dimensions.
-
-4. **No Static Colors Rule**:
-   - Do NOT use hardcoded colors (e.g., `Colors.white`, `Colors.black`, `Colors.orange`) in screen layouts or widgets. Always retrieve colors dynamically from `context.colorScheme` or custom extensions (like `context.extraColors`) to guarantee flawless visual compatibility in both Light and Dark theme modes.
-
-5. **Widget Naming and Structure**:
-   - In the widget folder relating to any feature, each widget must stand alone as a separate file.
-   - The file and class name must end with the feature name and its role (e.g., `SomeWidgetSplashWidget` for a widget, or `SomeSectionSplashSection` for a section).
-
-
+4. **No Comments Rule**:
+   - **Never add inline comments, block comments, or doc comments** anywhere in the code (no `//`, `/* */`, or `///`).
+   - Code must be self-documenting through clear naming of classes, methods, variables, and files.
+   - Use descriptive names that express intent without needing explanation.

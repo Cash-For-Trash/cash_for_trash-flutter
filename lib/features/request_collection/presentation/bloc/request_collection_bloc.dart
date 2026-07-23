@@ -32,10 +32,12 @@ class RequestCollectionBloc
     Emitter<RequestCollectionState> emit,
   ) {
     if (state.selectedQuantity != event.quantityKey) {
-      emit(state.copyWith(
-        selectedQuantity: event.quantityKey,
-        clearExactWeight: true,
-      ));
+      emit(
+        state.copyWith(
+          selectedQuantity: event.quantityKey,
+          clearExactWeight: true,
+        ),
+      );
     }
   }
 
@@ -75,6 +77,13 @@ class RequestCollectionBloc
     ChangeLocationEvent event,
     Emitter<RequestCollectionState> emit,
   ) {
-    emit(state.copyWith(streetKey: event.street, cityKey: event.city));
+    emit(
+      state.copyWith(
+        streetKey: event.street,
+        cityKey: event.city,
+        latitude: event.latitude,
+        longitude: event.longitude,
+      ),
+    );
   }
 }

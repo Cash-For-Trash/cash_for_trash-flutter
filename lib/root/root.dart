@@ -1,6 +1,7 @@
 import 'package:cash_for_trash/core/widgets/app_exit_pop_scope.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/home_screen.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
+import 'package:cash_for_trash/features/maps/presentation/screens/maps_screen.dart';
 import 'package:cash_for_trash/root/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class RootState extends State<Root> {
   List<Widget> screens = [
     const HomeScreen(),
     const Scaffold(body: Center(child: Text('Explore Screen'))),
-    const Scaffold(body: Center(child: Text('My Learning Screen'))),
+    const MapsScreen(),
     const ProfileScreen(),
   ];
 

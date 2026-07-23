@@ -1,10 +1,14 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/features/maps/data/model/selected_location_model.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class LocationRequestCollectionSection extends StatelessWidget {
   const LocationRequestCollectionSection({super.key});
@@ -84,13 +88,13 @@ class LocationRequestCollectionSection extends StatelessWidget {
                     ),
                     SizedBox(width: 8.w),
                     InkWell(
-                      onTap: () {
-                        // Location picker modal/action placeholder
-                      },
+                      onTap: () => _openLocationPicker(context),
                       borderRadius: BorderRadius.circular(20.r),
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 14.w, vertical: 6.h),
+                          horizontal: 14.w,
+                          vertical: 6.h,
+                        ),
                         decoration: BoxDecoration(
                           color: context.colorScheme.primaryContainer
                               .withValues(alpha: 0.5),
@@ -114,5 +118,22 @@ class LocationRequestCollectionSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _openLocationPicker(BuildContext context) async {
+    final result = await context.push<SelectedLocationModel>(
+      AppRoutes.mapsScreen,
+    );
+
+    if (result != null && context.mounted) {
+      context.read<RequestCollectionBloc>().add(
+        ChangeLocationEvent(
+          street: result.displayAddress,
+          city: context.tr('selected_coordinates'),
+          latitude: result.latitude,
+          longitude: result.longitude,
+        ),
+      );
+    }
   }
 }
