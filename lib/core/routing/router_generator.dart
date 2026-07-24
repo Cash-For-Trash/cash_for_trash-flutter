@@ -10,6 +10,7 @@ import 'package:cash_for_trash/features/auth/register/presentation/screens/regis
 import 'package:cash_for_trash/features/auth/reset_password/presentation/screens/reset_password.dart';
 import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
 import 'package:cash_for_trash/features/onboarding/presentation/screens/onbording_screen.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:cash_for_trash/features/splash/presentation/screens/splash_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
@@ -97,7 +98,9 @@ class RouterGenerator {
       GoRoute(
         path: AppRoutes.requestCollectionScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) => sl<RequestCollectionBloc>(),
+          create: (context) => sl<RequestCollectionBloc>()
+            ..add(const GetGarbageTypesEvent())
+            ..add(const GetAddressesEvent()),
           child: const RequestCollectionScreen(),
         ),
       ),

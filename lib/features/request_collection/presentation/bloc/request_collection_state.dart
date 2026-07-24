@@ -1,6 +1,17 @@
+import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/garbage_type_model.dart';
 import 'package:equatable/equatable.dart';
 
 class RequestCollectionState extends Equatable {
+  final bool isGarbageTypesLoading;
+  final List<GarbageTypeItemModel> garbageTypes;
+  final String? garbageTypesErrorMessage;
+
+  final bool isAddressesLoading;
+  final List<AddressItemModel> addresses;
+  final String? addressesErrorMessage;
+  final AddressItemModel? selectedAddress;
+
   final List<String> selectedWasteTypes;
   final String selectedQuantity;
   final double? exactWeight;
@@ -13,7 +24,14 @@ class RequestCollectionState extends Equatable {
   final double cost;
 
   const RequestCollectionState({
-    this.selectedWasteTypes = const ['plastic'],
+    this.isGarbageTypesLoading = false,
+    this.garbageTypes = const [],
+    this.garbageTypesErrorMessage,
+    this.isAddressesLoading = false,
+    this.addresses = const [],
+    this.addressesErrorMessage,
+    this.selectedAddress,
+    this.selectedWasteTypes = const [],
     this.selectedQuantity = 'medium_qty',
     this.exactWeight,
     this.selectedTimeSlot = 'today_4pm',
@@ -26,6 +44,15 @@ class RequestCollectionState extends Equatable {
   });
 
   RequestCollectionState copyWith({
+    bool? isGarbageTypesLoading,
+    List<GarbageTypeItemModel>? garbageTypes,
+    String? garbageTypesErrorMessage,
+    bool clearGarbageTypesError = false,
+    bool? isAddressesLoading,
+    List<AddressItemModel>? addresses,
+    String? addressesErrorMessage,
+    bool clearAddressesError = false,
+    AddressItemModel? selectedAddress,
     List<String>? selectedWasteTypes,
     String? selectedQuantity,
     double? exactWeight,
@@ -40,6 +67,18 @@ class RequestCollectionState extends Equatable {
     double? cost,
   }) {
     return RequestCollectionState(
+      isGarbageTypesLoading:
+          isGarbageTypesLoading ?? this.isGarbageTypesLoading,
+      garbageTypes: garbageTypes ?? this.garbageTypes,
+      garbageTypesErrorMessage: clearGarbageTypesError
+          ? null
+          : (garbageTypesErrorMessage ?? this.garbageTypesErrorMessage),
+      isAddressesLoading: isAddressesLoading ?? this.isAddressesLoading,
+      addresses: addresses ?? this.addresses,
+      addressesErrorMessage: clearAddressesError
+          ? null
+          : (addressesErrorMessage ?? this.addressesErrorMessage),
+      selectedAddress: selectedAddress ?? this.selectedAddress,
       selectedWasteTypes: selectedWasteTypes ?? this.selectedWasteTypes,
       selectedQuantity: selectedQuantity ?? this.selectedQuantity,
       exactWeight: clearExactWeight ? null : (exactWeight ?? this.exactWeight),
@@ -55,15 +94,22 @@ class RequestCollectionState extends Equatable {
 
   @override
   List<Object?> get props => [
-    selectedWasteTypes,
-    selectedQuantity,
-    exactWeight,
-    selectedTimeSlot,
-    imagePath,
-    streetKey,
-    cityKey,
-    latitude,
-    longitude,
-    cost,
-  ];
+        isGarbageTypesLoading,
+        garbageTypes,
+        garbageTypesErrorMessage,
+        isAddressesLoading,
+        addresses,
+        addressesErrorMessage,
+        selectedAddress,
+        selectedWasteTypes,
+        selectedQuantity,
+        exactWeight,
+        selectedTimeSlot,
+        imagePath,
+        streetKey,
+        cityKey,
+        latitude,
+        longitude,
+        cost,
+      ];
 }

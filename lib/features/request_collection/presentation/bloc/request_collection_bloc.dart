@@ -1,10 +1,17 @@
+import 'package:cash_for_trash/features/request_collection/domain/repositories/request_collection_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'request_collection_event.dart';
 import 'request_collection_state.dart';
 
 class RequestCollectionBloc
     extends Bloc<RequestCollectionEvent, RequestCollectionState> {
-  RequestCollectionBloc() : super(const RequestCollectionState()) {
+  final RequestCollectionRepository repository;
+
+  RequestCollectionBloc({required this.repository})
+      : super(const RequestCollectionState()) {
+    on<GetGarbageTypesEvent>(_onGetGarbageTypes);
+    on<GetAddressesEvent>(_onGetAddresses);
+    on<SelectAddressEvent>(_onSelectAddress);
     on<ToggleWasteTypeEvent>(_onToggleWasteType);
     on<SelectQuantityEvent>(_onSelectQuantity);
     on<SetExactWeightEvent>(_onSetExactWeight);
@@ -12,6 +19,64 @@ class RequestCollectionBloc
     on<PickWasteImageEvent>(_onPickWasteImage);
     on<RemoveWasteImageEvent>(_onRemoveWasteImage);
     on<ChangeLocationEvent>(_onChangeLocation);
+  }
+
+  Future<void> _onGetGarbageTypes(
+    GetGarbageTypesEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) async {
+    emit(state.copyWith(
+      isGarbageTypesLoading: true,
+      clearGarbageTypesError: true,
+    ));
+
+    final result = await repository.getGarbageTypes();
+
+    result.fold(
+      (error) => emit(state.copyWith(
+        isGarbageTypesLoading: false,
+        garbageTypesErrorMessage: error,
+      )),
+      (response) => emit(state.copyWith(
+        isGarbageTypesLoading: false,
+        garbageTypes: response.data,
+      )),
+    );
+  }
+
+  Future<void> _onGetAddresses(
+    GetAddressesEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) async {
+    emit(state.copyWith(
+      isAddressesLoading: true,
+      clearAddressesError: true,
+    ));
+
+    final result = await repository.getAddresses();
+
+    result.fold(
+      (error) => emit(state.copyWith(
+        isAddressesLoading: false,
+        addressesErrorMessage: error,
+      )),
+      (response) {
+        final firstAddress =
+            response.data.isNotEmpty ? response.data.first : null;
+        emit(state.copyWith(
+          isAddressesLoading: false,
+          addresses: response.data,
+          selectedAddress: state.selectedAddress ?? firstAddress,
+        ));
+      },
+    );
+  }
+
+  void _onSelectAddress(
+    SelectAddressEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) {
+    emit(state.copyWith(selectedAddress: event.address));
   }
 
   void _onToggleWasteType(

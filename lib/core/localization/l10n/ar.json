@@ -133,9 +133,12 @@
     "weight_out_of_bounds_medium": "يرجى إدخال وزن بين 10 و 50 كجم",
     "weight_out_of_bounds_large": "يرجى إدخال وزن 50 كجم أو أكثر",
     "select_location": "اختر الموقع",
-    "select_location_subtitle": "حرّك الخريطة لتحديد موقعك",
+    "selected_coordinates": "تم تحديد الإحداثيات",
+    "location_picker_title": "تحديد موقع الجمع",
     "confirm_location": "تأكيد الموقع",
+    "building": "مبنى",
+    "floor": "طابق",
+    "choose_on_map": "تحديد على الخريطة",
     "fetching_address": "جارٍ تحديد العنوان...",
-    "location_permission_denied": "تم رفض إذن الموقع. يتم عرض الموقع الافتراضي.",
-    "selected_coordinates": "الموقع المحدد"
+    "location_permission_denied": "تم رفض إذن الموقع. يتم عرض الموقع الافتراضي."
 }
