@@ -3,6 +3,9 @@ import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/dio_consumer.dart';
 import 'package:cash_for_trash/core/theme/theme_cubit.dart';
+import 'package:cash_for_trash/features/address/data/repository/address_repository_impl.dart';
+import 'package:cash_for_trash/features/address/domain/repository/address_repository.dart';
+import 'package:cash_for_trash/features/address/presentation/bloc/address_bloc.dart';
 import 'package:cash_for_trash/features/auth/login/data/repositories/login_repo_impl.dart';
 import 'package:cash_for_trash/features/auth/login/domain/repositories/login_repository.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/bloc/login_bloc.dart';
@@ -79,8 +82,18 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory<OtpBloc>(() => OtpBloc(otpRepository: sl()));
 
   // Maps Feature
-  sl.registerLazySingleton<MapsRepository>(() => MapsRepositoryImpl());
+  sl.registerLazySingleton<MapsRepository>(
+    () => MapsRepositoryImpl(apiConsumer: sl()),
+  );
   sl.registerFactory<MapsBloc>(() => MapsBloc(repository: sl()));
+
+  // Address Feature
+  sl.registerLazySingleton<AddressRepository>(
+    () => AddressRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<AddressBloc>(
+    () => AddressBloc(repository: sl()),
+  );
 
   // Request Collection Feature
   sl.registerLazySingleton<RequestCollectionRepository>(

@@ -170,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 14.h),
                       Row(
                         children: [
-                          const Text("Register As"),
+                          Text(context.tr('register_as')),
                           const SizedBox(width: 20),
                           Radio<String>(
                             value: "customer",
@@ -181,7 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               });
                             },
                           ),
-                          const Text("Customer"),
+                          Text(context.tr('customer')),
                           const SizedBox(width: 20),
                           Radio<String>(
                             value: "worker",
@@ -192,7 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               });
                             },
                           ),
-                          const Text("Worker"),
+                          Text(context.tr('worker')),
                         ],
                       ),
                       SizedBox(height: 16.h),
@@ -216,9 +216,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 if (_formKey.currentState!.validate()) {
                                   if (selectedRole.isEmpty) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                         content: Text(
-                                          'Please select a role (Customer or Admin)',
+                                          context.tr('please_select_role'),
                                         ),
                                         backgroundColor: Colors.red,
                                       ),

@@ -1,3 +1,5 @@
+import 'package:cash_for_trash/features/address/data/model/address_model.dart' as address_feature;
+import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
 import 'package:cash_for_trash/features/request_collection/domain/repositories/request_collection_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'request_collection_event.dart';
@@ -19,6 +21,8 @@ class RequestCollectionBloc
     on<PickWasteImageEvent>(_onPickWasteImage);
     on<RemoveWasteImageEvent>(_onRemoveWasteImage);
     on<ChangeLocationEvent>(_onChangeLocation);
+    on<AddAddressToCollectionEvent>(_onAddAddressToCollection);
+    on<UpdateAddressInCollectionEvent>(_onUpdateAddressInCollection);
   }
 
   Future<void> _onGetGarbageTypes(
@@ -150,5 +154,53 @@ class RequestCollectionBloc
         longitude: event.longitude,
       ),
     );
+  }
+
+  AddressItemModel _toAddressItem(
+    address_feature.AddressModel address,
+  ) {
+    return AddressItemModel(
+      addressId: address.addressId,
+      buildingNum: address.buildingNum,
+      floor: address.floor,
+      location: address.location,
+      latitude: address.latitude,
+      longitude: address.longitude,
+      additionalNote: address.additionalNote,
+      userId: address.userId,
+      createdAt: address.createdAt,
+      updatedAt: address.updatedAt,
+    );
+  }
+
+  void _onAddAddressToCollection(
+    AddAddressToCollectionEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) {
+    final newItem = _toAddressItem(event.address);
+    final updated = [newItem, ...state.addresses];
+    emit(state.copyWith(
+      addresses: updated,
+      selectedAddress: newItem,
+    ));
+  }
+
+  void _onUpdateAddressInCollection(
+    UpdateAddressInCollectionEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) {
+    final updatedItem = _toAddressItem(event.address);
+    final updatedList = state.addresses
+        .map((a) => a.addressId == updatedItem.addressId ? updatedItem : a)
+        .toList();
+    final currentSelected = state.selectedAddress;
+    final newSelected =
+        currentSelected?.addressId == updatedItem.addressId
+            ? updatedItem
+            : currentSelected;
+    emit(state.copyWith(
+      addresses: updatedList,
+      selectedAddress: newSelected,
+    ));
   }
 }

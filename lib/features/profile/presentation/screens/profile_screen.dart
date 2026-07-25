@@ -110,6 +110,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 onTap: () {},
                               ),
                               ProfileMenuItem(
+                                title: context.tr('address'),
+                                icon: Icons.map,
+                                onTap: () {
+                                  context.push(AppRoutes.addressesScreen);
+                                },
+                              ),
+                              ProfileMenuItem(
                                 title: context.tr('notifications'),
                                 subtitle: '3 unread',
                                 icon: Icons.notifications_active_rounded,

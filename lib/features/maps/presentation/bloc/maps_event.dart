@@ -8,7 +8,12 @@ abstract class MapsEvent extends Equatable {
 }
 
 class MapsInitializedEvent extends MapsEvent {
-  const MapsInitializedEvent();
+  final LatLng? initialLatLng;
+
+  const MapsInitializedEvent({this.initialLatLng});
+
+  @override
+  List<Object?> get props => [initialLatLng];
 }
 
 class MapsCameraMovedEvent extends MapsEvent {
@@ -22,4 +27,17 @@ class MapsCameraMovedEvent extends MapsEvent {
 
 class MapsConfirmLocationEvent extends MapsEvent {
   const MapsConfirmLocationEvent();
+}
+
+class MapsSaveAddressEvent extends MapsEvent {
+  final CreateAddressRequestModel request;
+  final String? existingAddressId;
+
+  const MapsSaveAddressEvent({
+    required this.request,
+    this.existingAddressId,
+  });
+
+  @override
+  List<Object?> get props => [request, existingAddressId];
 }

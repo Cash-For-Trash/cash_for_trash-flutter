@@ -60,6 +60,28 @@ class MapsLocationConfirmedState extends MapsState {
   List<Object?> get props => [selectedLocation];
 }
 
+class MapsAddressSavingState extends MapsState {
+  const MapsAddressSavingState();
+}
+
+class MapsAddressSavedState extends MapsState {
+  final AddressModel savedAddress;
+
+  const MapsAddressSavedState(this.savedAddress);
+
+  @override
+  List<Object?> get props => [savedAddress];
+}
+
+class MapsAddressSaveErrorState extends MapsState {
+  final String message;
+
+  const MapsAddressSaveErrorState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
 class MapsErrorState extends MapsState {
   final String message;
 

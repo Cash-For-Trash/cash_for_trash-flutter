@@ -1,7 +1,9 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/features/address/data/model/address_model.dart';
 import 'package:cash_for_trash/features/maps/data/model/selected_location_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart' as rc;
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationRequestCollectionSection extends StatelessWidget {
   const LocationRequestCollectionSection({super.key});
@@ -69,8 +72,8 @@ class LocationRequestCollectionSection extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         context.read<RequestCollectionBloc>().add(
-                          const GetAddressesEvent(),
-                        );
+                              const GetAddressesEvent(),
+                            );
                       },
                       child: Text(context.tr('retry')),
                     ),
@@ -79,12 +82,42 @@ class LocationRequestCollectionSection extends StatelessWidget {
               }
 
               final address = state.selectedAddress;
-              final locationTitle = address != null
-                  ? address.location
-                  : context.tr(state.streetKey);
-              final locationSub = address != null
-                  ? '${context.tr('building')} ${address.buildingNum}, ${context.tr('floor')} ${address.floor}${address.additionalNote.isNotEmpty ? ' (${address.additionalNote})' : ''}'
-                  : context.tr(state.cityKey);
+              if (address == null) {
+                return InkWell(
+                  onTap: () => _openAddNewAddressFlow(context, null),
+                  borderRadius: BorderRadius.circular(14.r),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 16.h),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(14.r),
+                      border: Border.all(
+                        color: context.colorScheme.outlineVariant,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add_location_alt_rounded,
+                          color: context.colorScheme.primary,
+                        ),
+                        SizedBox(width: 8.w),
+                        Text(
+                          context.tr('add_new_location'),
+                          style: context.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+
+              final locationTitle = address.location;
+              final locationSub = '${context.tr('building_num')}: ${address.buildingNum}  •  ${context.tr('floor_number')}: ${address.floor}${address.additionalNote.isNotEmpty ? '  •  ${address.additionalNote}' : ''}';
 
               return Container(
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
@@ -168,9 +201,12 @@ class LocationRequestCollectionSection extends StatelessWidget {
     );
   }
 
-  void _openAddressOptions(BuildContext context, RequestCollectionState state) {
+  void _openAddressOptions(
+    BuildContext context,
+    RequestCollectionState state,
+  ) {
     if (state.addresses.isEmpty) {
-      _openLocationPicker(context);
+      _openAddNewAddressFlow(context, null);
       return;
     }
 
@@ -179,6 +215,7 @@ class LocationRequestCollectionSection extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       backgroundColor: context.colorScheme.surfaceContainerLowest,
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
@@ -210,7 +247,7 @@ class LocationRequestCollectionSection extends StatelessWidget {
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: state.addresses.length,
-                    separatorBuilder: (_, _) => const Divider(),
+                    separatorBuilder: (_, _) => const Divider(height: 1),
                     itemBuilder: (context, index) {
                       final item = state.addresses[index];
                       final isSelected =
@@ -232,14 +269,32 @@ class LocationRequestCollectionSection extends StatelessWidget {
                           ),
                         ),
                         subtitle: Text(
-                          '${context.tr('building')} ${item.buildingNum}, ${context.tr('floor')} ${item.floor}${item.additionalNote.isNotEmpty ? ' (${item.additionalNote})' : ''}',
+                          '${context.tr('building_num')}: ${item.buildingNum}  •  ${context.tr('floor_number')}: ${item.floor}',
                         ),
-                        trailing: isSelected
-                            ? Icon(
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (isSelected)
+                              Icon(
                                 Icons.check_circle_rounded,
                                 color: context.colorScheme.primary,
-                              )
-                            : null,
+                                size: 20.sp,
+                              ),
+                            SizedBox(width: 4.w),
+                            IconButton(
+                              onPressed: () {
+                                bottomSheetContext.pop();
+                                _openEditAddressFlow(context, item);
+                              },
+                              icon: Icon(
+                                Icons.edit_rounded,
+                                size: 18.sp,
+                                color: context.colorScheme.primary,
+                              ),
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          ],
+                        ),
                         onTap: () {
                           bloc.add(SelectAddressEvent(item));
                           bottomSheetContext.pop();
@@ -252,10 +307,10 @@ class LocationRequestCollectionSection extends StatelessWidget {
                 OutlinedButton.icon(
                   onPressed: () {
                     bottomSheetContext.pop();
-                    _openLocationPicker(context);
+                    _openAddNewAddressFlow(context, null);
                   },
-                  icon: const Icon(Icons.map_outlined),
-                  label: Text(context.tr('choose_on_map')),
+                  icon: const Icon(Icons.add_location_alt_rounded),
+                  label: Text(context.tr('add_new_location')),
                   style: OutlinedButton.styleFrom(
                     minimumSize: Size(double.infinity, 44.h),
                   ),
@@ -268,20 +323,68 @@ class LocationRequestCollectionSection extends StatelessWidget {
     );
   }
 
-  Future<void> _openLocationPicker(BuildContext context) async {
-    final result = await context.push<SelectedLocationModel>(
+  Future<void> _openAddNewAddressFlow(
+    BuildContext context,
+    rc.AddressItemModel? prefillFrom,
+  ) async {
+    final selectedLocation = await context.push<SelectedLocationModel>(
       AppRoutes.mapsScreen,
     );
+    if (selectedLocation == null || !context.mounted) return;
 
+    final result = await context.push<AddressModel>(
+      AppRoutes.addressFormScreen,
+      extra: {
+        'selectedLocation': selectedLocation,
+        'existingAddress': null,
+      },
+    );
     if (result != null && context.mounted) {
-      context.read<RequestCollectionBloc>().add(
-        ChangeLocationEvent(
-          street: result.displayAddress,
-          city: context.tr('selected_coordinates'),
-          latitude: result.latitude,
-          longitude: result.longitude,
-        ),
-      );
+      context
+          .read<RequestCollectionBloc>()
+          .add(AddAddressToCollectionEvent(result));
+    }
+  }
+
+  Future<void> _openEditAddressFlow(
+    BuildContext context,
+    rc.AddressItemModel item,
+  ) async {
+    final initialLatLng = LatLng(
+      double.tryParse(item.latitude) ?? 0.0,
+      double.tryParse(item.longitude) ?? 0.0,
+    );
+
+    final selectedLocation = await context.push<SelectedLocationModel>(
+      AppRoutes.mapsScreen,
+      extra: {'initialLatLng': initialLatLng},
+    );
+    if (selectedLocation == null || !context.mounted) return;
+
+    final existingForForm = AddressModel(
+      addressId: item.addressId,
+      buildingNum: item.buildingNum,
+      floor: item.floor,
+      location: item.location,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      additionalNote: item.additionalNote,
+      userId: item.userId,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+    );
+
+    final result = await context.push<AddressModel>(
+      AppRoutes.addressFormScreen,
+      extra: {
+        'selectedLocation': selectedLocation,
+        'existingAddress': existingForForm,
+      },
+    );
+    if (result != null && context.mounted) {
+      context
+          .read<RequestCollectionBloc>()
+          .add(UpdateAddressInCollectionEvent(result));
     }
   }
 }

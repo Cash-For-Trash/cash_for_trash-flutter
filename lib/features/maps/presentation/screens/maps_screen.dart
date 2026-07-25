@@ -129,7 +129,11 @@ class _MapsScreenState extends State<MapsScreen> {
       );
     }
 
-    return const SizedBox.shrink();
+    return Center(
+      child: CircularProgressIndicator(
+        color: context.colorScheme.primary,
+      ),
+    );
   }
 
   void _handleStateChanges(BuildContext context, MapsState state) {

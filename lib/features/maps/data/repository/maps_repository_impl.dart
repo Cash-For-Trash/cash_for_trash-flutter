@@ -1,10 +1,20 @@
+import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
+import 'package:cash_for_trash/core/services/remote/endpoints.dart';
+import 'package:cash_for_trash/features/address/data/model/address_model.dart';
+import 'package:cash_for_trash/features/maps/data/model/address_save_response_model.dart';
+import 'package:cash_for_trash/features/maps/data/model/create_address_request_model.dart';
 import 'package:cash_for_trash/features/maps/domain/repository/maps_repository.dart';
+import 'package:dartz/dartz.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapsRepositoryImpl implements MapsRepository {
+  final ApiConsumer apiConsumer;
+
   static const LatLng _qenaEgypt = LatLng(26.155061, 32.716012);
+
+  MapsRepositoryImpl({required this.apiConsumer});
 
   @override
   LatLng getDefaultLocation() => _qenaEgypt;
@@ -55,6 +65,29 @@ class MapsRepositoryImpl implements MapsRepository {
     } catch (_) {
       return _fallbackAddress(latLng);
     }
+  }
+
+  @override
+  Future<Either<String, AddressModel>> createAddress(
+    CreateAddressRequestModel request,
+  ) async {
+    return await apiConsumer.post<AddressModel>(
+      EndPoint.addresses,
+      data: request.toJson(),
+      fromJson: (json) => AddressSaveResponseModel.fromJson(json).data,
+    );
+  }
+
+  @override
+  Future<Either<String, AddressModel>> updateAddress(
+    String addressId,
+    CreateAddressRequestModel request,
+  ) async {
+    return await apiConsumer.put<AddressModel>(
+      '${EndPoint.addresses}/$addressId',
+      data: request.toJson(),
+      fromJson: (json) => AddressSaveResponseModel.fromJson(json).data,
+    );
   }
 
   String _fallbackAddress(LatLng latLng) {

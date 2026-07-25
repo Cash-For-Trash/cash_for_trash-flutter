@@ -1,3 +1,4 @@
+import 'package:cash_for_trash/features/address/data/model/address_model.dart' as address_feature;
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -82,4 +83,22 @@ class ChangeLocationEvent extends RequestCollectionEvent {
 
   @override
   List<Object?> get props => [street, city, latitude, longitude];
+}
+
+class AddAddressToCollectionEvent extends RequestCollectionEvent {
+  final address_feature.AddressModel address;
+
+  const AddAddressToCollectionEvent(this.address);
+
+  @override
+  List<Object?> get props => [address];
+}
+
+class UpdateAddressInCollectionEvent extends RequestCollectionEvent {
+  final address_feature.AddressModel address;
+
+  const UpdateAddressInCollectionEvent(this.address);
+
+  @override
+  List<Object?> get props => [address];
 }
