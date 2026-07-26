@@ -27,4 +27,8 @@ class AppRoutes {
   static const String pdfViewerScreen = '/pdf_viewer_screen';
   static const String myCoursesScreen = '/my_courses_screen';
   static const String profileScreen = '/profile_screen';
+  static const String requestCollectionScreen = '/request_collection_screen';
+  static const String mapsScreen = '/maps_screen';
+  static const String addressesScreen = '/addresses_screen';
+  static const String addressFormScreen = '/address_form_screen';
 }

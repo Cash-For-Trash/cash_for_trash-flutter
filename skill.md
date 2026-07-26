@@ -346,4 +346,11 @@ lib/features/[feature_name]/
    - Use `const` constructors on all stateless/stateful child widgets to minimize rebuild cycles.
    - Use `ListView.builder` for dynamic lists to support lazy child loading.
    - Localize `BlocBuilder` scopes to only the widgets that require state updates.
-   - If there any screen need to be stateless do that.
+   - If any screen/widget can be `StatelessWidget`, prefer stateless over stateful.
+   - **Map & Interactive View Optimization**: Avoid dispatching BLoC state updates on high-frequency gesture callbacks like `onCameraMove` during map dragging. Instead, update local state or use `onCameraIdle` to trigger BLoC state changes only when movement completes, preserving 60/120fps native performance.
+   - **Theme Extensions Usage**: Retrieve styling exclusively using `context.colorScheme` and `context.textTheme` extensions instead of verbose `Theme.of(context)` calls.
+
+4. **No Comments Rule**:
+   - **Never add inline comments, block comments, or doc comments** anywhere in the code (no `//`, `/* */`, or `///`).
+   - Code must be self-documenting through clear naming of classes, methods, variables, and files.
+   - Use descriptive names that express intent without needing explanation.

@@ -1,5 +1,8 @@
 import 'package:cash_for_trash/core/di/service_locator.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/features/address/data/model/address_model.dart';
+import 'package:cash_for_trash/features/address/presentation/bloc/address_bloc.dart' as address;
+import 'package:cash_for_trash/features/address/presentation/screens/address_screen.dart';
 import 'package:cash_for_trash/features/auth/forgot-password/presentation/screens/forgot_password.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/bloc/login_bloc.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/screens/login_screen.dart';
@@ -9,24 +12,26 @@ import 'package:cash_for_trash/features/auth/register/presentation/bloc/register
 import 'package:cash_for_trash/features/auth/register/presentation/screens/register_screen.dart';
 import 'package:cash_for_trash/features/auth/reset_password/presentation/screens/reset_password.dart';
 import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
+import 'package:cash_for_trash/features/maps/data/model/selected_location_model.dart';
+import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
+import 'package:cash_for_trash/features/maps/presentation/screens/address_form_screen.dart';
+import 'package:cash_for_trash/features/maps/presentation/screens/maps_screen.dart';
 import 'package:cash_for_trash/features/onboarding/presentation/screens/onbording_screen.dart';
+import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/screens/request_collection_screen.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:cash_for_trash/features/splash/presentation/screens/splash_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
-import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
-
-// final RouteObserver<ModalRoute<void>> homeRouteObserver =
-//     RouteObserver<ModalRoute<void>>();
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class RouterGenerator {
   static GoRouter goRouter = GoRouter(
     initialLocation: AppRoutes.splashScreen,
-    // observers: [homeRouteObserver],
     routes: [
       GoRoute(
         path: AppRoutes.splashScreen,
@@ -89,6 +94,51 @@ class RouterGenerator {
           create: (context) => sl<ProfileBloc>(),
           child: const ProfileScreen(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.requestCollectionScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => sl<RequestCollectionBloc>()
+            ..add(const GetGarbageTypesEvent())
+            ..add(const GetAddressesEvent()),
+          child: const RequestCollectionScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.mapsScreen,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final initialLatLng = extra?['initialLatLng'] as LatLng?;
+          return BlocProvider(
+            create: (context) => sl<MapsBloc>()
+              ..add(MapsInitializedEvent(initialLatLng: initialLatLng)),
+            child: const MapsScreen(),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.addressesScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              sl<address.AddressBloc>()..add(const address.GetAddressesEvent()),
+          child: const AddressScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.addressFormScreen,
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          final selectedLocation =
+              args['selectedLocation'] as SelectedLocationModel;
+          final existingAddress = args['existingAddress'] as AddressModel?;
+          return BlocProvider(
+            create: (context) => sl<MapsBloc>(),
+            child: AddressFormScreen(
+              selectedLocation: selectedLocation,
+              existingAddress: existingAddress,
+            ),
+          );
+        },
       ),
     ],
   );

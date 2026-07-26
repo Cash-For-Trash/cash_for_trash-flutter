@@ -1,7 +1,7 @@
+import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/widgets/app_exit_pop_scope.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/home_screen.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
-import 'package:cash_for_trash/features/maps/presentation/screens/maps_screen.dart';
 import 'package:cash_for_trash/root/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -15,13 +15,6 @@ class Root extends StatefulWidget {
 class RootState extends State<Root> {
   PageController controller = PageController();
   int currentIndex = 0;
-
-  List<Widget> screens = [
-    const HomeScreen(),
-    const Scaffold(body: Center(child: Text('Explore Screen'))),
-    const MapsScreen(),
-    const ProfileScreen(),
-  ];
 
   void changePage(int index) {
     setState(() {
@@ -37,6 +30,13 @@ class RootState extends State<Root> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> screens = [
+      const HomeScreen(),
+      Scaffold(body: Center(child: Text(context.tr('explore')))),
+      Scaffold(body: Center(child: Text(context.tr('my_learning')))),
+      const ProfileScreen(),
+    ];
+
     return AppExitPopScope(
       child: Scaffold(
         body: PageView(
