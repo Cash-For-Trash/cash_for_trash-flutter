@@ -20,9 +20,13 @@ class EndPoint {
   
   // garbage types
   static String garbageTypes = "/garbage-types";
-  
-  // addresses
   static String addresses = "/addresses";
+  static String userProfile = "/user/profile";
+  static String availabilities = "/availabilities";
+  static String myAvailabilities = "/availabilities/my";
+  static String collectionRequests = "/collection-requests";
+  static String areas = "/areas";
+  static String pricing = "/pricing";
 }
 
 class ApiKey {
@@ -45,4 +49,14 @@ class ApiKey {
   static String newPassword = "new_password";
   static String image = "image";
   static String errors = "errors";
+  static String nationalId = "national_id";
+  static String isApproved = "is_approved";
+  static String areaId = "area_id";
+  static String dayOfWeek = "day_of_week";
+  static String fromTime = "from_time";
+  static String toTime = "to_time";
+  static String status = "status";
+  static String weights = "weights";
+  static String actualWeight = "actual_weight";
+  static String garbageTypeId = "garbage_type_id";
 }

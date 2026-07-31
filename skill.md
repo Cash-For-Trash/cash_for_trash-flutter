@@ -354,3 +354,15 @@ lib/features/[feature_name]/
    - **Never add inline comments, block comments, or doc comments** anywhere in the code (no `//`, `/* */`, or `///`).
    - Code must be self-documenting through clear naming of classes, methods, variables, and files.
    - Use descriptive names that express intent without needing explanation.
+
+5. **Naming Conventions for Files and Classes**:
+   - **Standard Format**: Name any new file or class using the pattern: `<feature_name>_<role>_<type>` (e.g., `onboarding_worker_screen.dart` / `OnboardingWorkerScreen`).
+     - `feature_name`: The name of the feature (e.g., `onboarding_worker`).
+     - `role`: The user role (e.g., `admin`, `worker`).
+     - `type`: The type of component (e.g., `screen`, `widget`, `cubit`, `state`).
+   - **Screen-Specific Widgets**: If a widget is created specifically for a single screen, its name must contain the screen name followed by the specific widget name, section name, or purpose (e.g., `onboarding_worker_screen_header.dart` / `OnboardingWorkerScreenHeader`).
+
+6. **Flutter 3.44.4 Modern & Non-Deprecated Code Standard**:
+   - Always write modern, stable code compliant with Flutter 3.44.4 standards.
+   - Never use deprecated Flutter/Dart methods, properties, or constructors (e.g. use `Color.withValues(alpha: ...)` instead of `withOpacity()`, use `context.colorScheme` & `context.textTheme` extensions, avoid deprecated parameters).
+   - Ensure all written code is clean, warning-free, and adheres strictly to non-deprecated APIs.

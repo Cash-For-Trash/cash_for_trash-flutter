@@ -1,3 +1,4 @@
+import 'package:cash_for_trash/core/constants/user_role.dart';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
@@ -39,7 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   backgroundColor: Colors.green,
                 ),
               );
-              context.go(AppRoutes.homeScreen);
+              final String userRole = state.loginModel.data.user.role;
+              if (userRole == UserRole.customer.value) {
+                context.go(AppRoutes.homeScreen);
+              } else if (userRole == UserRole.worker.value) {
+                context.go(AppRoutes.workerHomeScreen);
+              } else if (userRole == UserRole.admin.value) {
+                // TODO: Add admin home screen
+                // context.go(AppRoutes.adminHomeScreen);
+              }
             } else if (state is LoginFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

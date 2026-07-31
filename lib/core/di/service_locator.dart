@@ -30,6 +30,18 @@ import 'package:cash_for_trash/features/request_collection/presentation/bloc/req
 import 'package:cash_for_trash/features/maps/data/repository/maps_repository_impl.dart';
 import 'package:cash_for_trash/features/maps/domain/repository/maps_repository.dart';
 import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
+import 'package:cash_for_trash/features/worker/home_worker/data/repository/home_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/home_worker/domain/repository/home_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/data/repository/collection_requests_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/domain/repository/collection_requests_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/bloc/collection_requests_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/data/repository/availability_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/domain/repository/availability_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/presentation/bloc/availability_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/data/repository/earnings_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/domain/repository/earnings_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/presentation/bloc/earnings_worker_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -101,5 +113,33 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerFactory<RequestCollectionBloc>(
     () => RequestCollectionBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<HomeWorkerRepository>(
+    () => HomeWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<HomeWorkerBloc>(
+    () => HomeWorkerBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<CollectionRequestsWorkerRepository>(
+    () => CollectionRequestsWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<CollectionRequestsWorkerBloc>(
+    () => CollectionRequestsWorkerBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<AvailabilityWorkerRepository>(
+    () => AvailabilityWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<AvailabilityWorkerBloc>(
+    () => AvailabilityWorkerBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<EarningsWorkerRepository>(
+    () => EarningsWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<EarningsWorkerBloc>(
+    () => EarningsWorkerBloc(repository: sl()),
   );
 }

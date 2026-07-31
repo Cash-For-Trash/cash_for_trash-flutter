@@ -24,6 +24,12 @@ import 'package:cash_for_trash/features/request_collection/presentation/bloc/req
 import 'package:cash_for_trash/features/request_collection/presentation/screens/request_collection_screen.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:cash_for_trash/features/splash/presentation/screens/splash_screen.dart';
+import 'package:cash_for_trash/features/worker/root_worker.dart';
+import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_event.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/bloc/collection_requests_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/presentation/bloc/availability_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/presentation/bloc/earnings_worker_bloc.dart';
 import 'package:cash_for_trash/root/root.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -86,6 +92,21 @@ class RouterGenerator {
             BlocProvider(create: (context) => sl<ProfileBloc>()),
           ],
           child: const Root(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.workerHomeScreen,
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<HomeWorkerBloc>()..add(const GetHomeWorkerDataEvent()),
+            ),
+            BlocProvider(create: (context) => sl<CollectionRequestsWorkerBloc>()),
+            BlocProvider(create: (context) => sl<AvailabilityWorkerBloc>()),
+            BlocProvider(create: (context) => sl<EarningsWorkerBloc>()),
+            BlocProvider(create: (context) => sl<ProfileBloc>()),
+          ],
+          child: const RootWorker(),
         ),
       ),
       GoRoute(
