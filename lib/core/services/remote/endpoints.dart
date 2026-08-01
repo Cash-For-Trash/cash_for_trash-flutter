@@ -23,6 +23,10 @@ class EndPoint {
   
   // addresses
   static String addresses = "/addresses";
+
+  // collection requests
+  static String collectionAvailabilities(String addressId) =>
+      "/collection-requests/addresses/$addressId/availabilities";
 }
 
 class ApiKey {

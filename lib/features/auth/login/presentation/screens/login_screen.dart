@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Icons.lock_outline_rounded,
                           size: context.isDesktop ? 22 : 22.w,
                         ),
-                        validator: (value) => validatePassword(value),
+                        // validator: (value) => validatePassword(value),
                       ),
                       SizedBox(height: 32.h),
                       CustomPrimaryButton(

@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/features/address/data/model/address_model.dart' as address_feature;
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/availability_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class RequestCollectionEvent extends Equatable {
@@ -49,12 +50,28 @@ class SetExactWeightEvent extends RequestCollectionEvent {
   List<Object?> get props => [exactWeight];
 }
 
+class GetAvailabilitiesEvent extends RequestCollectionEvent {
+  final String addressId;
+  const GetAvailabilitiesEvent(this.addressId);
+
+  @override
+  List<Object?> get props => [addressId];
+}
+
 class SelectTimeSlotEvent extends RequestCollectionEvent {
   final String timeSlotKey;
   const SelectTimeSlotEvent(this.timeSlotKey);
 
   @override
   List<Object?> get props => [timeSlotKey];
+}
+
+class SelectAvailabilityEvent extends RequestCollectionEvent {
+  final AvailabilityItemModel availability;
+  const SelectAvailabilityEvent(this.availability);
+
+  @override
+  List<Object?> get props => [availability];
 }
 
 class PickWasteImageEvent extends RequestCollectionEvent {

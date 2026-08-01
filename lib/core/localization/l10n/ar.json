@@ -167,5 +167,9 @@
     "field_required": "هذا الحقل مطلوب",
     "invalid_number": "يرجى إدخال رقم صحيح",
     "cancel": "إلغاء",
-    "delete": "حذف"
+    "delete": "حذف",
+    "no_waste_types_available": "لا تتوفر أنواع مخلفات حالياً",
+    "failed_to_load_waste_types": "تعذر تحميل أنواع المخلفات",
+    "no_availabilities": "لا توجد مواعيد متاحة لهذا العنوان",
+    "availabilities_error": "تعذّر تحميل المواعيد المتاحة"
 }
