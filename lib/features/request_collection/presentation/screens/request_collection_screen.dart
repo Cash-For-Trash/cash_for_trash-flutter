@@ -18,7 +18,6 @@ class RequestCollectionScreen extends StatelessWidget {
   const RequestCollectionScreen({super.key});
 
   String _resolveError(BuildContext context, String key) {
-    // If the key maps to a known translation, use it; otherwise show as-is.
     final known = {
       'waste_type_required',
       'address_required',
@@ -59,8 +58,7 @@ class RequestCollectionScreen extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding:
-                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 child: Column(
                   children: [
                     const WasteTypeSelectionRequestCollectionSection(),

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:cash_for_trash/core/services/cloudinary_service.dart';
 import 'package:cash_for_trash/features/address/data/model/address_model.dart'
     as address_feature;
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
@@ -280,6 +283,17 @@ class RequestCollectionBloc
       return;
     }
 
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    String? uploadedImageUrl;
+    if (state.imagePath != null && state.imagePath!.isNotEmpty) {
+      final cloudinaryService = CloudinaryService();
+      uploadedImageUrl = await cloudinaryService.uploadImage(
+        File(state.imagePath!),
+        folderName: 'requests',
+      );
+    }
+
     final double quantityValue;
     switch (state.selectedQuantity) {
       case 'small_qty':
@@ -307,10 +321,9 @@ class RequestCollectionBloc
       addressId: state.selectedAddress!.addressId,
       availabilityId: state.selectedAvailability!.availabilityId,
       quantity: effectiveQuantity,
+      collectionImg: uploadedImageUrl,
       garbageTypes: garbageTypes,
     );
-
-    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
 
     final result = await repository.createCollectionRequest(request);
 

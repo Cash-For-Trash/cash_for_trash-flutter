@@ -19,16 +19,13 @@ class SuccessCollectionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24.r),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.r)),
       backgroundColor: context.colorScheme.surfaceContainerLowest,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Checkmark icon
             Container(
               width: 80.r,
               height: 80.r,
@@ -44,7 +41,6 @@ class SuccessCollectionDialog extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
 
-            // Title
             Text(
               context.tr('order_confirmed'),
               style: context.textTheme.titleLarge?.copyWith(
@@ -56,7 +52,6 @@ class SuccessCollectionDialog extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
 
-            // Subtitle
             Text(
               context.tr('order_processing'),
               style: context.textTheme.bodyMedium?.copyWith(
@@ -68,13 +63,12 @@ class SuccessCollectionDialog extends StatelessWidget {
             ),
             SizedBox(height: 28.h),
 
-            // Track order button
             SizedBox(
               width: double.infinity,
               height: 50.h,
               child: ElevatedButton(
                 onPressed: () {
-                  context.pop(); // close dialog
+                  context.pop();
                   context.go(AppRoutes.homeScreen);
                 },
                 style: ElevatedButton.styleFrom(
@@ -97,10 +91,9 @@ class SuccessCollectionDialog extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
 
-            // Return home link
             GestureDetector(
               onTap: () {
-                context.pop(); // close dialog
+                context.pop();
                 context.go(AppRoutes.homeScreen);
               },
               child: Text(
