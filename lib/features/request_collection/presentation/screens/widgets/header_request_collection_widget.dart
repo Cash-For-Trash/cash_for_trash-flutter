@@ -2,6 +2,7 @@ import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class HeaderRequestCollectionWidget extends StatelessWidget {
   const HeaderRequestCollectionWidget({super.key});
@@ -31,7 +32,36 @@ class HeaderRequestCollectionWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 32.h),
+          Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(12.r),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: () => context.pop(),
+              child: Container(
+                width: 40.w,
+                height: 40.h,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.onPrimary.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: context.colorScheme.onPrimary.withValues(
+                      alpha: 0.25,
+                    ),
+                    width: 1,
+                  ),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    color: context.colorScheme.onPrimary,
+                    size: 18.sp,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.h),
           Text(
             context.tr('request_collection_screen_title'),
             style: context.textTheme.headlineSmall?.copyWith(

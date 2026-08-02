@@ -34,6 +34,10 @@ class EndPoint {
   static String workerApprove = "/workers";
   static String rewards = "/rewards";
   static String rewardRedeems = "/reward-redeems";
+
+  // collection requests
+  static String collectionAvailabilities(String addressId) =>
+      "/collection-requests/addresses/$addressId/availabilities";
 }
 
 class ApiKey {

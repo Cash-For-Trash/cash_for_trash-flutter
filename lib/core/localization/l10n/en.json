@@ -237,5 +237,9 @@
     "admin_catalogue": "Catalogue",
     "admin_verified": "Email Verified",
     "admin_not_verified": "Not Verified",
-    "view_details": "View Details"
+    "view_details": "View Details",
+    "no_waste_types_available": "No waste types available",
+    "failed_to_load_waste_types": "Failed to load waste types",
+    "no_availabilities": "No available time slots for this address",
+    "availabilities_error": "Could not load available slots"
 }

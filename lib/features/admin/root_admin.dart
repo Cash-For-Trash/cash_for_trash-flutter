@@ -1,4 +1,5 @@
 import 'package:cash_for_trash/core/widgets/app_exit_pop_scope.dart';
+import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'custom_admin_nav_bar.dart';
 import 'catalogue_admin/catalogue_admin_screen.dart';
@@ -37,6 +38,7 @@ class RootAdminState extends State<RootAdmin> {
       const CustomersAdminScreen(),
       const CatalogueAdminScreen(),
       const PricingAdminScreen(),
+      const ProfileScreen(),
     ];
 
     return AppExitPopScope(

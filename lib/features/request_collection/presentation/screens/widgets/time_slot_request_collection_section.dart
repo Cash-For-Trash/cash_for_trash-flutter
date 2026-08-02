@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/availability_model.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
@@ -9,25 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TimeSlotRequestCollectionSection extends StatelessWidget {
   const TimeSlotRequestCollectionSection({super.key});
-
-  static const List<Map<String, String>> _timeSlots = [
-    {
-      'id': 'today_4pm',
-      'labelKey': 'today_4pm',
-    },
-    {
-      'id': 'today_6pm',
-      'labelKey': 'today_6pm',
-    },
-    {
-      'id': 'tomorrow_9am',
-      'labelKey': 'tomorrow_9am',
-    },
-    {
-      'id': 'tomorrow_11am',
-      'labelKey': 'tomorrow_11am',
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,29 +40,79 @@ class TimeSlotRequestCollectionSection extends StatelessWidget {
           SizedBox(height: 16.h),
           BlocBuilder<RequestCollectionBloc, RequestCollectionState>(
             builder: (context, state) {
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _timeSlots.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10.w,
-                  mainAxisSpacing: 10.h,
-                  childAspectRatio: 2.5,
-                ),
-                itemBuilder: (context, index) {
-                  final item = _timeSlots[index];
-                  final id = item['id']!;
-                  final labelKey = item['labelKey']!;
-                  final isSelected = state.selectedTimeSlot == id;
+              if (state.isAvailabilitiesLoading) {
+                return SizedBox(
+                  height: 60.h,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: context.colorScheme.primary,
+                    ),
+                  ),
+                );
+              }
 
-                  return _buildTimeSlotCard(
-                    context,
-                    id: id,
-                    labelKey: labelKey,
-                    isSelected: isSelected,
+              if (state.availabilitiesErrorMessage != null &&
+                  state.availabilities.isEmpty) {
+                final addressId = state.selectedAddress?.addressId;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        state.availabilitiesErrorMessage!,
+                        style: TextStyle(
+                          color: context.colorScheme.error,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    ),
+                    if (addressId != null)
+                      TextButton(
+                        onPressed: () {
+                          context.read<RequestCollectionBloc>().add(
+                            GetAvailabilitiesEvent(addressId),
+                          );
+                        },
+                        child: Text(context.tr('retry')),
+                      ),
+                  ],
+                );
+              }
+
+              final items = state.availabilities;
+              if (items.isEmpty) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  child: Text(
+                    context.tr('no_availabilities'),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                      fontSize: 13.sp,
+                    ),
+                  ),
+                );
+              }
+
+              return Wrap(
+                spacing: 10.w,
+                runSpacing: 10.h,
+                children: items.map((availability) {
+                  final isSelected =
+                      state.selectedAvailability?.id == availability.id ||
+                      state.selectedTimeSlot == availability.id;
+                  return SizedBox(
+                    width:
+                        (MediaQuery.sizeOf(context).width -
+                            32.w -
+                            32.w -
+                            10.w) /
+                        2,
+                    child: _buildTimeSlotCard(
+                      context,
+                      availability: availability,
+                      isSelected: isSelected,
+                    ),
                   );
-                },
+                }).toList(),
               );
             },
           ),
@@ -91,17 +123,23 @@ class TimeSlotRequestCollectionSection extends StatelessWidget {
 
   Widget _buildTimeSlotCard(
     BuildContext context, {
-    required String id,
-    required String labelKey,
+    required AvailabilityItemModel availability,
     required bool isSelected,
   }) {
     final activeColor = context.colorScheme.primary;
     final inactiveBg = context.colorScheme.surfaceContainerLow;
-    final activeBg = context.colorScheme.primaryContainer.withValues(alpha: 0.3);
+    final activeBg = context.colorScheme.primaryContainer.withValues(
+      alpha: 0.3,
+    );
+
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final String displayText = availability.getDisplayLabel(isArabic);
 
     return InkWell(
       onTap: () {
-        context.read<RequestCollectionBloc>().add(SelectTimeSlotEvent(id));
+        context.read<RequestCollectionBloc>().add(
+          SelectAvailabilityEvent(availability),
+        );
       },
       borderRadius: BorderRadius.circular(12.r),
       child: AnimatedContainer(
@@ -128,15 +166,16 @@ class TimeSlotRequestCollectionSection extends StatelessWidget {
             SizedBox(width: 6.w),
             Flexible(
               child: Text(
-                context.tr(labelKey),
+                displayText,
                 style: context.textTheme.bodySmall?.copyWith(
                   fontSize: 11.5.sp,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                  color:
-                      isSelected ? activeColor : context.colorScheme.onSurface,
+                  color: isSelected
+                      ? activeColor
+                      : context.colorScheme.onSurface,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                overflow: TextOverflow.visible,
               ),
             ),
           ],

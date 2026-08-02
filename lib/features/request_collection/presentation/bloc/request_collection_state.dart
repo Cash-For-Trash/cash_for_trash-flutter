@@ -1,4 +1,5 @@
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/availability_model.dart';
 import 'package:cash_for_trash/features/request_collection/data/model/garbage_type_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,6 +12,11 @@ class RequestCollectionState extends Equatable {
   final List<AddressItemModel> addresses;
   final String? addressesErrorMessage;
   final AddressItemModel? selectedAddress;
+
+  final bool isAvailabilitiesLoading;
+  final List<AvailabilityItemModel> availabilities;
+  final String? availabilitiesErrorMessage;
+  final AvailabilityItemModel? selectedAvailability;
 
   final List<String> selectedWasteTypes;
   final String selectedQuantity;
@@ -31,10 +37,14 @@ class RequestCollectionState extends Equatable {
     this.addresses = const [],
     this.addressesErrorMessage,
     this.selectedAddress,
+    this.isAvailabilitiesLoading = false,
+    this.availabilities = const [],
+    this.availabilitiesErrorMessage,
+    this.selectedAvailability,
     this.selectedWasteTypes = const [],
     this.selectedQuantity = 'medium_qty',
     this.exactWeight,
-    this.selectedTimeSlot = 'today_4pm',
+    this.selectedTimeSlot = '',
     this.imagePath,
     this.streetKey = '',
     this.cityKey = '',
@@ -53,6 +63,11 @@ class RequestCollectionState extends Equatable {
     String? addressesErrorMessage,
     bool clearAddressesError = false,
     AddressItemModel? selectedAddress,
+    bool? isAvailabilitiesLoading,
+    List<AvailabilityItemModel>? availabilities,
+    String? availabilitiesErrorMessage,
+    bool clearAvailabilitiesError = false,
+    AvailabilityItemModel? selectedAvailability,
     List<String>? selectedWasteTypes,
     String? selectedQuantity,
     double? exactWeight,
@@ -79,6 +94,13 @@ class RequestCollectionState extends Equatable {
           ? null
           : (addressesErrorMessage ?? this.addressesErrorMessage),
       selectedAddress: selectedAddress ?? this.selectedAddress,
+      isAvailabilitiesLoading:
+          isAvailabilitiesLoading ?? this.isAvailabilitiesLoading,
+      availabilities: availabilities ?? this.availabilities,
+      availabilitiesErrorMessage: clearAvailabilitiesError
+          ? null
+          : (availabilitiesErrorMessage ?? this.availabilitiesErrorMessage),
+      selectedAvailability: selectedAvailability ?? this.selectedAvailability,
       selectedWasteTypes: selectedWasteTypes ?? this.selectedWasteTypes,
       selectedQuantity: selectedQuantity ?? this.selectedQuantity,
       exactWeight: clearExactWeight ? null : (exactWeight ?? this.exactWeight),
@@ -94,22 +116,26 @@ class RequestCollectionState extends Equatable {
 
   @override
   List<Object?> get props => [
-    isGarbageTypesLoading,
-    garbageTypes,
-    garbageTypesErrorMessage,
-    isAddressesLoading,
-    addresses,
-    addressesErrorMessage,
-    selectedAddress,
-    selectedWasteTypes,
-    selectedQuantity,
-    exactWeight,
-    selectedTimeSlot,
-    imagePath,
-    streetKey,
-    cityKey,
-    latitude,
-    longitude,
-    cost,
-  ];
+        isGarbageTypesLoading,
+        garbageTypes,
+        garbageTypesErrorMessage,
+        isAddressesLoading,
+        addresses,
+        addressesErrorMessage,
+        selectedAddress,
+        isAvailabilitiesLoading,
+        availabilities,
+        availabilitiesErrorMessage,
+        selectedAvailability,
+        selectedWasteTypes,
+        selectedQuantity,
+        exactWeight,
+        selectedTimeSlot,
+        imagePath,
+        streetKey,
+        cityKey,
+        latitude,
+        longitude,
+        cost,
+      ];
 }

@@ -192,6 +192,7 @@ class RouterGenerator {
             BlocProvider(create: (_) => sl<RewardsAdminBloc>()),
             BlocProvider(create: (_) => sl<RedemptionsAdminBloc>()),
             BlocProvider(create: (_) => sl<PricingAdminBloc>()),
+            BlocProvider(create: (_) => sl<ProfileBloc>()),
           ],
           child: const RootAdmin(),
         ),

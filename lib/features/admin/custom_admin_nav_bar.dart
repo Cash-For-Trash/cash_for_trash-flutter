@@ -33,8 +33,8 @@ class CustomAdminNavBar extends StatelessWidget {
         backgroundColor: context.colorScheme.surface,
         selectedItemColor: context.colorScheme.primary,
         unselectedItemColor: context.colorScheme.onSurfaceVariant,
-        selectedFontSize: 12.sp,
-        unselectedFontSize: 11.sp,
+        selectedFontSize: 11.sp,
+        unselectedFontSize: 10.sp,
         elevation: 0,
         items: [
           BottomNavigationBarItem(
@@ -61,6 +61,11 @@ class CustomAdminNavBar extends StatelessWidget {
             icon: const Icon(Icons.tune_outlined),
             activeIcon: const Icon(Icons.tune_rounded),
             label: context.tr('admin_pricing'),
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.person_outline_rounded),
+            activeIcon: const Icon(Icons.person_rounded),
+            label: context.tr('profile'),
           ),
         ],
       ),

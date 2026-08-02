@@ -13,11 +13,13 @@ class RequestCollectionBloc
       : super(const RequestCollectionState()) {
     on<GetGarbageTypesEvent>(_onGetGarbageTypes);
     on<GetAddressesEvent>(_onGetAddresses);
+    on<GetAvailabilitiesEvent>(_onGetAvailabilities);
     on<SelectAddressEvent>(_onSelectAddress);
     on<ToggleWasteTypeEvent>(_onToggleWasteType);
     on<SelectQuantityEvent>(_onSelectQuantity);
     on<SetExactWeightEvent>(_onSetExactWeight);
     on<SelectTimeSlotEvent>(_onSelectTimeSlot);
+    on<SelectAvailabilityEvent>(_onSelectAvailability);
     on<PickWasteImageEvent>(_onPickWasteImage);
     on<RemoveWasteImageEvent>(_onRemoveWasteImage);
     on<ChangeLocationEvent>(_onChangeLocation);
@@ -65,12 +67,44 @@ class RequestCollectionBloc
         addressesErrorMessage: error,
       )),
       (response) {
-        final firstAddress =
-            response.data.isNotEmpty ? response.data.first : null;
+        final selected = state.selectedAddress ??
+            (response.data.isNotEmpty ? response.data.first : null);
         emit(state.copyWith(
           isAddressesLoading: false,
           addresses: response.data,
-          selectedAddress: state.selectedAddress ?? firstAddress,
+          selectedAddress: selected,
+        ));
+        if (selected != null) {
+          add(GetAvailabilitiesEvent(selected.addressId));
+        }
+      },
+    );
+  }
+
+  Future<void> _onGetAvailabilities(
+    GetAvailabilitiesEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) async {
+    emit(state.copyWith(
+      isAvailabilitiesLoading: true,
+      clearAvailabilitiesError: true,
+    ));
+
+    final result = await repository.getAvailabilities(event.addressId);
+
+    result.fold(
+      (error) => emit(state.copyWith(
+        isAvailabilitiesLoading: false,
+        availabilitiesErrorMessage: error,
+      )),
+      (response) {
+        final firstAvailability =
+            response.data.isNotEmpty ? response.data.first : null;
+        emit(state.copyWith(
+          isAvailabilitiesLoading: false,
+          availabilities: response.data,
+          selectedAvailability: firstAvailability,
+          selectedTimeSlot: firstAvailability?.id ?? '',
         ));
       },
     );
@@ -81,6 +115,7 @@ class RequestCollectionBloc
     Emitter<RequestCollectionState> emit,
   ) {
     emit(state.copyWith(selectedAddress: event.address));
+    add(GetAvailabilitiesEvent(event.address.addressId));
   }
 
   void _onToggleWasteType(
@@ -126,6 +161,16 @@ class RequestCollectionBloc
     Emitter<RequestCollectionState> emit,
   ) {
     emit(state.copyWith(selectedTimeSlot: event.timeSlotKey));
+  }
+
+  void _onSelectAvailability(
+    SelectAvailabilityEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) {
+    emit(state.copyWith(
+      selectedAvailability: event.availability,
+      selectedTimeSlot: event.availability.id,
+    ));
   }
 
   void _onPickWasteImage(
@@ -183,6 +228,7 @@ class RequestCollectionBloc
       addresses: updated,
       selectedAddress: newItem,
     ));
+    add(GetAvailabilitiesEvent(newItem.addressId));
   }
 
   void _onUpdateAddressInCollection(
@@ -202,5 +248,8 @@ class RequestCollectionBloc
       addresses: updatedList,
       selectedAddress: newSelected,
     ));
+    if (newSelected != null) {
+      add(GetAvailabilitiesEvent(newSelected.addressId));
+    }
   }
 }
