@@ -39,8 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
       } else if (userRole == UserRole.worker) {
         context.go(AppRoutes.workerHomeScreen);
       } else if (userRole == UserRole.admin) {
-        // TODO: Add admin home screen
-        // context.go(AppRoutes.adminHomeScreen);
+        context.go(AppRoutes.adminHomeScreen);
       } else {
         context.go(AppRoutes.loginScreen);
       }

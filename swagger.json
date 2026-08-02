@@ -1,1 +1,2590 @@
-{"openapi":"3.0.0","info":{"title":"Cash For Trash API","version":"1.0.0","description":"API Documentation for Cash For Trash Backend"},"servers":[{"url":"http://localhost:3000"}],"tags":[{"name":"Authentication","description":"Authentication APIs"}],"components":{"securitySchemes":{"bearerAuth":{"type":"http","scheme":"bearer","bearerFormat":"JWT"}},"schemas":{"RegisterRequest":{"type":"object","required":["first_name","last_name","email","password","confirm_password","role"],"properties":{"first_name":{"type":"string","example":"Rana"},"last_name":{"type":"string","example":"Ahmed"},"email":{"type":"string","example":"rana@test.com"},"password":{"type":"string","example":"Rana1234"},"confirm_password":{"type":"string","example":"Rana1234"},"mobile":{"type":"string","example":"01012345678"},"role":{"type":"string","enum":["customer","worker"],"example":"customer"}}},"VerifyOTPRequest":{"type":"object","required":["email","otp"],"properties":{"email":{"type":"string","example":"rana@test.com"},"otp":{"type":"string","example":"123456"}}},"ResendOTPRequest":{"type":"object","required":["email"],"properties":{"email":{"type":"string","example":"rana@test.com"}}},"LoginRequest":{"type":"object","required":["email","password"],"properties":{"email":{"type":"string","example":"rana@test.com"},"password":{"type":"string","example":"Rana1234"}}},"ForgotPasswordRequest":{"type":"object","required":["email"],"properties":{"email":{"type":"string","example":"rana@test.com"}}},"VerifyResetPasswordOTPRequest":{"type":"object","required":["email","otp"],"properties":{"email":{"type":"string","example":"rana@test.com"},"otp":{"type":"string","example":"123456"}}},"ResetPasswordRequest":{"type":"object","required":["email","otp","new_password","confirm_password"],"properties":{"email":{"type":"string","example":"rana@test.com"},"otp":{"type":"string","example":"123456"},"new_password":{"type":"string","example":"Rana1234"},"confirm_password":{"type":"string","example":"Rana1234"}}},"User":{"type":"object","properties":{"user_id":{"type":"string","example":"cmrabc123"},"first_name":{"type":"string","example":"Rana"},"last_name":{"type":"string","example":"Ahmed"},"email":{"type":"string","example":"rana@test.com"},"role":{"type":"string","example":"customer"},"is_verified":{"type":"boolean","example":true}}},"UserProfile":{"type":"object","properties":{"user_id":{"type":"string","example":"cmf4k9m5n0000abc123xyz"},"first_name":{"type":"string","example":"Omnia"},"last_name":{"type":"string","example":"Abdelnasser"},"email":{"type":"string","example":"omnia@gmail.com"},"telephone":{"type":"string","example":"01012345678"},"image":{"type":"string","example":"https://example.com/profile.jpg"},"role":{"type":"string","enum":["customer","worker","admin"],"example":"customer"},"points":{"type":"number","example":250},"is_verified":{"type":"boolean","example":true},"created_at":{"type":"string","format":"date-time","example":"2026-07-11T10:30:00Z"},"updated_at":{"type":"string","format":"date-time","example":"2026-07-11T11:15:00Z"}}},"UserUpdateRequest":{"type":"object","properties":{"first_name":{"type":"string","example":"Omnia"},"last_name":{"type":"string","example":"Abdelnasser"},"mobile":{"type":"string","example":"01012345678"},"image":{"type":"string","example":"https://example.com/profile.jpg"}}},"ChangePasswordRequest":{"type":"object","required":["oldPassword","newPassword","confirmPassword"],"properties":{"oldPassword":{"type":"string","example":"OldPassword123"},"newPassword":{"type":"string","example":"NewPassword123"},"confirmPassword":{"type":"string","example":"NewPassword123"}}},"CreateAreaRequest":{"type":"object","required":["name","north_lat","south_lat","east_lng","west_lng"],"properties":{"name":{"type":"string","example":"Qena Downtown"},"north_lat":{"type":"number","example":26.1745},"south_lat":{"type":"number","example":26.16},"east_lng":{"type":"number","example":32.735},"west_lng":{"type":"number","example":32.71},"service_price":{"type":"number","example":35}}},"UpdateAreaRequest":{"type":"object","properties":{"name":{"type":"string","example":"Qena Downtown"},"north_lat":{"type":"number","example":26.1745},"south_lat":{"type":"number","example":26.16},"east_lng":{"type":"number","example":32.735},"west_lng":{"type":"number","example":32.71},"service_price":{"type":"number","example":35}}},"Area":{"type":"object","properties":{"area_id":{"type":"string","example":"cmrzs04x10000v13sajjz3v2j"},"name":{"type":"string","example":"Qena Downtown"},"north_lat":{"type":"number","example":26.1745},"south_lat":{"type":"number","example":26.16},"east_lng":{"type":"number","example":32.735},"west_lng":{"type":"number","example":32.71},"service_price":{"type":"number","example":35},"is_active":{"type":"boolean","example":true},"created_at":{"type":"string","format":"date-time"},"updated_at":{"type":"string","format":"date-time"}}},"AreaSuccessResponse":{"allOf":[{"$ref":"#/components/schemas/SuccessResponse"},{"type":"object","properties":{"data":{"$ref":"#/components/schemas/Area"}}}]},"AreaListResponse":{"allOf":[{"$ref":"#/components/schemas/SuccessResponse"},{"type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/Area"}}}}]},"SuccessResponse":{"type":"object","properties":{"success":{"type":"boolean","example":true},"statusCode":{"type":"integer","example":200},"message":{"type":"string","example":"Operation completed successfully."},"data":{"nullable":true,"example":null}}},"ErrorResponse":{"type":"object","properties":{"success":{"type":"boolean","example":false},"statusCode":{"type":"integer","example":400},"message":{"type":"string","example":"Validation failed"},"errors":{"nullable":true,"example":[{"path":"email","msg":"Invalid email."}]}}}}},"paths":{"/api/workers/{id}/approve":{"patch":{"summary":"Approve Worker","tags":["Admin"],"security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Worker approved successfully."},"404":{"description":"Worker not found."},"409":{"description":"Worker already approved."}}}},"/api/user/profile":{"get":{"tags":["User"],"summary":"Get user profile","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"User profile retrieved successfully.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserProfile"}}}},"401":{"description":"Unauthorized."},"404":{"description":"User not found."}}},"put":{"tags":["User"],"summary":"Update user profile","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserUpdateRequest"}}}},"responses":{"200":{"description":"User profile updated successfully.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SuccessResponse"}}}},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"404":{"description":"User not found."}}},"delete":{"tags":["User"],"summary":"Delete user profile","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"User profile deleted successfully."},"401":{"description":"Unauthorized."},"404":{"description":"User not found."}}}},"/api/user/change-password":{"put":{"tags":["User"],"summary":"Change user password","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ChangePasswordRequest"}}}},"responses":{"200":{"description":"Password changed successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"404":{"description":"User not found."}}}},"/api/rewards":{"get":{"tags":["Rewards"],"summary":"Get all rewards","responses":{"200":{"description":"Rewards fetched successfully."},"404":{"description":"No rewards found."}}},"post":{"tags":["Rewards"],"summary":"Create a new reward","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"type":"object","required":["name","required_points"],"properties":{"name":{"type":"string","example":"Gift Card"},"required_points":{"type":"number","example":100},"image":{"type":"string","format":"binary"}}}}}},"responses":{"201":{"description":"Reward created successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."}}}},"/api/rewards/{id}":{"put":{"tags":["Rewards"],"summary":"Update reward","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"type":"object","properties":{"name":{"type":"string","example":"Gift Card"},"required_points":{"type":"number","example":100},"image":{"type":"string","format":"binary"}}}}}},"responses":{"200":{"description":"Reward updated successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"404":{"description":"Reward not found."}}},"delete":{"tags":["Rewards"],"summary":"Delete reward","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Reward deleted successfully."},"401":{"description":"Unauthorized."},"404":{"description":"Reward not found."}}}},"/api/reward-redeems":{"post":{"tags":["Reward Redeems"],"summary":"Make a reward redeem request","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["reward_id"],"properties":{"reward_id":{"type":"string","example":"cmcy2fxf0001abc123xyz"}}}}}},"responses":{"201":{"description":"Reward redeem request created successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."}}},"get":{"tags":["Reward Redeems"],"summary":"Get all reward redeem requests","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"Reward redeem requests fetched successfully."},"401":{"description":"Unauthorized."}}}},"/api/reward-redeems/my_redemptions":{"get":{"tags":["Reward Redeems"],"summary":"Get all my reward redeem requests","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"Reward redeem requests fetched successfully."},"401":{"description":"Unauthorized."}}}},"/api/reward-redeems/approve/{redemption_id}":{"put":{"tags":["Reward Redeems"],"summary":"Approve a reward redeem request","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"redemption_id","schema":{"type":"string"},"required":true,"description":"Redemption ID"}],"responses":{"200":{"description":"Reward redeem request approved successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."}}}},"/api/reward-redeems/reject/{redemption_id}":{"put":{"tags":["Reward Redeems"],"summary":"Reject a reward redeem request","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"redemption_id","schema":{"type":"string"},"required":true,"description":"Redemption ID"}],"responses":{"200":{"description":"Reward redeem request rejected successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."}}}},"/api/pricing":{"get":{"tags":["Admin"],"summary":"Get pricing settings","description":"Retrieve the current worker percentage and monthly subscription price.","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"Pricing settings retrieved successfully."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."}}},"patch":{"tags":["Admin"],"summary":"Update pricing settings","description":"Update worker percentage and monthly subscription price. Admin only.","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"worker_percentage":{"type":"number","example":70},"monthly_subscription_price":{"type":"number","example":120}}}}}},"responses":{"200":{"description":"Pricing settings updated successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."}}}},"/api/garbage-types":{"get":{"tags":["Garbage Types"],"summary":"Get all garbage types","responses":{"200":{"description":"Garbage types retrieved successfully."},"404":{"description":"No garbage types found."}}},"post":{"tags":["Garbage Types"],"summary":"Create a new garbage type","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"type":"object","required":["garbage_type_name","price_per_kg"],"properties":{"garbage_type_name":{"type":"string","example":"Plastic"},"price_per_kg":{"type":"number","example":10},"image":{"type":"string","format":"binary"}}}}}},"responses":{"201":{"description":"Garbage type created successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."}}}},"/api/garbage-types/{id}":{"get":{"tags":["Garbage Types"],"summary":"Get garbage type by ID","parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"example":"cmcy2fxf0001abc123xyz"}],"responses":{"200":{"description":"Garbage type retrieved successfully."},"404":{"description":"Garbage type not found."}}},"put":{"tags":["Garbage Types"],"summary":"Update garbage type","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"type":"object","properties":{"garbage_type_name":{"type":"string","example":"Plastic"},"price_per_kg":{"type":"number","example":15},"image":{"type":"string","format":"binary"}}}}}},"responses":{"200":{"description":"Garbage type updated successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"404":{"description":"Garbage type not found."}}},"delete":{"tags":["Garbage Types"],"summary":"Delete garbage type","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Garbage type deleted successfully."},"401":{"description":"Unauthorized."},"404":{"description":"Garbage type not found."}}}},"/api/collection-requests":{"post":{"summary":"Create Collection Request","tags":["Collection Requests"],"security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["address_id","payment_method","scheduled_day","scheduled_from_time","scheduled_to_time","quantity","garbage_types"],"properties":{"address_id":{"type":"string"},"payment_method":{"type":"string","enum":["CASH","MONTHLY"]},"scheduled_day":{"type":"string","enum":["SATURDAY","SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY"]},"scheduled_from_time":{"type":"string","example":"09:00:00"},"scheduled_to_time":{"type":"string","example":"12:00:00"},"quantity":{"type":"number"},"collection_img":{"type":"string"},"garbage_types":{"type":"array","items":{"type":"object","properties":{"garbage_type_id":{"type":"string"},"expected_weight":{"type":"number"}}}}}}}}},"responses":{"201":{"description":"Collection Request created successfully."}}}},"/api/availabilities":{"post":{"tags":["Availability"],"summary":"Create worker availability","description":"Creates a new availability for the authenticated worker.","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateAvailabilityRequest"}}}},"responses":{"201":{"description":"Availability created successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"403":{"description":"Worker is not approved."},"404":{"description":"Area not found."},"409":{"description":"Availability already exists or overlaps."}}}},"/api/availabilities/my":{"get":{"tags":["Availability"],"summary":"Get all availabilities for the logged-in worker","description":"Returns all availability slots assigned to the authenticated worker.","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"Availabilities retrieved successfully.","content":{"application/json":{"schema":{"type":"object","properties":{"success":{"type":"boolean","example":true},"statusCode":{"type":"integer","example":200},"message":{"type":"string","example":"Availabilities retrieved successfully."}}}}}},"401":{"description":"Unauthorized."},"403":{"description":"Only workers can access this endpoint."}}}},"/api/availabilities/{availability_id}":{"patch":{"tags":["Availability"],"summary":"Update worker availability","description":"Update one of the authenticated worker's availability slots.","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"availability_id","required":true,"schema":{"type":"string"},"example":"cms0xyg8b0001v1yczwf1xxgd"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"area_id":{"type":"string","example":"cms0x7nz90001v1y85ddoefwp"},"day_of_week":{"type":"string","enum":["SATURDAY","SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY"],"example":"SATURDAY"},"from_time":{"type":"string","example":"09:00:00"},"to_time":{"type":"string","example":"12:00:00"}}}}}},"responses":{"200":{"description":"Availability updated successfully.","content":{"application/json":{"schema":{"type":"object","properties":{"success":{"type":"boolean","example":true},"statusCode":{"type":"integer","example":200},"message":{"type":"string","example":"Availability updated successfully."}}}}}},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"403":{"description":"Only workers can update availability."},"404":{"description":"Availability not found."},"409":{"description":"Availability overlaps with another availability."}}}},"/api/auth/register":{"post":{"tags":["Authentication"],"summary":"Register a new user","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/RegisterRequest"}}}},"responses":{"201":{"description":"User registered successfully.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SuccessResponse"}}}},"400":{"description":"Validation failed.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}},"409":{"description":"Email already exists.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}}}},"/api/auth/verify-otp":{"post":{"tags":["Authentication"],"summary":"Verify OTP","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/VerifyOTPRequest"}}}},"responses":{"200":{"description":"Email verified successfully."},"400":{"description":"Invalid OTP or OTP expired."},"404":{"description":"User not found."}}}},"/api/auth/resend-otp":{"post":{"tags":["Authentication"],"summary":"Resend OTP","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ResendOTPRequest"}}}},"responses":{"200":{"description":"OTP sent successfully."},"400":{"description":"Email is already verified."},"404":{"description":"User not found."}}}},"/api/auth/login":{"post":{"tags":["Authentication"],"summary":"Login","description":"Login using email and password.","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequest"}}}},"responses":{"200":{"description":"Login successful."},"401":{"description":"Invalid email or password."},"403":{"description":"Email is not verified."}}}},"/api/auth/refresh-token":{"post":{"summary":"Refresh Access Token","tags":["Authentication"],"description":"Generate a new access token using a valid refresh token.","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/RefreshTokenRequest"}}}},"responses":{"200":{"description":"Token refreshed successfully."},"401":{"description":"Invalid refresh token."}}}},"/api/auth/logout":{"post":{"summary":"Logout","tags":["Authentication"],"description":"Logout the current user.","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"Logged out successfully."},"401":{"description":"Unauthorized."}}}},"/api/auth/forgot-password":{"post":{"summary":"Forgot Password","tags":["Authentication"],"description":"Generate and send a password reset OTP.","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ForgotPasswordRequest"}}}},"responses":{"200":{"description":"Password reset OTP sent successfully."},"404":{"description":"User not found."}}}},"/api/auth/verify-reset-password-otp":{"post":{"summary":"Verify Reset Password OTP","tags":["Authentication"],"description":"Verify the OTP sent to the user's email for password reset.","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/VerifyResetPasswordOTPRequest"}}}},"responses":{"200":{"description":"OTP verified successfully."},"400":{"description":"Invalid OTP or OTP expired."},"404":{"description":"User not found."}}}},"/api/auth/reset-password":{"post":{"summary":"Reset Password","tags":["Authentication"],"description":"Reset the user password after successful OTP verification.","requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ResetPasswordRequest"}}}},"responses":{"200":{"description":"Password reset successfully."},"400":{"description":"Invalid OTP or OTP expired."},"404":{"description":"User not found."}}}},"/api/auth/check-token":{"post":{"security":[{"bearerAuth":[]}],"tags":["Authentication"],"summary":"Verify Access Token","responses":{"200":{"description":"Token is valid.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SuccessResponse"}}}},"401":{"description":"Invalid or expired token.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}}}},"/api/areas":{"post":{"tags":["Areas"],"summary":"Create a new service area","description":"Creates a new service area with its geographical boundaries.","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateAreaRequest"}}}},"responses":{"201":{"description":"Area created successfully.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AreaSuccessResponse"}}}},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."},"409":{"description":"Area already exists."}}},"get":{"tags":["Areas"],"summary":"Get all service areas","description":"Returns all available service areas.","parameters":[{"in":"query","name":"search","required":false,"schema":{"type":"string"},"description":"Search by area name.","example":"Qena"}],"responses":{"200":{"description":"Areas retrieved successfully.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AreaListResponse"}}}}}}},"/api/areas/{id}":{"get":{"tags":["Areas"],"summary":"Get area by ID","description":"Returns a single service area.","parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"description":"Area ID"}],"responses":{"200":{"description":"Area retrieved successfully.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AreaSuccessResponse"}}}},"404":{"description":"Area not found."}}},"patch":{"tags":["Areas"],"summary":"Update an area","description":"Updates one or more fields of an existing service area.","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"description":"Area ID"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateAreaRequest"}}}},"responses":{"200":{"description":"Area updated successfully.","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AreaSuccessResponse"}}}},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."},"404":{"description":"Area not found."}}},"delete":{"tags":["Areas"],"summary":"Delete an area","description":"Deletes an existing service area.","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"description":"Area ID"}],"responses":{"200":{"description":"Area deleted successfully."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."},"404":{"description":"Area not found."}}}},"/api/areas/{id}/price":{"patch":{"tags":["Areas"],"summary":"Update area service price","description":"Update the service price for a specific area. Admin only.","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"example":"cms0x7nz90001v1y85ddoefwp"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["service_price"],"properties":{"service_price":{"type":"number","example":35}}}}}},"responses":{"200":{"description":"Area price updated successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."},"404":{"description":"Area not found."}}}},"/api/admin/customers":{"get":{"tags":["Admin"],"summary":"Get all customers (paginated)","security":[{"bearerAuth":[]}],"parameters":[{"in":"query","name":"page","schema":{"type":"integer","default":1},"description":"Page number"},{"in":"query","name":"page_size","schema":{"type":"integer","default":10},"description":"Number of items per page"}],"responses":{"200":{"description":"Customers list retrieved successfully."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."}}}},"/api/admin/customers/{user_id}":{"get":{"tags":["Admin"],"summary":"Get customer details by user ID","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"user_id","required":true,"schema":{"type":"string"},"description":"Customer user ID"}],"responses":{"200":{"description":"Customer details retrieved successfully."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."},"404":{"description":"Customer not found."}}}},"/api/admin/workers":{"get":{"tags":["Admin"],"summary":"Get all workers (paginated)","security":[{"bearerAuth":[]}],"parameters":[{"in":"query","name":"page","schema":{"type":"integer","default":1},"description":"Page number"},{"in":"query","name":"page_size","schema":{"type":"integer","default":10},"description":"Number of items per page"}],"responses":{"200":{"description":"Workers list retrieved successfully."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."}}}},"/api/admin/workers/{user_id}":{"get":{"tags":["Admin"],"summary":"Get worker details by user ID","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"user_id","required":true,"schema":{"type":"string"},"description":"Worker user ID"}],"responses":{"200":{"description":"Worker details retrieved successfully."},"401":{"description":"Unauthorized."},"403":{"description":"Forbidden."},"404":{"description":"Worker not found."}}}},"/api/addresses":{"get":{"tags":["Addresses"],"summary":"Get all addresses for the logged-in user","security":[{"bearerAuth":[]}],"responses":{"200":{"description":"Addresses retrieved successfully."},"401":{"description":"Unauthorized."}}},"post":{"tags":["Addresses"],"summary":"Create a new address","security":[{"bearerAuth":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","required":["building_num","location","latitude","longitude"],"properties":{"building_num":{"type":"integer","example":12},"floor":{"type":"string","example":"3"},"location":{"type":"string","example":"Qena, Egypt"},"latitude":{"type":"number","example":26.1642},"longitude":{"type":"number","example":32.7267},"additional_note":{"type":"string","example":"Beside the pharmacy"}}}}}},"responses":{"201":{"description":"Address created successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."}}}},"/api/addresses/{id}":{"get":{"tags":["Addresses"],"summary":"Get address by ID","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"example":"cmrkvmwr20000utr4aoa4fjeh"}],"responses":{"200":{"description":"Address retrieved successfully."},"401":{"description":"Unauthorized."},"404":{"description":"Address not found."}}},"put":{"tags":["Addresses"],"summary":"Update an address","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"example":"cmrkvmwr20000utr4aoa4fjeh"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","properties":{"building_num":{"type":"integer","example":15},"floor":{"type":"string","example":"5"},"location":{"type":"string","example":"Luxor, Egypt"},"latitude":{"type":"number","example":25.6872},"longitude":{"type":"number","example":32.6396},"additional_note":{"type":"string","example":"Near the school"}}}}}},"responses":{"200":{"description":"Address updated successfully."},"400":{"description":"Validation failed."},"401":{"description":"Unauthorized."},"404":{"description":"Address not found."}}},"delete":{"tags":["Addresses"],"summary":"Delete an address","security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"id","required":true,"schema":{"type":"string"},"example":"cmrkvmwr20000utr4aoa4fjeh"}],"responses":{"200":{"description":"Address deleted successfully."},"401":{"description":"Unauthorized."},"404":{"description":"Address not found."}}}},"/api/collection-requests/addresses/{address_id}/availabilities":{"get":{"summary":"Get available collection slots by address","tags":["Collection Requests"],"security":[{"bearerAuth":[]}],"parameters":[{"in":"path","name":"address_id","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Available slots retrieved successfully."},"400":{"description":"Service unavailable in this area."},"404":{"description":"Address not found."}}}}}}
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Cash For Trash API",
+        "version": "1.0.0",
+        "description": "RESTful API documentation for Cash For Trash backend platform"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Local Development Server"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "User registration, login, OTP verification, password reset & tokens"
+        },
+        {
+            "name": "User",
+            "description": "Profile management & user notifications"
+        },
+        {
+            "name": "Addresses",
+            "description": "Customer pickup address management"
+        },
+        {
+            "name": "Garbage Types",
+            "description": "Recyclable waste categories & pricing per kg"
+        },
+        {
+            "name": "Collection Requests",
+            "description": "Waste collection scheduling & pickup management"
+        },
+        {
+            "name": "Admin",
+            "description": "Worker approval, user monitoring & admin operations"
+        },
+        {
+            "name": "Rewards",
+            "description": "Rewards catalog management"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "RegisterRequest": {
+                "type": "object",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "password",
+                    "confirm_password",
+                    "role"
+                ],
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "example": "Rana"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Ahmed"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "Rana1234"
+                    },
+                    "confirm_password": {
+                        "type": "string",
+                        "example": "Rana1234"
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "01012345678"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "customer",
+                            "worker"
+                        ],
+                        "example": "customer"
+                    }
+                }
+            },
+            "VerifyOTPRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "otp"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    },
+                    "otp": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                }
+            },
+            "ResendOTPRequest": {
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    }
+                }
+            },
+            "LoginRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "Rana1234"
+                    }
+                }
+            },
+            "ForgotPasswordRequest": {
+                "type": "object",
+                "required": [
+                    "email"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    }
+                }
+            },
+            "VerifyResetPasswordOTPRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "otp"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    },
+                    "otp": {
+                        "type": "string",
+                        "example": "123456"
+                    }
+                }
+            },
+            "ResetPasswordRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "otp",
+                    "new_password",
+                    "confirm_password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    },
+                    "otp": {
+                        "type": "string",
+                        "example": "123456"
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "example": "Rana1234"
+                    },
+                    "confirm_password": {
+                        "type": "string",
+                        "example": "Rana1234"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "example": "cmrabc123"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "example": "Rana"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Ahmed"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "rana@test.com"
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "customer"
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                }
+            },
+            "UserProfile": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "example": "cmf4k9m5n0000abc123xyz"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "example": "Omnia"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Abdelnasser"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "omnia@gmail.com"
+                    },
+                    "telephone": {
+                        "type": "string",
+                        "example": "01012345678"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/profile.jpg"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "customer",
+                            "worker",
+                            "admin"
+                        ],
+                        "example": "customer"
+                    },
+                    "points": {
+                        "type": "number",
+                        "example": 250
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-07-11T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-07-11T11:15:00Z"
+                    }
+                }
+            },
+            "UserUpdateRequest": {
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "type": "string",
+                        "example": "Omnia"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Abdelnasser"
+                    },
+                    "mobile": {
+                        "type": "string",
+                        "example": "01012345678"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/profile.jpg"
+                    }
+                }
+            },
+            "ChangePasswordRequest": {
+                "type": "object",
+                "required": [
+                    "oldPassword",
+                    "newPassword",
+                    "confirmPassword"
+                ],
+                "properties": {
+                    "oldPassword": {
+                        "type": "string",
+                        "example": "OldPassword123"
+                    },
+                    "newPassword": {
+                        "type": "string",
+                        "example": "NewPassword123"
+                    },
+                    "confirmPassword": {
+                        "type": "string",
+                        "example": "NewPassword123"
+                    }
+                }
+            },
+            "RefreshTokenRequest": {
+                "type": "object",
+                "required": [
+                    "refresh_token"
+                ],
+                "properties": {
+                    "refresh_token": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    }
+                }
+            },
+            "CreateAvailabilityRequest": {
+                "type": "object",
+                "required": [
+                    "area_id",
+                    "day_of_week",
+                    "from_time",
+                    "to_time"
+                ],
+                "properties": {
+                    "area_id": {
+                        "type": "string",
+                        "example": "cms0x7nz90001v1y85ddoefwp"
+                    },
+                    "day_of_week": {
+                        "type": "string",
+                        "enum": [
+                            "SATURDAY",
+                            "SUNDAY",
+                            "MONDAY",
+                            "TUESDAY",
+                            "WEDNESDAY",
+                            "THURSDAY",
+                            "FRIDAY"
+                        ],
+                        "example": "MONDAY"
+                    },
+                    "from_time": {
+                        "type": "string",
+                        "example": "09:00:00"
+                    },
+                    "to_time": {
+                        "type": "string",
+                        "example": "12:00:00"
+                    }
+                }
+            },
+            "CreateAreaRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "north_lat",
+                    "south_lat",
+                    "east_lng",
+                    "west_lng"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Qena Downtown"
+                    },
+                    "north_lat": {
+                        "type": "number",
+                        "example": 26.1745
+                    },
+                    "south_lat": {
+                        "type": "number",
+                        "example": 26.16
+                    },
+                    "east_lng": {
+                        "type": "number",
+                        "example": 32.735
+                    },
+                    "west_lng": {
+                        "type": "number",
+                        "example": 32.71
+                    },
+                    "service_price": {
+                        "type": "number",
+                        "example": 35
+                    }
+                }
+            },
+            "UpdateAreaRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Qena Downtown"
+                    },
+                    "north_lat": {
+                        "type": "number",
+                        "example": 26.1745
+                    },
+                    "south_lat": {
+                        "type": "number",
+                        "example": 26.16
+                    },
+                    "east_lng": {
+                        "type": "number",
+                        "example": 32.735
+                    },
+                    "west_lng": {
+                        "type": "number",
+                        "example": 32.71
+                    },
+                    "service_price": {
+                        "type": "number",
+                        "example": 35
+                    }
+                }
+            },
+            "Area": {
+                "type": "object",
+                "properties": {
+                    "area_id": {
+                        "type": "string",
+                        "example": "cmrzs04x10000v13sajjz3v2j"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Qena Downtown"
+                    },
+                    "north_lat": {
+                        "type": "number",
+                        "example": 26.1745
+                    },
+                    "south_lat": {
+                        "type": "number",
+                        "example": 26.16
+                    },
+                    "east_lng": {
+                        "type": "number",
+                        "example": 32.735
+                    },
+                    "west_lng": {
+                        "type": "number",
+                        "example": 32.71
+                    },
+                    "service_price": {
+                        "type": "number",
+                        "example": 35
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "SuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Operation completed successfully."
+                    },
+                    "data": {
+                        "nullable": true,
+                        "example": null
+                    }
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 400
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Validation failed"
+                    },
+                    "errors": {
+                        "nullable": true,
+                        "example": [
+                            {
+                                "path": "email",
+                                "msg": "Invalid email."
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/workers/{id}/approve": {
+            "patch": {
+                "summary": "Approve Worker",
+                "tags": [
+                    "Admin"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Worker approved successfully."
+                    },
+                    "404": {
+                        "description": "Worker not found."
+                    },
+                    "409": {
+                        "description": "Worker already approved."
+                    }
+                }
+            }
+        },
+        "/api/user/profile": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user profile",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserProfile"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user profile",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User profile updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete user profile",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile deleted successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/user/change-password": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Change user password",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password changed successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/rewards": {
+            "get": {
+                "tags": [
+                    "Rewards"
+                ],
+                "summary": "Get all rewards",
+                "responses": {
+                    "200": {
+                        "description": "Rewards fetched successfully."
+                    },
+                    "404": {
+                        "description": "No rewards found."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Rewards"
+                ],
+                "summary": "Create a new reward",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "name",
+                                    "required_points"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Gift Card"
+                                    },
+                                    "required_points": {
+                                        "type": "number",
+                                        "example": 100
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reward created successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/rewards/{id}": {
+            "get": {
+                "tags": [
+                    "Rewards"
+                ],
+                "summary": "Get reward by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmcy2fxf0001abc123xyz"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reward retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Reward not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Rewards"
+                ],
+                "summary": "Update reward",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmcy2fxf0001abc123xyz"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Gift Card"
+                                    },
+                                    "required_points": {
+                                        "type": "number",
+                                        "example": 100
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reward updated successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Reward not found."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Rewards"
+                ],
+                "summary": "Delete reward",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmcy2fxf0001abc123xyz"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reward deleted successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Reward not found."
+                    }
+                }
+            }
+        },
+        "/api/reward-redeems/{reward_id}": {
+            "post": {
+                "tags": [
+                    "Reward Redeems"
+                ],
+                "summary": "Make a reward redeem request",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "reward_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmcy2fxf0001abc123xyz"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Reward redeem request created successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/reward-redeems": {
+            "get": {
+                "tags": [
+                    "Reward Redeems"
+                ],
+                "summary": "Get all reward redeem requests",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reward redeem requests fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/reward-redeems/my_redemptions": {
+            "get": {
+                "tags": [
+                    "Reward Redeems"
+                ],
+                "summary": "Get all my reward redeem requests",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reward redeem requests fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/reward-redeems/approve/{redemption_id}": {
+            "put": {
+                "tags": [
+                    "Reward Redeems"
+                ],
+                "summary": "Approve a reward redeem request",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "redemption_id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "example": "cmcy2fxf0001abc123xyz",
+                        "description": "Redemption ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reward redeem request approved successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/reward-redeems/reject/{redemption_id}": {
+            "put": {
+                "tags": [
+                    "Reward Redeems"
+                ],
+                "summary": "Reject a reward redeem request",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "redemption_id",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true,
+                        "example": "cmcy2fxf0001abc123xyz",
+                        "description": "Redemption ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reward redeem request rejected successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/pricing": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get pricing settings",
+                "description": "Retrieve the current worker percentage and monthly subscription price.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pricing settings retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update pricing settings",
+                "description": "Update worker percentage and monthly subscription price. Admin only.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "worker_percentage": {
+                                        "type": "number",
+                                        "example": 70
+                                    },
+                                    "monthly_subscription_price": {
+                                        "type": "number",
+                                        "example": 120
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pricing settings updated successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                }
+            }
+        },
+        "/api/garbage-types": {
+            "get": {
+                "tags": [
+                    "Garbage Types"
+                ],
+                "summary": "Get all garbage types",
+                "responses": {
+                    "200": {
+                        "description": "Garbage types retrieved successfully."
+                    },
+                    "404": {
+                        "description": "No garbage types found."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Garbage Types"
+                ],
+                "summary": "Create a new garbage type",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "garbage_type_name",
+                                    "price_per_kg"
+                                ],
+                                "properties": {
+                                    "garbage_type_name": {
+                                        "type": "string",
+                                        "example": "Plastic"
+                                    },
+                                    "price_per_kg": {
+                                        "type": "number",
+                                        "example": 10
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Garbage type created successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/garbage-types/{id}": {
+            "get": {
+                "tags": [
+                    "Garbage Types"
+                ],
+                "summary": "Get garbage type by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmcy2fxf0001abc123xyz"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Garbage type retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Garbage type not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Garbage Types"
+                ],
+                "summary": "Update garbage type",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmcy2fxf0001abc123xyz"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "garbage_type_name": {
+                                        "type": "string",
+                                        "example": "Plastic"
+                                    },
+                                    "price_per_kg": {
+                                        "type": "number",
+                                        "example": 15
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Garbage type updated successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Garbage type not found."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Garbage Types"
+                ],
+                "summary": "Delete garbage type",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmcy2fxf0001abc123xyz"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Garbage type deleted successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Garbage type not found."
+                    }
+                }
+            }
+        },
+        "/api/collection-requests/addresses/{address_id}/availabilities": {
+            "get": {
+                "summary": "Get available collection slots by address",
+                "tags": [
+                    "Collection Requests"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "address_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Available slots retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Service unavailable in this area."
+                    },
+                    "404": {
+                        "description": "Address not found."
+                    }
+                }
+            }
+        },
+        "/api/collection-requests": {
+            "post": {
+                "summary": "Create Collection Request",
+                "tags": [
+                    "Collection Requests"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "address_id",
+                                    "availability_id",
+                                    "payment_method",
+                                    "quantity",
+                                    "garbage_types"
+                                ],
+                                "properties": {
+                                    "address_id": {
+                                        "type": "string",
+                                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                                    },
+                                    "availability_id": {
+                                        "type": "string",
+                                        "example": "cms0x7nz90001v1y85ddoefwp"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "CASH",
+                                            "MONTHLY"
+                                        ],
+                                        "example": "CASH"
+                                    },
+                                    "quantity": {
+                                        "type": "number",
+                                        "example": 5.5
+                                    },
+                                    "collection_img": {
+                                        "type": "string",
+                                        "example": "https://example.com/trash.jpg"
+                                    },
+                                    "garbage_types": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "required": [
+                                                "garbage_type_id",
+                                                "estimated_weight"
+                                            ],
+                                            "properties": {
+                                                "garbage_type_id": {
+                                                    "type": "string",
+                                                    "example": "cmrkvmwr20000utr4aoa4f999"
+                                                },
+                                                "estimated_weight": {
+                                                    "type": "number",
+                                                    "example": 2.5
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Collection Request created successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed or inactive subscription."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Address, availability slot, or garbage type not found."
+                    }
+                }
+            }
+        },
+        "/api/availabilities": {
+            "post": {
+                "tags": [
+                    "Availability"
+                ],
+                "summary": "Create worker availability",
+                "description": "Creates a new availability for the authenticated worker.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAvailabilityRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Availability created successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Worker is not approved."
+                    },
+                    "404": {
+                        "description": "Area not found."
+                    },
+                    "409": {
+                        "description": "Availability already exists or overlaps."
+                    }
+                }
+            }
+        },
+        "/api/availabilities/my": {
+            "get": {
+                "tags": [
+                    "Availability"
+                ],
+                "summary": "Get all availabilities for the logged-in worker",
+                "description": "Returns all availability slots assigned to the authenticated worker.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Availabilities retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "statusCode": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availabilities retrieved successfully."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Only workers can access this endpoint."
+                    }
+                }
+            }
+        },
+        "/api/availabilities/{availability_id}": {
+            "patch": {
+                "tags": [
+                    "Availability"
+                ],
+                "summary": "Update worker availability",
+                "description": "Update one of the authenticated worker's availability slots.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "availability_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cms0xyg8b0001v1yczwf1xxgd"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "area_id": {
+                                        "type": "string",
+                                        "example": "cms0x7nz90001v1y85ddoefwp"
+                                    },
+                                    "day_of_week": {
+                                        "type": "string",
+                                        "enum": [
+                                            "SATURDAY",
+                                            "SUNDAY",
+                                            "MONDAY",
+                                            "TUESDAY",
+                                            "WEDNESDAY",
+                                            "THURSDAY",
+                                            "FRIDAY"
+                                        ],
+                                        "example": "SATURDAY"
+                                    },
+                                    "from_time": {
+                                        "type": "string",
+                                        "example": "09:00:00"
+                                    },
+                                    "to_time": {
+                                        "type": "string",
+                                        "example": "12:00:00"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Availability updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "statusCode": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Availability updated successfully."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Only workers can update availability."
+                    },
+                    "404": {
+                        "description": "Availability not found."
+                    },
+                    "409": {
+                        "description": "Availability overlaps with another availability."
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation failed.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Email already exists.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/verify-otp": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify OTP",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifyOTPRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email verified successfully."
+                    },
+                    "400": {
+                        "description": "Invalid OTP or OTP expired."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/auth/resend-otp": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Resend OTP",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResendOTPRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP sent successfully."
+                    },
+                    "400": {
+                        "description": "Email is already verified."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login",
+                "description": "Login using email and password.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful."
+                    },
+                    "401": {
+                        "description": "Invalid email or password."
+                    },
+                    "403": {
+                        "description": "Email is not verified."
+                    }
+                }
+            }
+        },
+        "/api/auth/refresh-token": {
+            "post": {
+                "summary": "Refresh Access Token",
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Generate a new access token using a valid refresh token.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RefreshTokenRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed successfully."
+                    },
+                    "401": {
+                        "description": "Invalid refresh token."
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "summary": "Logout",
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Logout the current user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/auth/forgot-password": {
+            "post": {
+                "summary": "Forgot Password",
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Generate and send a password reset OTP.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ForgotPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset OTP sent successfully."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/auth/verify-reset-password-otp": {
+            "post": {
+                "summary": "Verify Reset Password OTP",
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Verify the OTP sent to the user's email for password reset.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/VerifyResetPasswordOTPRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully."
+                    },
+                    "400": {
+                        "description": "Invalid OTP or OTP expired."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/auth/reset-password": {
+            "post": {
+                "summary": "Reset Password",
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "Reset the user password after successful OTP verification.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResetPasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password reset successfully."
+                    },
+                    "400": {
+                        "description": "Invalid OTP or OTP expired."
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/auth/check-token": {
+            "post": {
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Verify Access Token",
+                "responses": {
+                    "200": {
+                        "description": "Token is valid.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/areas": {
+            "post": {
+                "tags": [
+                    "Areas"
+                ],
+                "summary": "Create a new service area",
+                "description": "Creates a new service area with its geographical boundaries.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAreaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Area created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AreaSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "409": {
+                        "description": "Area already exists."
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Areas"
+                ],
+                "summary": "Get all service areas",
+                "description": "Returns all available service areas.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "search",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Search by area name.",
+                        "example": "Qena"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Areas retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AreaListResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/areas/{id}": {
+            "get": {
+                "tags": [
+                    "Areas"
+                ],
+                "summary": "Get area by ID",
+                "description": "Returns a single service area.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrzs04x10000v13sajjz3v2j",
+                        "description": "Area ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Area retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AreaSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Area not found."
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Areas"
+                ],
+                "summary": "Update an area",
+                "description": "Updates one or more fields of an existing service area.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrzs04x10000v13sajjz3v2j",
+                        "description": "Area ID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAreaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Area updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AreaSuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Area not found."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Areas"
+                ],
+                "summary": "Delete an area",
+                "description": "Deletes an existing service area.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrzs04x10000v13sajjz3v2j",
+                        "description": "Area ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Area deleted successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Area not found."
+                    }
+                }
+            }
+        },
+        "/api/areas/{id}/price": {
+            "patch": {
+                "tags": [
+                    "Areas"
+                ],
+                "summary": "Update area service price",
+                "description": "Update the service price for a specific area. Admin only.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cms0x7nz90001v1y85ddoefwp"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "service_price"
+                                ],
+                                "properties": {
+                                    "service_price": {
+                                        "type": "number",
+                                        "example": 35
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Area price updated successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Area not found."
+                    }
+                }
+            }
+        },
+        "/api/admin/customers": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get all customers (paginated)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1,
+                        "description": "Page number"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "example": 10,
+                        "description": "Number of items per page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customers list retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                }
+            }
+        },
+        "/api/admin/customers/{user_id}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get customer details by user ID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh",
+                        "description": "Customer user ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Customer details retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Customer not found."
+                    }
+                }
+            }
+        },
+        "/api/admin/workers": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get all workers (paginated)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "example": 1,
+                        "description": "Page number"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        },
+                        "example": 10,
+                        "description": "Number of items per page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Workers list retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                }
+            }
+        },
+        "/api/admin/workers/{user_id}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get worker details by user ID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh",
+                        "description": "Worker user ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Worker details retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "Worker not found."
+                    }
+                }
+            }
+        },
+        "/api/addresses": {
+            "get": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Get all addresses for the logged-in user",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Addresses retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Create a new address",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "building_num",
+                                    "location",
+                                    "latitude",
+                                    "longitude"
+                                ],
+                                "properties": {
+                                    "building_num": {
+                                        "type": "integer",
+                                        "example": 12
+                                    },
+                                    "floor": {
+                                        "type": "string",
+                                        "example": "3"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Qena, Egypt"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "example": 26.1642
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "example": 32.7267
+                                    },
+                                    "additional_note": {
+                                        "type": "string",
+                                        "example": "Beside the pharmacy"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Address created successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
+        "/api/addresses/{id}": {
+            "get": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Get address by ID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address retrieved successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Address not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Update an address",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "building_num": {
+                                        "type": "integer",
+                                        "example": 15
+                                    },
+                                    "floor": {
+                                        "type": "string",
+                                        "example": "5"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Luxor, Egypt"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "example": 25.6872
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "example": 32.6396
+                                    },
+                                    "additional_note": {
+                                        "type": "string",
+                                        "example": "Near the school"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Address updated successfully."
+                    },
+                    "400": {
+                        "description": "Validation failed."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Address not found."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Delete an address",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address deleted successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    },
+                    "404": {
+                        "description": "Address not found."
+                    }
+                }
+            }
+        }
+    }
+}

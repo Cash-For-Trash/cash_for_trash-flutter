@@ -46,8 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
               } else if (userRole == UserRole.worker.value) {
                 context.go(AppRoutes.workerHomeScreen);
               } else if (userRole == UserRole.admin.value) {
-                // TODO: Add admin home screen
-                // context.go(AppRoutes.adminHomeScreen);
+                context.go(AppRoutes.adminHomeScreen);
               }
             } else if (state is LoginFailure) {
               ScaffoldMessenger.of(context).showSnackBar(

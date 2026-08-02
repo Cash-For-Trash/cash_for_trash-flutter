@@ -31,13 +31,19 @@ class GarbageWeightWorkerModel extends Equatable {
     );
   }
 
+  static double _parseDouble(dynamic val) {
+    if (val is num) return val.toDouble();
+    if (val is String) return double.tryParse(val) ?? 0.0;
+    return 0.0;
+  }
+
   factory GarbageWeightWorkerModel.fromJson(Map<String, dynamic> json) {
     return GarbageWeightWorkerModel(
-      garbageTypeId: json['garbage_type_id'] as String? ?? json['id'] as String? ?? '',
-      garbageTypeName: json['garbage_type_name'] as String? ?? json['name'] as String? ?? '',
-      pricePerKg: (json['price_per_kg'] as num?)?.toDouble() ?? 0.0,
-      expectedWeight: (json['expected_weight'] as num?)?.toDouble() ?? 0.0,
-      actualWeight: (json['actual_weight'] as num?)?.toDouble() ?? 0.0,
+      garbageTypeId: (json['garbage_type_id'] ?? json['id'] ?? '').toString(),
+      garbageTypeName: (json['garbage_type_name'] ?? json['name'] ?? '').toString(),
+      pricePerKg: _parseDouble(json['price_per_kg']),
+      expectedWeight: _parseDouble(json['expected_weight']),
+      actualWeight: _parseDouble(json['actual_weight']),
     );
   }
 

@@ -27,6 +27,13 @@ class EndPoint {
   static String collectionRequests = "/collection-requests";
   static String areas = "/areas";
   static String pricing = "/pricing";
+
+  // admin
+  static String adminWorkers = "/admin/workers";
+  static String adminCustomers = "/admin/customers";
+  static String workerApprove = "/workers";
+  static String rewards = "/rewards";
+  static String rewardRedeems = "/reward-redeems";
 }
 
 class ApiKey {

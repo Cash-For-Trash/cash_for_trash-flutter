@@ -42,32 +42,38 @@ class CollectionRequestWorkerModel extends Equatable {
     required this.createdAt,
   });
 
+  static double _parseDouble(dynamic val) {
+    if (val is num) return val.toDouble();
+    if (val is String) return double.tryParse(val) ?? 0.0;
+    return 0.0;
+  }
+
   factory CollectionRequestWorkerModel.fromJson(Map<String, dynamic> json) {
     final customerObj = json['user'] as Map<String, dynamic>? ?? {};
     final addressObj = json['address'] as Map<String, dynamic>? ?? {};
     final rawGarbageList = json['garbage_types'] as List<dynamic>? ?? [];
 
     return CollectionRequestWorkerModel(
-      id: json['id'] as String? ?? json['_id'] as String? ?? '',
+      id: (json['request_id'] ?? json['id'] ?? json['_id'] ?? '').toString(),
       customerName: '${customerObj['first_name'] ?? ''} ${customerObj['last_name'] ?? ''}'.trim(),
-      customerPhone: customerObj['mobile'] as String? ?? customerObj['telephone'] as String? ?? '',
-      address: addressObj['location'] as String? ?? addressObj['address'] as String? ?? '',
+      customerPhone: (customerObj['mobile'] ?? customerObj['telephone'] ?? '').toString(),
+      address: (addressObj['location'] ?? addressObj['address'] ?? '').toString(),
       buildingNum: (addressObj['building_num'] ?? '').toString(),
       floor: (addressObj['floor'] ?? '').toString(),
-      latitude: (addressObj['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (addressObj['longitude'] as num?)?.toDouble() ?? 0.0,
-      scheduledDay: json['scheduled_day'] as String? ?? '',
-      scheduledFromTime: json['scheduled_from_time'] as String? ?? '',
-      scheduledToTime: json['scheduled_to_time'] as String? ?? '',
-      paymentMethod: json['payment_method'] as String? ?? 'CASH',
-      status: json['status'] as String? ?? 'ASSIGNED',
+      latitude: _parseDouble(addressObj['latitude']),
+      longitude: _parseDouble(addressObj['longitude']),
+      scheduledDay: (json['scheduled_day'] ?? '').toString(),
+      scheduledFromTime: (json['scheduled_from_time'] ?? '').toString(),
+      scheduledToTime: (json['scheduled_to_time'] ?? '').toString(),
+      paymentMethod: (json['payment_method'] ?? 'CASH').toString(),
+      status: (json['status'] ?? 'ASSIGNED').toString(),
       garbageTypes: rawGarbageList
           .map((item) => GarbageWeightWorkerModel.fromJson(item as Map<String, dynamic>))
           .toList(),
-      totalWeight: (json['quantity'] as num?)?.toDouble() ?? 0.0,
-      earnedPoints: (json['earned_points'] as num?)?.toDouble() ?? 0.0,
-      workerIncome: (json['worker_income'] as num?)?.toDouble() ?? 0.0,
-      createdAt: json['created_at'] as String? ?? '',
+      totalWeight: _parseDouble(json['quantity'] ?? json['total_weight']),
+      earnedPoints: _parseDouble(json['earned_points']),
+      workerIncome: _parseDouble(json['worker_income']),
+      createdAt: (json['created_at'] ?? '').toString(),
     );
   }
 

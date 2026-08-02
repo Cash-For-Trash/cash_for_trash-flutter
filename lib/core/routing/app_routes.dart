@@ -32,4 +32,14 @@ class AppRoutes {
   static const String mapsScreen = '/maps_screen';
   static const String addressesScreen = '/addresses_screen';
   static const String addressFormScreen = '/address_form_screen';
+
+  // Admin Routes
+  static const String adminHomeScreen = '/admin_home_screen';
+  static const String adminAreaFormScreen = '/admin_area_form_screen';
+  static const String adminGarbageTypeFormScreen =
+      '/admin_garbage_type_form_screen';
+  static const String adminRewardFormScreen = '/admin_reward_form_screen';
+  static const String adminWorkerDetailScreen = '/admin_worker_detail_screen';
+  static const String adminCustomerDetailScreen =
+      '/admin_customer_detail_screen';
 }
