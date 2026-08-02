@@ -1,6 +1,7 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,25 +51,40 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
                 width: double.infinity,
                 height: 52.h,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Payment flow trigger callback placeholder
-                  },
+                  onPressed: state.isSubmitting
+                      ? null
+                      : () {
+                          context.read<RequestCollectionBloc>().add(
+                            const SubmitCollectionRequestEvent(),
+                          );
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.colorScheme.primary,
                     foregroundColor: context.colorScheme.onPrimary,
+                    disabledBackgroundColor: context.colorScheme.primary
+                        .withValues(alpha: 0.6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     elevation: 0,
                   ),
-                  child: Text(
-                    context.tr('proceed_to_payment'),
-                    style: context.textTheme.titleMedium?.copyWith(
-                      color: context.colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.sp,
-                    ),
-                  ),
+                  child: state.isSubmitting
+                      ? SizedBox(
+                          width: 22.r,
+                          height: 22.r,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: context.colorScheme.onPrimary,
+                          ),
+                        )
+                      : Text(
+                          context.tr('proceed_to_payment'),
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: context.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.sp,
+                          ),
+                        ),
                 ),
               ),
             ],

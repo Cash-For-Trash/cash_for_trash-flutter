@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
 import 'package:cash_for_trash/features/request_collection/data/model/availability_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/collection_request_response_model.dart';
 import 'package:cash_for_trash/features/request_collection/data/model/garbage_type_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -29,6 +30,11 @@ class RequestCollectionState extends Equatable {
   final double? longitude;
   final double cost;
 
+  final bool isSubmitting;
+  final bool submitSuccess;
+  final String? submitErrorMessage;
+  final CollectionRequestResponseModel? collectionRequestResponse;
+
   const RequestCollectionState({
     this.isGarbageTypesLoading = false,
     this.garbageTypes = const [],
@@ -51,6 +57,10 @@ class RequestCollectionState extends Equatable {
     this.latitude,
     this.longitude,
     this.cost = 5.0,
+    this.isSubmitting = false,
+    this.submitSuccess = false,
+    this.submitErrorMessage,
+    this.collectionRequestResponse,
   });
 
   RequestCollectionState copyWith({
@@ -80,6 +90,12 @@ class RequestCollectionState extends Equatable {
     double? latitude,
     double? longitude,
     double? cost,
+    bool? isSubmitting,
+    bool? submitSuccess,
+    String? submitErrorMessage,
+    bool clearSubmitError = false,
+    CollectionRequestResponseModel? collectionRequestResponse,
+    bool clearResponse = false,
   }) {
     return RequestCollectionState(
       isGarbageTypesLoading:
@@ -111,31 +127,43 @@ class RequestCollectionState extends Equatable {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       cost: cost ?? this.cost,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      submitSuccess: submitSuccess ?? this.submitSuccess,
+      submitErrorMessage: clearSubmitError
+          ? null
+          : (submitErrorMessage ?? this.submitErrorMessage),
+      collectionRequestResponse: clearResponse
+          ? null
+          : (collectionRequestResponse ?? this.collectionRequestResponse),
     );
   }
 
   @override
   List<Object?> get props => [
-        isGarbageTypesLoading,
-        garbageTypes,
-        garbageTypesErrorMessage,
-        isAddressesLoading,
-        addresses,
-        addressesErrorMessage,
-        selectedAddress,
-        isAvailabilitiesLoading,
-        availabilities,
-        availabilitiesErrorMessage,
-        selectedAvailability,
-        selectedWasteTypes,
-        selectedQuantity,
-        exactWeight,
-        selectedTimeSlot,
-        imagePath,
-        streetKey,
-        cityKey,
-        latitude,
-        longitude,
-        cost,
-      ];
+    isGarbageTypesLoading,
+    garbageTypes,
+    garbageTypesErrorMessage,
+    isAddressesLoading,
+    addresses,
+    addressesErrorMessage,
+    selectedAddress,
+    isAvailabilitiesLoading,
+    availabilities,
+    availabilitiesErrorMessage,
+    selectedAvailability,
+    selectedWasteTypes,
+    selectedQuantity,
+    exactWeight,
+    selectedTimeSlot,
+    imagePath,
+    streetKey,
+    cityKey,
+    latitude,
+    longitude,
+    cost,
+    isSubmitting,
+    submitSuccess,
+    submitErrorMessage,
+    collectionRequestResponse,
+  ];
 }

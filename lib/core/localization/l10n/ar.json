@@ -171,5 +171,12 @@
     "no_waste_types_available": "لا تتوفر أنواع مخلفات حالياً",
     "failed_to_load_waste_types": "تعذر تحميل أنواع المخلفات",
     "no_availabilities": "لا توجد مواعيد متاحة لهذا العنوان",
-    "availabilities_error": "تعذّر تحميل المواعيد المتاحة"
+    "availabilities_error": "تعذّر تحميل المواعيد المتاحة",
+    "order_confirmed": "تم تأكيد الطلب!",
+    "order_processing": "طلبك تحت المعالجة، سيصلك الجامع قريباً.",
+    "track_order_now": "تتبع الطلب الآن",
+    "return_home": "العودة للرئيسية",
+    "waste_type_required": "يرجى اختيار نوع مخلفات واحد على الأقل.",
+    "address_required": "يرجى اختيار عنوان الاستلام.",
+    "availability_required": "يرجى اختيار موعد الاستلام."
 }

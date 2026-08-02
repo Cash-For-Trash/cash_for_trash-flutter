@@ -25,6 +25,7 @@ class EndPoint {
   static String addresses = "/addresses";
 
   // collection requests
+  static String collectionRequests = "/collection-requests";
   static String collectionAvailabilities(String addressId) =>
       "/collection-requests/addresses/$addressId/availabilities";
 }
