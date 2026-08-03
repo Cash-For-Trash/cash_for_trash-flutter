@@ -119,3 +119,7 @@ class UpdateAddressInCollectionEvent extends RequestCollectionEvent {
   @override
   List<Object?> get props => [address];
 }
+
+class SubmitCollectionRequestEvent extends RequestCollectionEvent {
+  const SubmitCollectionRequestEvent();
+}

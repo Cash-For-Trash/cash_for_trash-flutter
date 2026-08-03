@@ -24,7 +24,6 @@ class EndPoint {
   static String userProfile = "/user/profile";
   static String availabilities = "/availabilities";
   static String myAvailabilities = "/availabilities/my";
-  static String collectionRequests = "/collection-requests";
   static String areas = "/areas";
   static String pricing = "/pricing";
 
@@ -36,6 +35,7 @@ class EndPoint {
   static String rewardRedeems = "/reward-redeems";
 
   // collection requests
+  static String collectionRequests = "/collection-requests";
   static String collectionAvailabilities(String addressId) =>
       "/collection-requests/addresses/$addressId/availabilities";
 }

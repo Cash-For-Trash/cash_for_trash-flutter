@@ -1,14 +1,26 @@
+import 'dart:io';
+
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/helpers/image_picker_helper.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ImageUploadRequestCollectionSection extends StatelessWidget {
   const ImageUploadRequestCollectionSection({super.key});
+
+  Future<void> _pickImage(BuildContext context) async {
+    final imagePath = await ImagePickerHelper.pickImageFromGallery();
+
+    if (imagePath != null && context.mounted) {
+      context.read<RequestCollectionBloc>().add(PickWasteImageEvent(imagePath));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +67,7 @@ class ImageUploadRequestCollectionSection extends StatelessWidget {
     final bgTint = context.colorScheme.primaryContainer.withValues(alpha: 0.25);
 
     return InkWell(
-      onTap: () {
-        // Placeholder for image picker trigger in UI mode
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.tr('tap_to_add_image')),
-            duration: const Duration(seconds: 1),
-          ),
-        );
-      },
+      onTap: () => _pickImage(context),
       borderRadius: BorderRadius.circular(14.r),
       child: Container(
         width: double.infinity,
@@ -115,11 +119,9 @@ class ImageUploadRequestCollectionSection extends StatelessWidget {
             height: 140.h,
             width: double.infinity,
             color: context.colorScheme.surfaceContainerHigh,
-            child: Icon(
-              Icons.image_rounded,
-              size: 48.sp,
-              color: context.colorScheme.primary,
-            ),
+            child: kIsWeb
+                ? Image.network(imagePath, fit: BoxFit.cover)
+                : Image.file(File(imagePath), fit: BoxFit.cover),
           ),
         ),
         Positioned(
@@ -127,9 +129,9 @@ class ImageUploadRequestCollectionSection extends StatelessWidget {
           right: 8.w,
           child: IconButton(
             onPressed: () {
-              context
-                  .read<RequestCollectionBloc>()
-                  .add(const RemoveWasteImageEvent());
+              context.read<RequestCollectionBloc>().add(
+                const RemoveWasteImageEvent(),
+              );
             },
             icon: CircleAvatar(
               backgroundColor: context.colorScheme.error,

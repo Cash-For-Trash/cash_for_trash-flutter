@@ -295,24 +295,4 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
     );
   }
 
-  IconData _getIconForWasteType(String typeName) {
-    final lower = typeName.toLowerCase();
-    if (lower.contains('plastic') || lower.contains('بلاستيك')) {
-      return Icons.layers_outlined;
-    } else if (lower.contains('paper') ||
-        lower.contains('cardboard') ||
-        lower.contains('ورق') ||
-        lower.contains('كرتون')) {
-      return Icons.inventory_2_outlined;
-    } else if (lower.contains('metal') || lower.contains('معادن')) {
-      return Icons.bolt_outlined;
-    } else if (lower.contains('glass') || lower.contains('زجاج')) {
-      return Icons.diamond_outlined;
-    } else if (lower.contains('organic') || lower.contains('عضوية')) {
-      return Icons.eco_outlined;
-    } else if (lower.contains('mixed') || lower.contains('مختلطة')) {
-      return Icons.delete_outline;
-    }
-    return Icons.recycling_rounded;
-  }
 }

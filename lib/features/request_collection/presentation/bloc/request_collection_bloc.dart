@@ -1,5 +1,10 @@
-import 'package:cash_for_trash/features/address/data/model/address_model.dart' as address_feature;
+import 'dart:io';
+
+import 'package:cash_for_trash/core/services/cloudinary_service.dart';
+import 'package:cash_for_trash/features/address/data/model/address_model.dart'
+    as address_feature;
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/collection_request_model.dart';
 import 'package:cash_for_trash/features/request_collection/domain/repositories/request_collection_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'request_collection_event.dart';
@@ -10,7 +15,7 @@ class RequestCollectionBloc
   final RequestCollectionRepository repository;
 
   RequestCollectionBloc({required this.repository})
-      : super(const RequestCollectionState()) {
+    : super(const RequestCollectionState()) {
     on<GetGarbageTypesEvent>(_onGetGarbageTypes);
     on<GetAddressesEvent>(_onGetAddresses);
     on<GetAvailabilitiesEvent>(_onGetAvailabilities);
@@ -25,28 +30,32 @@ class RequestCollectionBloc
     on<ChangeLocationEvent>(_onChangeLocation);
     on<AddAddressToCollectionEvent>(_onAddAddressToCollection);
     on<UpdateAddressInCollectionEvent>(_onUpdateAddressInCollection);
+    on<SubmitCollectionRequestEvent>(_onSubmitCollectionRequest);
   }
 
   Future<void> _onGetGarbageTypes(
     GetGarbageTypesEvent event,
     Emitter<RequestCollectionState> emit,
   ) async {
-    emit(state.copyWith(
-      isGarbageTypesLoading: true,
-      clearGarbageTypesError: true,
-    ));
+    emit(
+      state.copyWith(isGarbageTypesLoading: true, clearGarbageTypesError: true),
+    );
 
     final result = await repository.getGarbageTypes();
 
     result.fold(
-      (error) => emit(state.copyWith(
-        isGarbageTypesLoading: false,
-        garbageTypesErrorMessage: error,
-      )),
-      (response) => emit(state.copyWith(
-        isGarbageTypesLoading: false,
-        garbageTypes: response.data,
-      )),
+      (error) => emit(
+        state.copyWith(
+          isGarbageTypesLoading: false,
+          garbageTypesErrorMessage: error,
+        ),
+      ),
+      (response) => emit(
+        state.copyWith(
+          isGarbageTypesLoading: false,
+          garbageTypes: response.data,
+        ),
+      ),
     );
   }
 
@@ -54,26 +63,25 @@ class RequestCollectionBloc
     GetAddressesEvent event,
     Emitter<RequestCollectionState> emit,
   ) async {
-    emit(state.copyWith(
-      isAddressesLoading: true,
-      clearAddressesError: true,
-    ));
+    emit(state.copyWith(isAddressesLoading: true, clearAddressesError: true));
 
     final result = await repository.getAddresses();
 
     result.fold(
-      (error) => emit(state.copyWith(
-        isAddressesLoading: false,
-        addressesErrorMessage: error,
-      )),
+      (error) => emit(
+        state.copyWith(isAddressesLoading: false, addressesErrorMessage: error),
+      ),
       (response) {
-        final selected = state.selectedAddress ??
+        final selected =
+            state.selectedAddress ??
             (response.data.isNotEmpty ? response.data.first : null);
-        emit(state.copyWith(
-          isAddressesLoading: false,
-          addresses: response.data,
-          selectedAddress: selected,
-        ));
+        emit(
+          state.copyWith(
+            isAddressesLoading: false,
+            addresses: response.data,
+            selectedAddress: selected,
+          ),
+        );
         if (selected != null) {
           add(GetAvailabilitiesEvent(selected.addressId));
         }
@@ -85,27 +93,34 @@ class RequestCollectionBloc
     GetAvailabilitiesEvent event,
     Emitter<RequestCollectionState> emit,
   ) async {
-    emit(state.copyWith(
-      isAvailabilitiesLoading: true,
-      clearAvailabilitiesError: true,
-    ));
+    emit(
+      state.copyWith(
+        isAvailabilitiesLoading: true,
+        clearAvailabilitiesError: true,
+      ),
+    );
 
     final result = await repository.getAvailabilities(event.addressId);
 
     result.fold(
-      (error) => emit(state.copyWith(
-        isAvailabilitiesLoading: false,
-        availabilitiesErrorMessage: error,
-      )),
-      (response) {
-        final firstAvailability =
-            response.data.isNotEmpty ? response.data.first : null;
-        emit(state.copyWith(
+      (error) => emit(
+        state.copyWith(
           isAvailabilitiesLoading: false,
-          availabilities: response.data,
-          selectedAvailability: firstAvailability,
-          selectedTimeSlot: firstAvailability?.id ?? '',
-        ));
+          availabilitiesErrorMessage: error,
+        ),
+      ),
+      (response) {
+        final firstAvailability = response.data.isNotEmpty
+            ? response.data.first
+            : null;
+        emit(
+          state.copyWith(
+            isAvailabilitiesLoading: false,
+            availabilities: response.data,
+            selectedAvailability: firstAvailability,
+            selectedTimeSlot: firstAvailability?.id ?? '',
+          ),
+        );
       },
     );
   }
@@ -167,10 +182,12 @@ class RequestCollectionBloc
     SelectAvailabilityEvent event,
     Emitter<RequestCollectionState> emit,
   ) {
-    emit(state.copyWith(
-      selectedAvailability: event.availability,
-      selectedTimeSlot: event.availability.id,
-    ));
+    emit(
+      state.copyWith(
+        selectedAvailability: event.availability,
+        selectedTimeSlot: event.availability.id,
+      ),
+    );
   }
 
   void _onPickWasteImage(
@@ -201,9 +218,7 @@ class RequestCollectionBloc
     );
   }
 
-  AddressItemModel _toAddressItem(
-    address_feature.AddressModel address,
-  ) {
+  AddressItemModel _toAddressItem(address_feature.AddressModel address) {
     return AddressItemModel(
       addressId: address.addressId,
       buildingNum: address.buildingNum,
@@ -224,10 +239,7 @@ class RequestCollectionBloc
   ) {
     final newItem = _toAddressItem(event.address);
     final updated = [newItem, ...state.addresses];
-    emit(state.copyWith(
-      addresses: updated,
-      selectedAddress: newItem,
-    ));
+    emit(state.copyWith(addresses: updated, selectedAddress: newItem));
     add(GetAvailabilitiesEvent(newItem.addressId));
   }
 
@@ -240,16 +252,91 @@ class RequestCollectionBloc
         .map((a) => a.addressId == updatedItem.addressId ? updatedItem : a)
         .toList();
     final currentSelected = state.selectedAddress;
-    final newSelected =
-        currentSelected?.addressId == updatedItem.addressId
-            ? updatedItem
-            : currentSelected;
-    emit(state.copyWith(
-      addresses: updatedList,
-      selectedAddress: newSelected,
-    ));
+    final newSelected = currentSelected?.addressId == updatedItem.addressId
+        ? updatedItem
+        : currentSelected;
+    emit(state.copyWith(addresses: updatedList, selectedAddress: newSelected));
     if (newSelected != null) {
       add(GetAvailabilitiesEvent(newSelected.addressId));
     }
+  }
+
+  Future<void> _onSubmitCollectionRequest(
+    SubmitCollectionRequestEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) async {
+    if (state.selectedWasteTypes.isEmpty) {
+      emit(
+        state.copyWith(
+          submitErrorMessage: 'waste_type_required',
+          clearSubmitError: false,
+        ),
+      );
+      return;
+    }
+    if (state.selectedAddress == null) {
+      emit(state.copyWith(submitErrorMessage: 'address_required'));
+      return;
+    }
+    if (state.selectedAvailability == null) {
+      emit(state.copyWith(submitErrorMessage: 'availability_required'));
+      return;
+    }
+
+    emit(state.copyWith(isSubmitting: true, clearSubmitError: true));
+
+    String? uploadedImageUrl;
+    if (state.imagePath != null && state.imagePath!.isNotEmpty) {
+      final cloudinaryService = CloudinaryService();
+      uploadedImageUrl = await cloudinaryService.uploadImage(
+        File(state.imagePath!),
+        folderName: 'requests',
+      );
+    }
+
+    final double quantityValue;
+    switch (state.selectedQuantity) {
+      case 'small_qty':
+        quantityValue = 5.0;
+        break;
+      case 'large_qty':
+        quantityValue = 75.0;
+        break;
+      default:
+        quantityValue = 25.0;
+    }
+    final effectiveQuantity = state.exactWeight ?? quantityValue;
+
+    final perTypeWeight = effectiveQuantity / state.selectedWasteTypes.length;
+    final garbageTypes = state.selectedWasteTypes
+        .map(
+          (id) => CollectionGarbageTypeModel(
+            garbageTypeId: id,
+            estimatedWeight: perTypeWeight,
+          ),
+        )
+        .toList();
+
+    final request = CollectionRequestModel(
+      addressId: state.selectedAddress!.addressId,
+      availabilityId: state.selectedAvailability!.availabilityId,
+      quantity: effectiveQuantity,
+      collectionImg: uploadedImageUrl,
+      garbageTypes: garbageTypes,
+    );
+
+    final result = await repository.createCollectionRequest(request);
+
+    result.fold(
+      (error) =>
+          emit(state.copyWith(isSubmitting: false, submitErrorMessage: error)),
+      (response) => emit(
+        state.copyWith(
+          isSubmitting: false,
+          submitSuccess: true,
+          collectionRequestResponse: response,
+        ),
+      ),
+    );
   }
 }

@@ -241,5 +241,12 @@
     "no_waste_types_available": "No waste types available",
     "failed_to_load_waste_types": "Failed to load waste types",
     "no_availabilities": "No available time slots for this address",
-    "availabilities_error": "Could not load available slots"
+    "availabilities_error": "Could not load available slots",
+    "order_confirmed": "Order Confirmed!",
+    "order_processing": "Your order is being processed. The collector will reach you soon.",
+    "track_order_now": "Track Order Now",
+    "return_home": "Return to Home",
+    "waste_type_required": "Please select at least one waste type.",
+    "address_required": "Please select a pickup address.",
+    "availability_required": "Please select a pickup time slot."
 }
