@@ -35,8 +35,8 @@ class CustomNavBar extends StatelessWidget {
                 context: context,
               ),
               navItem(
-                icon: Icons.explore_outlined,
-                label: context.tr("explore"),
+                icon: Icons.card_giftcard_rounded,
+                label: context.tr("rewards"),
                 index: 1,
                 context: context,
               ),

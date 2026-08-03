@@ -167,5 +167,6 @@
     "field_required": "This field is required",
     "invalid_number": "Please enter a valid number",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "rewards": "Rewards"
 }

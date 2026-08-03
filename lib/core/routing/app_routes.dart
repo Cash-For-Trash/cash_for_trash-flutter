@@ -31,4 +31,5 @@ class AppRoutes {
   static const String mapsScreen = '/maps_screen';
   static const String addressesScreen = '/addresses_screen';
   static const String addressFormScreen = '/address_form_screen';
+  static const String rewardsScreen = '/rewards_screen';
 }

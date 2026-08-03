@@ -30,6 +30,9 @@ import 'package:cash_for_trash/features/request_collection/presentation/bloc/req
 import 'package:cash_for_trash/features/maps/data/repository/maps_repository_impl.dart';
 import 'package:cash_for_trash/features/maps/domain/repository/maps_repository.dart';
 import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
+import 'package:cash_for_trash/features/rewards/data/repository/rewards_repository_impl.dart';
+import 'package:cash_for_trash/features/rewards/domain/repository/rewards_repository.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -101,5 +104,13 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerFactory<RequestCollectionBloc>(
     () => RequestCollectionBloc(repository: sl()),
+  );
+
+  // Rewards Feature
+  sl.registerLazySingleton<RewardsRepository>(
+    () => RewardsRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<RewardsBloc>(
+    () => RewardsBloc(repository: sl()),
   );
 }

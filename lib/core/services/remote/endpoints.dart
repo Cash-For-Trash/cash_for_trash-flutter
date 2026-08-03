@@ -23,6 +23,9 @@ class EndPoint {
   
   // addresses
   static String addresses = "/addresses";
+
+  // rewards
+  static String rewards = "/rewards";
 }
 
 class ApiKey {

@@ -24,6 +24,8 @@ import 'package:cash_for_trash/features/request_collection/presentation/bloc/req
 import 'package:cash_for_trash/features/request_collection/presentation/screens/request_collection_screen.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:cash_for_trash/features/splash/presentation/screens/splash_screen.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
+import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -139,6 +141,14 @@ class RouterGenerator {
             ),
           );
         },
+      ),
+      GoRoute(
+        path: AppRoutes.rewardsScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              sl<RewardsBloc>()..add(const GetRewardsEvent()),
+          child: const RewardsScreen(),
+        ),
       ),
     ],
   );

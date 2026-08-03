@@ -1,9 +1,13 @@
+import 'package:cash_for_trash/core/di/service_locator.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/widgets/app_exit_pop_scope.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/home_screen.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
+import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Root extends StatefulWidget {
   const Root({super.key});
@@ -32,7 +36,11 @@ class RootState extends State<Root> {
   Widget build(BuildContext context) {
     List<Widget> screens = [
       const HomeScreen(),
-      Scaffold(body: Center(child: Text(context.tr('explore')))),
+      BlocProvider(
+        create: (context) =>
+            sl<RewardsBloc>()..add(const GetRewardsEvent()),
+        child: const RewardsScreen(),
+      ),
       Scaffold(body: Center(child: Text(context.tr('my_learning')))),
       const ProfileScreen(),
     ];
