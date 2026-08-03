@@ -24,6 +24,32 @@ import 'package:cash_for_trash/features/request_collection/presentation/bloc/req
 import 'package:cash_for_trash/features/request_collection/presentation/screens/request_collection_screen.dart';
 import 'package:cash_for_trash/features/splash/presentation/bloc/splash_bloc.dart';
 import 'package:cash_for_trash/features/splash/presentation/screens/splash_screen.dart';
+import 'package:cash_for_trash/features/worker/root_worker.dart';
+import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_event.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/bloc/collection_requests_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/presentation/bloc/availability_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/presentation/bloc/earnings_worker_bloc.dart';
+import 'package:cash_for_trash/features/admin/root_admin.dart';
+import 'package:cash_for_trash/features/admin/home_admin/presentation/bloc/home_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/workers_admin/presentation/bloc/workers_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/workers_admin/presentation/bloc/workers_admin_event.dart';
+import 'package:cash_for_trash/features/admin/workers_admin/presentation/screens/worker_detail_admin_screen.dart';
+import 'package:cash_for_trash/features/admin/customers_admin/presentation/bloc/customers_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/areas_admin/presentation/bloc/areas_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/areas_admin/data/model/area_admin_model.dart';
+import 'package:cash_for_trash/features/admin/areas_admin/presentation/screens/area_form_admin_screen.dart';
+import 'package:cash_for_trash/features/admin/availabilities_admin/presentation/bloc/availabilities_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/garbage_types_admin/presentation/bloc/garbage_types_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/garbage_types_admin/data/model/garbage_type_admin_model.dart';
+import 'package:cash_for_trash/features/admin/garbage_types_admin/presentation/screens/garbage_type_form_admin_screen.dart';
+import 'package:cash_for_trash/features/admin/rewards_admin/presentation/bloc/rewards_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/rewards_admin/data/model/reward_admin_model.dart';
+import 'package:cash_for_trash/features/admin/rewards_admin/presentation/screens/reward_form_admin_screen.dart';
+import 'package:cash_for_trash/features/admin/redemptions_admin/presentation/bloc/redemptions_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/pricing_admin/presentation/bloc/pricing_admin_bloc.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
+import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -89,6 +115,21 @@ class RouterGenerator {
         ),
       ),
       GoRoute(
+        path: AppRoutes.workerHomeScreen,
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<HomeWorkerBloc>()..add(const GetHomeWorkerDataEvent()),
+            ),
+            BlocProvider(create: (context) => sl<CollectionRequestsWorkerBloc>()),
+            BlocProvider(create: (context) => sl<AvailabilityWorkerBloc>()),
+            BlocProvider(create: (context) => sl<EarningsWorkerBloc>()),
+            BlocProvider(create: (context) => sl<ProfileBloc>()),
+          ],
+          child: const RootWorker(),
+        ),
+      ),
+      GoRoute(
         path: AppRoutes.profileScreen,
         builder: (context, state) => BlocProvider(
           create: (context) => sl<ProfileBloc>(),
@@ -139,6 +180,73 @@ class RouterGenerator {
             ),
           );
         },
+      ),
+      GoRoute(
+        path: AppRoutes.adminHomeScreen,
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => sl<HomeAdminBloc>()),
+            BlocProvider(create: (_) => sl<WorkersAdminBloc>()),
+            BlocProvider(create: (_) => sl<CustomersAdminBloc>()),
+            BlocProvider(create: (_) => sl<AreasAdminBloc>()),
+            BlocProvider(create: (_) => sl<AvailabilitiesAdminBloc>()),
+            BlocProvider(create: (_) => sl<GarbageTypesAdminBloc>()),
+            BlocProvider(create: (_) => sl<RewardsAdminBloc>()),
+            BlocProvider(create: (_) => sl<RedemptionsAdminBloc>()),
+            BlocProvider(create: (_) => sl<PricingAdminBloc>()),
+            BlocProvider(create: (_) => sl<ProfileBloc>()),
+          ],
+          child: const RootAdmin(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.adminAreaFormScreen,
+        builder: (context, state) {
+          final existingArea = state.extra as AreaAdminModel?;
+          return BlocProvider(
+            create: (_) => sl<AreasAdminBloc>(),
+            child: AreaFormAdminScreen(existingArea: existingArea),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.adminGarbageTypeFormScreen,
+        builder: (context, state) {
+          final existingItem = state.extra as GarbageTypeAdminModel?;
+          return BlocProvider(
+            create: (_) => sl<GarbageTypesAdminBloc>(),
+            child: GarbageTypeFormAdminScreen(existingItem: existingItem),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.adminRewardFormScreen,
+        builder: (context, state) {
+          final existingReward = state.extra as RewardAdminModel?;
+          return BlocProvider(
+            create: (_) => sl<RewardsAdminBloc>(),
+            child: RewardFormAdminScreen(existingReward: existingReward),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.adminWorkerDetailScreen,
+        builder: (context, state) {
+          final userId = state.extra as String;
+          return BlocProvider(
+            create: (_) => sl<WorkersAdminBloc>()
+              ..add(GetWorkerDetailAdminEvent(userId)),
+            child: WorkerDetailAdminScreen(userId: userId),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.rewardsScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              sl<RewardsBloc>()..add(const GetRewardsEvent()),
+          child: const RewardsScreen(),
+        ),
       ),
     ],
   );

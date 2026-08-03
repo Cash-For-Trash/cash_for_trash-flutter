@@ -1,4 +1,6 @@
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/availability_model.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/collection_request_response_model.dart';
 import 'package:cash_for_trash/features/request_collection/data/model/garbage_type_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -12,6 +14,11 @@ class RequestCollectionState extends Equatable {
   final String? addressesErrorMessage;
   final AddressItemModel? selectedAddress;
 
+  final bool isAvailabilitiesLoading;
+  final List<AvailabilityItemModel> availabilities;
+  final String? availabilitiesErrorMessage;
+  final AvailabilityItemModel? selectedAvailability;
+
   final List<String> selectedWasteTypes;
   final String selectedQuantity;
   final double? exactWeight;
@@ -23,6 +30,11 @@ class RequestCollectionState extends Equatable {
   final double? longitude;
   final double cost;
 
+  final bool isSubmitting;
+  final bool submitSuccess;
+  final String? submitErrorMessage;
+  final CollectionRequestResponseModel? collectionRequestResponse;
+
   const RequestCollectionState({
     this.isGarbageTypesLoading = false,
     this.garbageTypes = const [],
@@ -31,16 +43,24 @@ class RequestCollectionState extends Equatable {
     this.addresses = const [],
     this.addressesErrorMessage,
     this.selectedAddress,
+    this.isAvailabilitiesLoading = false,
+    this.availabilities = const [],
+    this.availabilitiesErrorMessage,
+    this.selectedAvailability,
     this.selectedWasteTypes = const [],
     this.selectedQuantity = 'medium_qty',
     this.exactWeight,
-    this.selectedTimeSlot = 'today_4pm',
+    this.selectedTimeSlot = '',
     this.imagePath,
     this.streetKey = '',
     this.cityKey = '',
     this.latitude,
     this.longitude,
     this.cost = 5.0,
+    this.isSubmitting = false,
+    this.submitSuccess = false,
+    this.submitErrorMessage,
+    this.collectionRequestResponse,
   });
 
   RequestCollectionState copyWith({
@@ -53,6 +73,11 @@ class RequestCollectionState extends Equatable {
     String? addressesErrorMessage,
     bool clearAddressesError = false,
     AddressItemModel? selectedAddress,
+    bool? isAvailabilitiesLoading,
+    List<AvailabilityItemModel>? availabilities,
+    String? availabilitiesErrorMessage,
+    bool clearAvailabilitiesError = false,
+    AvailabilityItemModel? selectedAvailability,
     List<String>? selectedWasteTypes,
     String? selectedQuantity,
     double? exactWeight,
@@ -65,6 +90,12 @@ class RequestCollectionState extends Equatable {
     double? latitude,
     double? longitude,
     double? cost,
+    bool? isSubmitting,
+    bool? submitSuccess,
+    String? submitErrorMessage,
+    bool clearSubmitError = false,
+    CollectionRequestResponseModel? collectionRequestResponse,
+    bool clearResponse = false,
   }) {
     return RequestCollectionState(
       isGarbageTypesLoading:
@@ -79,6 +110,13 @@ class RequestCollectionState extends Equatable {
           ? null
           : (addressesErrorMessage ?? this.addressesErrorMessage),
       selectedAddress: selectedAddress ?? this.selectedAddress,
+      isAvailabilitiesLoading:
+          isAvailabilitiesLoading ?? this.isAvailabilitiesLoading,
+      availabilities: availabilities ?? this.availabilities,
+      availabilitiesErrorMessage: clearAvailabilitiesError
+          ? null
+          : (availabilitiesErrorMessage ?? this.availabilitiesErrorMessage),
+      selectedAvailability: selectedAvailability ?? this.selectedAvailability,
       selectedWasteTypes: selectedWasteTypes ?? this.selectedWasteTypes,
       selectedQuantity: selectedQuantity ?? this.selectedQuantity,
       exactWeight: clearExactWeight ? null : (exactWeight ?? this.exactWeight),
@@ -89,6 +127,14 @@ class RequestCollectionState extends Equatable {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       cost: cost ?? this.cost,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      submitSuccess: submitSuccess ?? this.submitSuccess,
+      submitErrorMessage: clearSubmitError
+          ? null
+          : (submitErrorMessage ?? this.submitErrorMessage),
+      collectionRequestResponse: clearResponse
+          ? null
+          : (collectionRequestResponse ?? this.collectionRequestResponse),
     );
   }
 
@@ -101,6 +147,10 @@ class RequestCollectionState extends Equatable {
     addresses,
     addressesErrorMessage,
     selectedAddress,
+    isAvailabilitiesLoading,
+    availabilities,
+    availabilitiesErrorMessage,
+    selectedAvailability,
     selectedWasteTypes,
     selectedQuantity,
     exactWeight,
@@ -111,5 +161,9 @@ class RequestCollectionState extends Equatable {
     latitude,
     longitude,
     cost,
+    isSubmitting,
+    submitSuccess,
+    submitErrorMessage,
+    collectionRequestResponse,
   ];
 }

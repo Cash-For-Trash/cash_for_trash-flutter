@@ -30,6 +30,46 @@ import 'package:cash_for_trash/features/request_collection/presentation/bloc/req
 import 'package:cash_for_trash/features/maps/data/repository/maps_repository_impl.dart';
 import 'package:cash_for_trash/features/maps/domain/repository/maps_repository.dart';
 import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
+import 'package:cash_for_trash/features/worker/home_worker/data/repository/home_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/home_worker/domain/repository/home_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/data/repository/collection_requests_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/domain/repository/collection_requests_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/bloc/collection_requests_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/data/repository/availability_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/domain/repository/availability_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/availability_worker/presentation/bloc/availability_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/data/repository/earnings_worker_repository_impl.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/domain/repository/earnings_worker_repository.dart';
+import 'package:cash_for_trash/features/worker/earnings_worker/presentation/bloc/earnings_worker_bloc.dart';
+import 'package:cash_for_trash/features/admin/home_admin/presentation/bloc/home_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/workers_admin/data/repository/workers_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/workers_admin/domain/repository/workers_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/workers_admin/presentation/bloc/workers_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/customers_admin/data/repository/customers_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/customers_admin/domain/repository/customers_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/customers_admin/presentation/bloc/customers_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/areas_admin/data/repository/areas_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/areas_admin/domain/repository/areas_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/areas_admin/presentation/bloc/areas_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/availabilities_admin/data/repository/availabilities_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/availabilities_admin/domain/repository/availabilities_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/availabilities_admin/presentation/bloc/availabilities_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/garbage_types_admin/data/repository/garbage_types_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/garbage_types_admin/domain/repository/garbage_types_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/garbage_types_admin/presentation/bloc/garbage_types_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/rewards_admin/data/repository/rewards_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/rewards_admin/domain/repository/rewards_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/rewards_admin/presentation/bloc/rewards_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/redemptions_admin/data/repository/redemptions_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/redemptions_admin/domain/repository/redemptions_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/redemptions_admin/presentation/bloc/redemptions_admin_bloc.dart';
+import 'package:cash_for_trash/features/admin/pricing_admin/data/repository/pricing_admin_repository_impl.dart';
+import 'package:cash_for_trash/features/admin/pricing_admin/domain/repository/pricing_admin_repository.dart';
+import 'package:cash_for_trash/features/admin/pricing_admin/presentation/bloc/pricing_admin_bloc.dart';
+import 'package:cash_for_trash/features/rewards/data/repository/rewards_repository_impl.dart';
+import 'package:cash_for_trash/features/rewards/domain/repository/rewards_repository.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -101,5 +141,100 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerFactory<RequestCollectionBloc>(
     () => RequestCollectionBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<HomeWorkerRepository>(
+    () => HomeWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<HomeWorkerBloc>(
+    () => HomeWorkerBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<CollectionRequestsWorkerRepository>(
+    () => CollectionRequestsWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<CollectionRequestsWorkerBloc>(
+    () => CollectionRequestsWorkerBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<AvailabilityWorkerRepository>(
+    () => AvailabilityWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<AvailabilityWorkerBloc>(
+    () => AvailabilityWorkerBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<EarningsWorkerRepository>(
+    () => EarningsWorkerRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<EarningsWorkerBloc>(
+    () => EarningsWorkerBloc(repository: sl()),
+  );
+
+  // Admin Feature
+  sl.registerFactory<HomeAdminBloc>(() => HomeAdminBloc());
+
+  sl.registerLazySingleton<WorkersAdminRepository>(
+    () => WorkersAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<WorkersAdminBloc>(
+    () => WorkersAdminBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<CustomersAdminRepository>(
+    () => CustomersAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<CustomersAdminBloc>(
+    () => CustomersAdminBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<AreasAdminRepository>(
+    () => AreasAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<AreasAdminBloc>(
+    () => AreasAdminBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<AvailabilitiesAdminRepository>(
+    () => AvailabilitiesAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<AvailabilitiesAdminBloc>(
+    () => AvailabilitiesAdminBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<GarbageTypesAdminRepository>(
+    () => GarbageTypesAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<GarbageTypesAdminBloc>(
+    () => GarbageTypesAdminBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<RewardsAdminRepository>(
+    () => RewardsAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<RewardsAdminBloc>(
+    () => RewardsAdminBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<RedemptionsAdminRepository>(
+    () => RedemptionsAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<RedemptionsAdminBloc>(
+    () => RedemptionsAdminBloc(repository: sl()),
+  );
+
+  sl.registerLazySingleton<PricingAdminRepository>(
+    () => PricingAdminRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<PricingAdminBloc>(
+    () => PricingAdminBloc(repository: sl()),
+  );
+  // Rewards Feature
+  sl.registerLazySingleton<RewardsRepository>(
+    () => RewardsRepositoryImpl(apiConsumer: sl()),
+  );
+
+  sl.registerFactory<RewardsBloc>(
+    () => RewardsBloc(repository: sl()),
   );
 }

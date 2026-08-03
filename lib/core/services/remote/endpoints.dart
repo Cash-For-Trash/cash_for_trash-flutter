@@ -17,12 +17,30 @@ class EndPoint {
   static String refreshToken = "/auth/refresh-token";
   static String verifyEmail = "/auth/verify-email/";
   static String checkToken = "/auth/check-token";
-  
+
   // garbage types
   static String garbageTypes = "/garbage-types";
-  
-  // addresses
   static String addresses = "/addresses";
+  static String userProfile = "/user/profile";
+  static String availabilities = "/availabilities";
+  static String myAvailabilities = "/availabilities/my";
+  static String areas = "/areas";
+  static String pricing = "/pricing";
+
+  // admin
+  static String adminWorkers = "/admin/workers";
+  static String adminCustomers = "/admin/customers";
+  static String workerApprove = "/workers";
+  static String rewardsAdmin = "/rewards";
+  static String rewardRedeems = "/reward-redeems";
+
+  // collection requests
+  static String collectionRequests = "/collection-requests";
+  static String collectionAvailabilities(String addressId) =>
+      "/collection-requests/addresses/$addressId/availabilities";
+
+  // rewards
+  static String rewards = "/rewards";
 }
 
 class ApiKey {
@@ -45,4 +63,14 @@ class ApiKey {
   static String newPassword = "new_password";
   static String image = "image";
   static String errors = "errors";
+  static String nationalId = "national_id";
+  static String isApproved = "is_approved";
+  static String areaId = "area_id";
+  static String dayOfWeek = "day_of_week";
+  static String fromTime = "from_time";
+  static String toTime = "to_time";
+  static String status = "status";
+  static String weights = "weights";
+  static String actualWeight = "actual_weight";
+  static String garbageTypeId = "garbage_type_id";
 }

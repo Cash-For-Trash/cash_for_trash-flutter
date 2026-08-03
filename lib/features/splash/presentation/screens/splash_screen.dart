@@ -37,8 +37,9 @@ class _SplashScreenState extends State<SplashScreen> {
       if (userRole == UserRole.customer) {
         context.go(AppRoutes.homeScreen);
       } else if (userRole == UserRole.worker) {
-        // TODO When Implemented worker screens refactor it
-        context.go(AppRoutes.homeScreen);
+        context.go(AppRoutes.workerHomeScreen);
+      } else if (userRole == UserRole.admin) {
+        context.go(AppRoutes.adminHomeScreen);
       } else {
         context.go(AppRoutes.loginScreen);
       }
@@ -64,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Navigator.of(dialogContext).pop();
             await CacheHelper.removeAllSecretData();
             await CacheHelper().clearUserData();
-            if (context.mounted) {
+            if (mounted) {
               context.go(AppRoutes.loginScreen);
             }
           },

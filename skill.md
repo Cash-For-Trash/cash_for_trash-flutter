@@ -268,8 +268,11 @@ lib/features/[feature_name]/
    - **Colors**: **No Static Colors Rule**. Never use hardcoded colors (`Colors.white`, `Colors.black`, `Colors.orange`). Retrieve colors exclusively via `context.colorScheme` or `AppTheme` extensions to guarantee light/dark mode compatibility.
    - **Typography**: Prefer `context.textTheme` extensions (e.g., `context.textTheme.headlineMedium`) over manual `TextStyle` declarations.
 
-4. **State Handling**:
-   - Wrap interactive UI components with `BlocBuilder` to reactively render Loading, Loaded, Error, and Empty states cleanly.
+4. **State Handling & Shared Error/Empty Widget (MANDATORY)**:
+   - **Never inline error or empty state UI directly inside a screen's `BlocBuilder`.** Always delegate to `CustomErrorOrEmptyWidget` from `lib/core/widgets/custom_error_or_empty_widget.dart`.
+   - **Error State**: Use `isError: true`, pass `errorMessage` from the BLoC state, and pass `onRetry` callback to re-dispatch the initial event.
+   - **Empty State**: Use `isError: false`, provide contextual `icon`, `title`, and `message`.
+   - The widget provides a premium design with themed colors, icons, and a styled **"Try Again"** button on error.
 
    *Example Screen View (`features/[feature_name]/presentation/screens/example_screen.dart`)*:
    ```dart
@@ -277,6 +280,7 @@ lib/features/[feature_name]/
    import 'package:flutter_bloc/flutter_bloc.dart';
    import 'package:flutter_screenutil/flutter_screenutil.dart';
    import 'package:cash_for_trash/core/extensions/theme_extensions.dart';
+   import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
    import '../bloc/example_bloc.dart';
    import '../bloc/example_state.dart';
 
@@ -297,29 +301,28 @@ lib/features/[feature_name]/
              if (state is ExampleLoadingState) {
                return const Center(child: LoadingIndicatorWidget());
              } else if (state is ExampleLoadedState) {
+               if (state.items.isEmpty) {
+                 return const CustomErrorOrEmptyWidget(
+                   isError: false,
+                   title: 'No Items Found',
+                   message: 'There are currently no items available.',
+                   icon: Icons.inbox_rounded,
+                 );
+               }
                return Padding(
                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-                 key: ValueKey(state.data.id),
-                 child: Column(
-                   crossAxisAlignment: CrossAxisAlignment.start,
-                   children: [
-                     Text(
-                       state.data.title,
-                       style: context.textTheme.headlineMedium?.copyWith(
-                         color: context.colorScheme.onBackground,
-                       ),
-                     ),
-                   ],
+                 child: ListView.builder(
+                   itemCount: state.items.length,
+                   itemBuilder: (context, index) => Text(state.items[index].title),
                  ),
                );
              } else if (state is ExampleErrorState) {
-               return Center(
-                 child: Text(
-                   state.errorMessage,
-                   style: context.textTheme.bodyMedium?.copyWith(
-                     color: context.colorScheme.error,
-                   ),
-                 ),
+               return CustomErrorOrEmptyWidget(
+                 isError: true,
+                 errorMessage: state.errorMessage,
+                 onRetry: () {
+                   context.read<ExampleBloc>().add(const GetExampleDataEvent(1));
+                 },
                );
              }
              return const SizedBox.shrink();
@@ -354,3 +357,15 @@ lib/features/[feature_name]/
    - **Never add inline comments, block comments, or doc comments** anywhere in the code (no `//`, `/* */`, or `///`).
    - Code must be self-documenting through clear naming of classes, methods, variables, and files.
    - Use descriptive names that express intent without needing explanation.
+
+5. **Naming Conventions for Files and Classes**:
+   - **Standard Format**: Name any new file or class using the pattern: `<feature_name>_<role>_<type>` (e.g., `onboarding_worker_screen.dart` / `OnboardingWorkerScreen`).
+     - `feature_name`: The name of the feature (e.g., `onboarding_worker`).
+     - `role`: The user role (e.g., `admin`, `worker`).
+     - `type`: The type of component (e.g., `screen`, `widget`, `cubit`, `state`).
+   - **Screen-Specific Widgets**: If a widget is created specifically for a single screen, its name must contain the screen name followed by the specific widget name, section name, or purpose (e.g., `onboarding_worker_screen_header.dart` / `OnboardingWorkerScreenHeader`).
+
+6. **Flutter 3.44.4 Modern & Non-Deprecated Code Standard**:
+   - Always write modern, stable code compliant with Flutter 3.44.4 standards.
+   - Never use deprecated Flutter/Dart methods, properties, or constructors (e.g. use `Color.withValues(alpha: ...)` instead of `withOpacity()`, use `context.colorScheme` & `context.textTheme` extensions, avoid deprecated parameters).
+   - Ensure all written code is clean, warning-free, and adheres strictly to non-deprecated APIs.

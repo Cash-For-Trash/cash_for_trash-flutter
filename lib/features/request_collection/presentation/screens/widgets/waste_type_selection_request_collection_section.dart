@@ -1,3 +1,4 @@
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
@@ -53,35 +54,27 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
               }
 
               if (state.garbageTypesErrorMessage != null) {
-                return Column(
-                  children: [
-                    Text(
-                      state.garbageTypesErrorMessage!,
-                      style: TextStyle(
-                        color: context.colorScheme.error,
-                        fontSize: 13.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 8.h),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<RequestCollectionBloc>().add(
-                          const GetGarbageTypesEvent(),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.colorScheme.primary,
-                        foregroundColor: context.colorScheme.onPrimary,
-                      ),
-                      child: Text(context.tr('retry')),
-                    ),
-                  ],
+                return _buildStatusMessage(
+                  context,
+                  message: state.garbageTypesErrorMessage!,
+                  icon: Icons.error_outline_rounded,
+                  iconColor: context.colorScheme.error,
+                  iconBgColor: context.colorScheme.errorContainer.withValues(
+                    alpha: 0.35,
+                  ),
                 );
               }
 
               if (state.garbageTypes.isEmpty) {
-                return const SizedBox.shrink();
+                return _buildStatusMessage(
+                  context,
+                  message: context.tr('no_waste_types_available'),
+                  icon: Icons.recycling_rounded,
+                  iconColor: context.colorScheme.primary,
+                  iconBgColor: context.colorScheme.primaryContainer.withValues(
+                    alpha: 0.5,
+                  ),
+                );
               }
 
               return GridView.builder(
@@ -120,9 +113,11 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
     required bool isSelected,
   }) {
     final activeColor = context.colorScheme.primary;
-    final inactiveBg = context.colorScheme.surfaceContainerLow;
+    final inactiveBg = context.colorScheme.surfaceContainerLow.withValues(
+      alpha: 0.5,
+    );
     final activeBg = context.colorScheme.primaryContainer.withValues(
-      alpha: 0.35,
+      alpha: 0.12,
     );
 
     return InkWell(
@@ -156,6 +151,16 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
                         alpha: 0.5,
                       ),
               ),
+              // child: Icon(
+              //   _getIconForWasteType(item.garbageTypeName),
+              //   size: 24.sp,
+              //   color: isSelected
+              //       ? context.colorScheme.onPrimary
+              //       : context.colorScheme.onSurfaceVariant.withValues(
+              //           alpha: 0.6,
+              //         ),
+              // ),
+              // In case we want to use the network images again:
               child: CachedNetworkImage(
                 imageUrl: item.garbageTypeImage,
                 width: 24.w,
@@ -216,4 +221,78 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildStatusMessage(
+    BuildContext context, {
+    required String message,
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBgColor,
+  }) {
+    final cleanMessage = message
+        .replaceAll(
+          RegExp(r'^\.?(Not found|Error):\s*', caseSensitive: false),
+          '',
+        )
+        .trim();
+    final displayMessage = cleanMessage.isNotEmpty
+        ? cleanMessage
+        : context.tr('failed_to_load_waste_types');
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(14.r),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.r),
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: iconColor, size: 24.sp),
+          ),
+          SizedBox(height: 10.h),
+          Text(
+            displayMessage,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurface,
+              fontSize: 13.sp,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 12.h),
+          OutlinedButton.icon(
+            onPressed: () {
+              context.read<RequestCollectionBloc>().add(
+                const GetGarbageTypesEvent(),
+              );
+            },
+            style: OutlinedButton.styleFrom(
+              foregroundColor: context.colorScheme.primary,
+              side: BorderSide(
+                color: context.colorScheme.primary.withValues(alpha: 0.4),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+            ),
+            icon: Icon(Icons.refresh_rounded, size: 16.sp),
+            label: Text(
+              context.tr('retry'),
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

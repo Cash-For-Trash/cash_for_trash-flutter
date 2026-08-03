@@ -5,6 +5,7 @@ class AppRoutes {
   static const String rootAfterLogin = '/root_after_login';
   static const String authScreen = '/auth_screen';
   static const String homeScreen = '/home_screen';
+  static const String workerHomeScreen = '/worker_home_screen';
   static const String homeScreenAfterLogin = '/home_screen_after_login';
   static const String courseDetailsScreen = '/course_details_screen';
   static const String loginScreen = '/login_screen';
@@ -31,4 +32,16 @@ class AppRoutes {
   static const String mapsScreen = '/maps_screen';
   static const String addressesScreen = '/addresses_screen';
   static const String addressFormScreen = '/address_form_screen';
+
+  // Admin Routes
+  static const String adminHomeScreen = '/admin_home_screen';
+  static const String adminAreaFormScreen = '/admin_area_form_screen';
+  static const String adminGarbageTypeFormScreen =
+      '/admin_garbage_type_form_screen';
+  static const String adminRewardFormScreen = '/admin_reward_form_screen';
+  static const String adminWorkerDetailScreen = '/admin_worker_detail_screen';
+  static const String adminCustomerDetailScreen =
+      '/admin_customer_detail_screen';
+      
+  static const String rewardsScreen = '/rewards_screen';
 }
