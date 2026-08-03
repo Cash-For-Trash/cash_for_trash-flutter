@@ -48,6 +48,8 @@ import 'package:cash_for_trash/features/admin/rewards_admin/data/model/reward_ad
 import 'package:cash_for_trash/features/admin/rewards_admin/presentation/screens/reward_form_admin_screen.dart';
 import 'package:cash_for_trash/features/admin/redemptions_admin/presentation/bloc/redemptions_admin_bloc.dart';
 import 'package:cash_for_trash/features/admin/pricing_admin/presentation/bloc/pricing_admin_bloc.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
+import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -237,6 +239,14 @@ class RouterGenerator {
             child: WorkerDetailAdminScreen(userId: userId),
           );
         },
+      ),
+      GoRoute(
+        path: AppRoutes.rewardsScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              sl<RewardsBloc>()..add(const GetRewardsEvent()),
+          child: const RewardsScreen(),
+        ),
       ),
     ],
   );

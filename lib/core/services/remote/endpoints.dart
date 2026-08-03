@@ -17,7 +17,7 @@ class EndPoint {
   static String refreshToken = "/auth/refresh-token";
   static String verifyEmail = "/auth/verify-email/";
   static String checkToken = "/auth/check-token";
-  
+
   // garbage types
   static String garbageTypes = "/garbage-types";
   static String addresses = "/addresses";
@@ -31,13 +31,16 @@ class EndPoint {
   static String adminWorkers = "/admin/workers";
   static String adminCustomers = "/admin/customers";
   static String workerApprove = "/workers";
-  static String rewards = "/rewards";
+  static String rewardsAdmin = "/rewards";
   static String rewardRedeems = "/reward-redeems";
 
   // collection requests
   static String collectionRequests = "/collection-requests";
   static String collectionAvailabilities(String addressId) =>
       "/collection-requests/addresses/$addressId/availabilities";
+
+  // rewards
+  static String rewards = "/rewards";
 }
 
 class ApiKey {

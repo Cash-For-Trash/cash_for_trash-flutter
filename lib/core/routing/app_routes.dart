@@ -42,4 +42,6 @@ class AppRoutes {
   static const String adminWorkerDetailScreen = '/admin_worker_detail_screen';
   static const String adminCustomerDetailScreen =
       '/admin_customer_detail_screen';
+      
+  static const String rewardsScreen = '/rewards_screen';
 }

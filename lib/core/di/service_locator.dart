@@ -67,6 +67,9 @@ import 'package:cash_for_trash/features/admin/redemptions_admin/presentation/blo
 import 'package:cash_for_trash/features/admin/pricing_admin/data/repository/pricing_admin_repository_impl.dart';
 import 'package:cash_for_trash/features/admin/pricing_admin/domain/repository/pricing_admin_repository.dart';
 import 'package:cash_for_trash/features/admin/pricing_admin/presentation/bloc/pricing_admin_bloc.dart';
+import 'package:cash_for_trash/features/rewards/data/repository/rewards_repository_impl.dart';
+import 'package:cash_for_trash/features/rewards/domain/repository/rewards_repository.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -225,5 +228,13 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerFactory<PricingAdminBloc>(
     () => PricingAdminBloc(repository: sl()),
+  );
+  // Rewards Feature
+  sl.registerLazySingleton<RewardsRepository>(
+    () => RewardsRepositoryImpl(apiConsumer: sl()),
+  );
+
+  sl.registerFactory<RewardsBloc>(
+    () => RewardsBloc(repository: sl()),
   );
 }
