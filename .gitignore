@@ -47,3 +47,5 @@ app.*.map.json
 # iOS local config
 **/ios/Flutter/Developer.xcconfig
 
+.env
+
