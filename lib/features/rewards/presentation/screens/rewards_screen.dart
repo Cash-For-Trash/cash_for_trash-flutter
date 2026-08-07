@@ -1,4 +1,5 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/rewards/presentation/widgets/history_tab_widget.dart';
 import 'package:cash_for_trash/features/rewards/presentation/widgets/leaderboard_tab_widget.dart';
 import 'package:cash_for_trash/features/rewards/presentation/widgets/rewards_header_widget.dart';
@@ -76,10 +77,10 @@ class _RewardsScreenState extends State<RewardsScreen>
                       fontSize: 13.sp,
                       fontWeight: FontWeight.normal,
                     ),
-                    tabs: const [
-                      Tab(text: 'المكافآت'),
-                      Tab(text: 'المتصدرون'),
-                      Tab(text: 'السجل'),
+                    tabs: [
+                      Tab(text: context.tr('rewards')),
+                      Tab(text: context.tr('explore')),
+                      Tab(text: context.tr('history_pickups')),
                     ],
                   ),
                 ),

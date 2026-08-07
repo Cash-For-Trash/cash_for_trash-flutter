@@ -47,6 +47,7 @@ lib/features/[feature_name]/
    - Extend `Equatable` for testing and comparison efficiency.
 
    *Example (`features/[feature_name]/data/model/example_model.dart`)*:
+
    ```dart
    import 'package:equatable/equatable.dart';
 
@@ -84,6 +85,7 @@ lib/features/[feature_name]/
    - Enforce the **Dependency Inversion Principle**.
 
    *Example (`features/[feature_name]/domain/repository/example_repository.dart`)*:
+
    ```dart
    import 'package:dartz/dartz.dart';
    import '../../data/model/example_model.dart';
@@ -100,6 +102,7 @@ lib/features/[feature_name]/
    - Implement domain contracts in `data/repository/` utilizing `Dio` / `ApiConsumer`.
 
    *Example (`features/[feature_name]/data/repository/example_repository_impl.dart`)*:
+
    ```dart
    import 'package:dartz/dartz.dart';
    import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
@@ -128,10 +131,12 @@ lib/features/[feature_name]/
 
 1. **BLoC Implementation**:
    - Define Events (e.g., `GetExampleDataEvent`) and States (e.g., `ExampleInitialState`, `ExampleLoadingState`, `ExampleLoadedState`, `ExampleErrorState`).
+   - **Multi-State / Tab Data Rule**: If there are more than one data set/state in one BLoC (e.g. multiple tabs or async resources), you MUST handle them using a unified state class with `copyWith` so that updating one data set never overwrites or erases existing state data for other tabs or sections.
    - Extend `Equatable` across all events and states to prevent unnecessary rebuilds.
    - Inject repository into the BLoC via named parameters.
 
    *Event (`features/[feature_name]/presentation/bloc/example_event.dart`)*:
+
    ```dart
    import 'package:equatable/equatable.dart';
 
@@ -152,6 +157,7 @@ lib/features/[feature_name]/
    ```
 
    *State (`features/[feature_name]/presentation/bloc/example_state.dart`)*:
+
    ```dart
    import 'package:equatable/equatable.dart';
    import '../../data/model/example_model.dart';
@@ -182,6 +188,7 @@ lib/features/[feature_name]/
    ```
 
    *BLoC (`features/[feature_name]/presentation/bloc/example_bloc.dart`)*:
+
    ```dart
    import 'package:flutter_bloc/flutter_bloc.dart';
    import '../../domain/repository/example_repository.dart';
@@ -275,6 +282,7 @@ lib/features/[feature_name]/
    - The widget provides a premium design with themed colors, icons, and a styled **"Try Again"** button on error.
 
    *Example Screen View (`features/[feature_name]/presentation/screens/example_screen.dart`)*:
+
    ```dart
    import 'package:flutter/material.dart';
    import 'package:flutter_bloc/flutter_bloc.dart';
@@ -369,3 +377,88 @@ lib/features/[feature_name]/
    - Always write modern, stable code compliant with Flutter 3.44.4 standards.
    - Never use deprecated Flutter/Dart methods, properties, or constructors (e.g. use `Color.withValues(alpha: ...)` instead of `withOpacity()`, use `context.colorScheme` & `context.textTheme` extensions, avoid deprecated parameters).
    - Ensure all written code is clean, warning-free, and adheres strictly to non-deprecated APIs.
+
+---
+
+## 📷 Image Picker Pattern (Admin Forms)
+
+When an admin screen needs to allow uploading an image, always use the shared helper located at:
+`lib/core/helpers/image_picker_helper.dart`
+
+### Usage Pattern
+
+1. **Add state variable** to your StatefulWidget:
+
+   ```dart
+   String? _selectedImagePath;
+   ```
+
+2. **Pick image from gallery** (call on tap of the image container):
+
+   ```dart
+   Future<void> _pickImage() async {
+     final path = await ImagePickerHelper.pickImageFromGallery();
+     if (path != null) {
+       setState(() => _selectedImagePath = path);
+     }
+   }
+   ```
+
+3. **Build FormData with image** (inside your save method):
+
+   ```dart
+   final formFields = <String, dynamic>{
+     'field_name': valueController.text.trim(),
+   };
+
+   if (_selectedImagePath != null) {
+     formFields['image'] = await MultipartFile.fromFile(
+       _selectedImagePath!,
+       filename: _selectedImagePath!.split('/').last,
+     );
+   }
+
+   final formData = FormData.fromMap(formFields);
+   ```
+
+4. **Show image preview** in a tappable container:
+
+   ```dart
+   GestureDetector(
+     onTap: _pickImage,
+     child: Container(
+       width: double.infinity,
+       height: 160.h,
+       decoration: BoxDecoration(
+         color: colorScheme.surfaceContainerLowest,
+         borderRadius: BorderRadius.circular(16.r),
+         border: Border.all(color: colorScheme.outline, width: 1.5),
+       ),
+       child: _selectedImagePath != null
+           ? ClipRRect(
+               borderRadius: BorderRadius.circular(15.r),
+               child: Image.file(File(_selectedImagePath!), fit: BoxFit.cover),
+             )
+           : (existingImageUrl != null && existingImageUrl!.isNotEmpty)
+               ? ClipRRect(
+                   borderRadius: BorderRadius.circular(15.r),
+                   child: Image.network(existingImageUrl!, fit: BoxFit.cover),
+                 )
+               : Column(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: [
+                     Icon(Icons.add_photo_alternate_outlined, size: 40.r, color: colorScheme.onSurfaceVariant),
+                     SizedBox(height: 8.h),
+                     Text('Tap to add image', style: context.textTheme.bodySmall),
+                   ],
+                 ),
+     ),
+   )
+   ```
+
+### Key Rules
+
+- Always use `multipart/form-data` — both `/api/rewards` and `/api/garbage-types` POST/PUT require `multipart/form-data`.
+- Import `dart:io` for `File`, and `package:dio/dio.dart` for `FormData` and `MultipartFile`.
+- Never hardcode the image field name `name` for garbage types — the backend expects `garbage_type_name`.
+- For update (PUT), always use `apiConsumer.put(...)` — not `patch`.

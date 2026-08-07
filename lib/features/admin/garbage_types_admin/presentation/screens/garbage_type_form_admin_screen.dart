@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/helpers/image_picker_helper.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/widgets/custom_primary_button.dart';
 import 'package:cash_for_trash/core/widgets/custom_text_form_field.dart';
@@ -29,6 +31,7 @@ class _GarbageTypeFormAdminScreenState
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _priceController;
+  String? _selectedImagePath;
 
   @override
   void initState() {
@@ -46,12 +49,30 @@ class _GarbageTypeFormAdminScreenState
     super.dispose();
   }
 
-  void _saveItem() {
+  Future<void> _pickImage() async {
+    final path = await ImagePickerHelper.pickImageFromGallery();
+    if (path != null) {
+      setState(() => _selectedImagePath = path);
+    }
+  }
+
+  Future<void> _saveItem() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final formData = FormData.fromMap({
-        'name': _nameController.text.trim(),
+      final formFields = <String, dynamic>{
+        'garbage_type_name': _nameController.text.trim(),
         'price_per_kg': double.parse(_priceController.text.trim()),
-      });
+      };
+
+      if (_selectedImagePath != null) {
+        formFields['image'] = await MultipartFile.fromFile(
+          _selectedImagePath!,
+          filename: _selectedImagePath!.split('/').last,
+        );
+      }
+
+      if (!mounted) return;
+
+      final formData = FormData.fromMap(formFields);
 
       if (widget.existingItem == null) {
         context
@@ -70,6 +91,7 @@ class _GarbageTypeFormAdminScreenState
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.existingItem != null;
+    final colorScheme = context.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -84,13 +106,49 @@ class _GarbageTypeFormAdminScreenState
       ),
       body: Form(
         key: _formKey,
-        child: Padding(
+        child: SingleChildScrollView(
           padding: EdgeInsets.all(20.r),
           child: Column(
             children: [
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  width: double.infinity,
+                  height: 160.h,
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: colorScheme.outline,
+                      width: 1.5,
+                      strokeAlign: BorderSide.strokeAlignInside,
+                    ),
+                  ),
+                  child: _selectedImagePath != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(15.r),
+                          child: Image.file(
+                            File(_selectedImagePath!),
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : (widget.existingItem?.image != null &&
+                              widget.existingItem!.image!.isNotEmpty)
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(15.r),
+                              child: Image.network(
+                                widget.existingItem!.image!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_,_,_) => _imagePlaceholder(colorScheme),
+                              ),
+                            )
+                          : _imagePlaceholder(colorScheme),
+                ),
+              ),
+              SizedBox(height: 16.h),
               CustomTextFormField(
                 controller: _nameController,
-                hintText: 'Name (e.g. Plastic, Paper, Metal)',
+                hintText: context.tr('garbage_type_name_hint'),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
                     return context.tr('field_required');
@@ -113,7 +171,7 @@ class _GarbageTypeFormAdminScreenState
                   return null;
                 },
               ),
-              const Spacer(),
+              SizedBox(height: 32.h),
               CustomPrimaryButton(
                 text: context.tr('admin_save'),
                 onTap: _saveItem,
@@ -122,6 +180,26 @@ class _GarbageTypeFormAdminScreenState
           ),
         ),
       ),
+    );
+  }
+
+  Widget _imagePlaceholder(ColorScheme colorScheme) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.add_photo_alternate_outlined,
+          size: 40.r,
+          color: colorScheme.onSurfaceVariant,
+        ),
+        SizedBox(height: 8.h),
+        Text(
+          context.tr('tap_to_add_image'),
+          style: context.textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

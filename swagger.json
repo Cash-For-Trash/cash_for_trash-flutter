@@ -568,6 +568,91 @@
                 }
             }
         },
+        "/api/workers/collection-requests": {
+            "get": {
+                "summary": "Get worker collection requests",
+                "tags": [
+                    "Worker"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Worker collection requests."
+                    },
+                    "404": {
+                        "description": "Worker collection requests not found."
+                    }
+                }
+            }
+        },
+        "/api/workers/collection-requests /:requestId": {
+            "get": {
+                "summary": "Get worker collection requests details by request id",
+                "tags": [
+                    "Worker"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "requestId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Worker collection requests details by request id."
+                    },
+                    "404": {
+                        "description": "Worker collection requests details by request id not found."
+                    }
+                }
+            }
+        },
+        "/api/workers/collection-requests/:requestId": {
+            "patch": {
+                "summary": "Update worker collection requests details by request id",
+                "tags": [
+                    "Worker"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "requestId",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "cmrkvmwr20000utr4aoa4fjeh"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Worker collection requests details by request id."
+                    },
+                    "404": {
+                        "description": "Worker collection requests details by request id not found."
+                    }
+                }
+            }
+        },
         "/api/user/profile": {
             "get": {
                 "tags": [
@@ -1035,6 +1120,27 @@
                 }
             }
         },
+        "/api/reward-redeems/my-points-transaction-history": {
+            "get": {
+                "tags": [
+                    "Reward Redeems"
+                ],
+                "summary": "Get all my points transaction history",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Points transaction history fetched successfully."
+                    },
+                    "401": {
+                        "description": "Unauthorized."
+                    }
+                }
+            }
+        },
         "/api/pricing": {
             "get": {
                 "tags": [
@@ -1102,6 +1208,69 @@
                     },
                     "403": {
                         "description": "Forbidden."
+                    }
+                }
+            }
+        },
+        "/api/payment/{collection_request_id}": {
+            "post": {
+                "summary": "Create a payment",
+                "tags": [
+                    "Payment"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "collection_request_id",
+                        "required": true,
+                        "description": "Collection request ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "payment_method": {
+                                        "type": "string",
+                                        "description": "Payment method"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Payment created successfully"
+                    }
+                }
+            }
+        },
+        "/api/payment/my-payments": {
+            "get": {
+                "summary": "Get my payment history",
+                "tags": [
+                    "Payment"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment history fetched successfully"
                     }
                 }
             }
@@ -1413,6 +1582,27 @@
                     },
                     "404": {
                         "description": "Address, availability slot, or garbage type not found."
+                    }
+                }
+            }
+        },
+        "/api/collection-requests/my-collection-requests": {
+            "get": {
+                "summary": "Get collection requests for customer",
+                "tags": [
+                    "Collection Requests"
+                ],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection requests retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Collection requests not found."
                     }
                 }
             }

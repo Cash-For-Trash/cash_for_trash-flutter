@@ -104,7 +104,9 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory<ProfileBloc>(() => ProfileBloc(repository: sl()));
 
   // Home Feature
-  sl.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl());
+  sl.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(apiConsumer: sl()),
+  );
   sl.registerFactory<HomeBloc>(() => HomeBloc(repository: sl()));
 
   // Auth Feature

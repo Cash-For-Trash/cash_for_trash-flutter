@@ -1,4 +1,5 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,7 +73,7 @@ class LeaderboardTabWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 3.w),
                           Text(
-                            '${leader['points']} نقطة',
+                            '${leader['points']} ${context.tr('points')}',
                             style: context.textTheme.bodySmall?.copyWith(
                               color: warning,
                               fontSize: 11.sp,

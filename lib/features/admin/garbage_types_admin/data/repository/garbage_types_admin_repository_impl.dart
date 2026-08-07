@@ -45,7 +45,7 @@ class GarbageTypesAdminRepositoryImpl implements GarbageTypesAdminRepository {
   @override
   Future<Either<String, GarbageTypeAdminModel>> updateGarbageType(
       String id, FormData formData) async {
-    return await apiConsumer.patch<GarbageTypeAdminModel>(
+    return await apiConsumer.put<GarbageTypeAdminModel>(
       '${EndPoint.garbageTypes}/$id',
       data: formData,
       isFromData: true,

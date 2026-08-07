@@ -17,125 +17,116 @@ class RecentOrdersSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 14.sp,
-                  color: context.colorScheme.primary,
-                ),
-                SizedBox(width: 4.w),
-                Text(
-                  context.tr('view_all'),
-                  style: context.textTheme.titleSmall?.copyWith(
-                    color: context.colorScheme.primary,
-                    fontSize: 12.sp,
-                  ),
-                ),
-              ],
-            ),
-            Text(
-              context.tr('recent_orders'),
-              style: context.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+        Text(
+          context.tr('recent_orders'),
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         SizedBox(height: 12.h),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: orders.length,
-          itemBuilder: (context, index) {
-            final order = orders[index];
-            final isCompleted = order.status == "مكتمل";
-            final itemColor = isCompleted ? successColor : warningColor;
-
-            return Container(
-              margin: EdgeInsets.only(bottom: 12.h),
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: context.colorScheme.surface,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(
-                  color: context.colorScheme.outline,
-                  width: 1.2,
+        if (orders.isEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 20.h),
+            child: Center(
+              child: Text(
+                context.tr('empty_no_items_desc'),
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
               ),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        order.points,
-                        style: context.textTheme.titleMedium?.copyWith(
-                          color: itemColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+            ),
+          )
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: orders.length,
+            itemBuilder: (context, index) {
+              final order = orders[index];
+              final isCompleted = order.status.toUpperCase() == "COLLECTED" || order.status == "مكتمل";
+              final itemColor = isCompleted ? successColor : warningColor;
+
+              return Container(
+                margin: EdgeInsets.only(bottom: 12.h),
+                padding: EdgeInsets.all(16.w),
+                decoration: BoxDecoration(
+                  color: context.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: context.colorScheme.outline,
+                    width: 1.2,
                   ),
-                  Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        order.title,
-                        style: context.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            order.id,
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: context.colorScheme.onSurface.withValues(alpha: 0.4),
-                            ),
+                ),
+                child: Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          order.points,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            color: itemColor,
+                            fontWeight: FontWeight.bold,
                           ),
-                          SizedBox(width: 8.w),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                            decoration: BoxDecoration(
-                              color: itemColor.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Text(
-                              order.status,
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          order.title,
+                          style: context.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              order.id,
                               style: context.textTheme.bodySmall?.copyWith(
-                                color: itemColor,
-                                fontSize: 10.sp,
-                                fontWeight: FontWeight.bold,
+                                color: context.colorScheme.onSurface.withValues(alpha: 0.4),
                               ),
                             ),
-                          ),
-                        ],
+                            SizedBox(width: 8.w),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                              decoration: BoxDecoration(
+                                color: itemColor.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Text(
+                                order.status,
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: itemColor,
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 12.w),
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: itemColor.withValues(alpha: 0.08),
+                        shape: BoxShape.circle,
                       ),
-                    ],
-                  ),
-                  SizedBox(width: 12.w),
-                  Container(
-                    padding: EdgeInsets.all(10.r),
-                    decoration: BoxDecoration(
-                      color: itemColor.withValues(alpha: 0.08),
-                      shape: BoxShape.circle,
+                      child: Icon(
+                        Icons.autorenew_rounded,
+                        color: itemColor,
+                        size: 24.sp,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.autorenew_rounded,
-                      color: itemColor,
-                      size: 24.sp,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
+                  ],
+                ),
+              );
+            },
+          ),
       ],
     );
   }

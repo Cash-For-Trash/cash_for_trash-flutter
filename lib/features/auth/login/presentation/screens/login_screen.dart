@@ -131,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 32.h),
                       CustomPrimaryButton(
                         text: state is LoginLoading
-                            ? context.tr('loading')
+                            ? context.tr('signing_in')
                             : context.tr('sign_in'),
                         prefixIcon: state is LoginLoading
                             ? SizedBox(
@@ -164,26 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             context.push(AppRoutes.forgotPasswordScreen);
                           },
-                          child: Text(context.tr('Forget Password?')),
-                        ),
-                      ),
-                      SizedBox(height: 14.h),
-                      Center(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            minimumSize: Size(278.w, 50.h),
-                            side: BorderSide(
-                              color: context.colorScheme.primary,
-                              width: 2,
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            context.tr('continue_as_guest'),
-                            style: context.textTheme.labelMedium?.copyWith(
-                              color: context.colorScheme.primary,
-                            ),
-                          ),
+                          child: Text(context.tr('forgot_password_question')),
                         ),
                       ),
                       SizedBox(height: 24.h),
@@ -192,11 +173,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           onTap: () => context.go(AppRoutes.registerScreen),
                           child: RichText(
                             text: TextSpan(
-                              text: context.tr('do_not_have_account'),
+                              text: context.tr('dont_have_account'),
                               style: context.textTheme.bodyMedium,
                               children: [
                                 TextSpan(
-                                  text: context.tr('create_account'),
+                                  text: context.tr('sign_up'),
                                   style: TextStyle(
                                     color: context.colorScheme.primary,
                                     fontWeight: FontWeight.bold,

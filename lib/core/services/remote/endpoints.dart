@@ -33,14 +33,18 @@ class EndPoint {
   static String workerApprove = "/workers";
   static String rewardsAdmin = "/rewards";
   static String rewardRedeems = "/reward-redeems";
+  static String myRedemptions = "/reward-redeems/my_redemptions";
 
   // collection requests
   static String collectionRequests = "/collection-requests";
+  static String myCollectionRequests = "/collection-requests/my-collection-requests";
+  static String workerCollectionRequests = "/workers/collection-requests";
   static String collectionAvailabilities(String addressId) =>
       "/collection-requests/addresses/$addressId/availabilities";
 
-  // rewards
+  // rewards & points
   static String rewards = "/rewards";
+  static String customerPoints = "/customer/points";
 }
 
 class ApiKey {

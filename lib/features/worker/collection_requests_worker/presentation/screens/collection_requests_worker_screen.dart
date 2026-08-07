@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +27,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     context.read<CollectionRequestsWorkerBloc>().add(
-          const GetAssignedCollectionRequestsEvent(status: 'active'),
+          const GetAssignedCollectionRequestsEvent(status: 'ASSIGNED'),
         );
   }
 
@@ -49,7 +50,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
         bottom: TabBar(
           controller: tabController,
           onTap: (index) {
-            final status = index == 0 ? 'active' : 'COLLECTED';
+            final status = index == 0 ? 'ASSIGNED' : 'COLLECTED';
             context.read<CollectionRequestsWorkerBloc>().add(
                   GetAssignedCollectionRequestsEvent(status: status),
                 );
@@ -66,8 +67,9 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
+            final status = tabController.index == 0 ? 'ASSIGNED' : 'COLLECTED';
             context.read<CollectionRequestsWorkerBloc>().add(
-                  const GetAssignedCollectionRequestsEvent(status: 'active'),
+                  GetAssignedCollectionRequestsEvent(status: status),
                 );
           }
         },
@@ -78,19 +80,17 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
             final requests = state.requests;
 
             if (requests.isEmpty) {
-              return Center(
-                child: Text(
-                  context.tr('no_assigned_requests'),
-                  style: context.textTheme.bodyLarge?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                  ),
-                ),
+              return CustomErrorOrEmptyWidget(
+                isError: false,
+                title: context.tr('no_assigned_requests'),
+                message: context.tr('no_assigned_requests'),
+                icon: Icons.assignment_outlined,
               );
             }
 
             return RefreshIndicator(
               onRefresh: () async {
-                final status = tabController.index == 0 ? 'active' : 'COLLECTED';
+                final status = tabController.index == 0 ? 'ASSIGNED' : 'COLLECTED';
                 context.read<CollectionRequestsWorkerBloc>().add(
                       GetAssignedCollectionRequestsEvent(status: status),
                     );
@@ -165,13 +165,15 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
               ),
             );
           } else if (state is CollectionRequestsWorkerErrorState) {
-            return Center(
-              child: Text(
-                state.errorMessage,
-                style: context.textTheme.bodyLarge?.copyWith(
-                  color: context.colorScheme.error,
-                ),
-              ),
+            return CustomErrorOrEmptyWidget(
+              isError: true,
+              errorMessage: state.errorMessage,
+              onRetry: () {
+                final status = tabController.index == 0 ? 'ASSIGNED' : 'COLLECTED';
+                context.read<CollectionRequestsWorkerBloc>().add(
+                      GetAssignedCollectionRequestsEvent(status: status),
+                    );
+              },
             );
           }
           return const SizedBox.shrink();

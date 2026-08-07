@@ -15,7 +15,7 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
     String? status,
   }) async {
     final result = await apiConsumer.get<Map<String, dynamic>>(
-      EndPoint.collectionRequests,
+      EndPoint.workerCollectionRequests,
       queryParameters: status != null ? {'status': status} : null,
     );
 
@@ -41,7 +41,7 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
     String status,
   ) async {
     return await apiConsumer.patch<CollectionRequestWorkerModel>(
-      '${EndPoint.collectionRequests}/$requestId/status',
+      '${EndPoint.workerCollectionRequests}/$requestId',
       data: {ApiKey.status: status},
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
@@ -55,8 +55,8 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
     String requestId,
     List<GarbageWeightWorkerModel> weights,
   ) async {
-    return await apiConsumer.post<CollectionRequestWorkerModel>(
-      '${EndPoint.collectionRequests}/$requestId/collect',
+    return await apiConsumer.patch<CollectionRequestWorkerModel>(
+      '${EndPoint.workerCollectionRequests}/$requestId',
       data: {
         ApiKey.status: 'COLLECTED',
         ApiKey.weights: weights.map((w) => w.toJson()).toList(),

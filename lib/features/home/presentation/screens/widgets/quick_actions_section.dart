@@ -40,6 +40,9 @@ class QuickActionsSection extends StatelessWidget {
               context,
               icon: Icons.card_giftcard_rounded,
               label: context.tr('rewards'),
+              onTap: () {
+                context.push(AppRoutes.rewardsScreen);
+              },
             ),
             _buildActionItem(
               context,

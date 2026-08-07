@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
 import 'package:cash_for_trash/core/widgets/custom_primary_button.dart';
 import 'package:cash_for_trash/features/auth/otp/presentation/bloc/otp_bloc.dart';
@@ -175,7 +176,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     SizedBox(height: 24.h),
                     Text(
-                      'Verify OTP',
+                      context.tr('verify_otp'),
                       style: TextStyle(
                         fontSize: 28.sp,
                         fontWeight: FontWeight.bold,
@@ -184,7 +185,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      'We sent a verification code to your email address. Enter it below to continue.',
+                      context.tr('otp_subtitle'),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16.sp,
@@ -216,8 +217,8 @@ class _OtpScreenState extends State<OtpScreen> {
                       children: [
                         Text(
                           _start > 0
-                              ? 'Resend Code In '
-                              : 'Didn\'t receive code? ',
+                              ? context.tr('resend_code_in')
+                              : context.tr('didnt_receive_code'),
                           style: TextStyle(
                             fontSize: 16.sp,
                             color: Colors.grey.shade700,
@@ -251,7 +252,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                     ),
                                   )
                                 : Text(
-                                    'Resend Now',
+                                    context.tr('resend_now'),
                                     style: TextStyle(
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
@@ -264,8 +265,8 @@ class _OtpScreenState extends State<OtpScreen> {
                     SizedBox(height: 100.h),
                     CustomPrimaryButton(
                       text: state is OtpVerifyLoading
-                          ? 'Verifying...'
-                          : 'Verify OTP',
+                          ? context.tr('verifying')
+                          : context.tr('verify_otp'),
                       prefixIcon: state is OtpVerifyLoading
                           ? SizedBox(
                               height: 20.h,

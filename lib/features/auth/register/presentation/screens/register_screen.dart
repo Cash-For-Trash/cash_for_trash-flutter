@@ -253,26 +253,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                         width: double.infinity,
                       ),
-
-                      SizedBox(height: 10.h),
-                      Center(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            minimumSize: Size(278.w, 50.h),
-                            side: BorderSide(
-                              color: context.colorScheme.primary,
-                              width: 2,
-                            ),
-                          ),
-                          onPressed: () {},
-                          child: Text(
-                            context.tr('continue_as_guest'),
-                            style: context.textTheme.labelMedium?.copyWith(
-                              color: context.colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                      ),
                       SizedBox(height: 24.h),
                       Center(
                         child: GestureDetector(

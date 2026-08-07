@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/helpers/image_picker_helper.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/widgets/custom_primary_button.dart';
 import 'package:cash_for_trash/core/widgets/custom_text_form_field.dart';
@@ -27,7 +29,7 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _pointsController;
-  late TextEditingController _descController;
+  String? _selectedImagePath;
 
   @override
   void initState() {
@@ -36,23 +38,39 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
         TextEditingController(text: widget.existingReward?.name ?? '');
     _pointsController = TextEditingController(
         text: widget.existingReward?.requiredPoints.toString() ?? '100');
-    _descController = TextEditingController();
   }
 
   @override
   void dispose() {
     _titleController.dispose();
     _pointsController.dispose();
-    _descController.dispose();
     super.dispose();
   }
 
-  void _saveReward() {
+  Future<void> _pickImage() async {
+    final path = await ImagePickerHelper.pickImageFromGallery();
+    if (path != null) {
+      setState(() => _selectedImagePath = path);
+    }
+  }
+
+  Future<void> _saveReward() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final formData = FormData.fromMap({
+      final formFields = <String, dynamic>{
         'name': _titleController.text.trim(),
         'required_points': int.parse(_pointsController.text.trim()),
-      });
+      };
+
+      if (_selectedImagePath != null) {
+        formFields['image'] = await MultipartFile.fromFile(
+          _selectedImagePath!,
+          filename: _selectedImagePath!.split('/').last,
+        );
+      }
+
+      if (!mounted) return;
+
+      final formData = FormData.fromMap(formFields);
 
       if (widget.existingReward == null) {
         context
@@ -71,6 +89,7 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
   @override
   Widget build(BuildContext context) {
     final isEdit = widget.existingReward != null;
+    final colorScheme = context.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -83,13 +102,49 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
       ),
       body: Form(
         key: _formKey,
-        child: Padding(
+        child: SingleChildScrollView(
           padding: EdgeInsets.all(20.r),
           child: Column(
             children: [
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  width: double.infinity,
+                  height: 160.h,
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(
+                      color: colorScheme.outline,
+                      width: 1.5,
+                      strokeAlign: BorderSide.strokeAlignInside,
+                    ),
+                  ),
+                  child: _selectedImagePath != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(15.r),
+                          child: Image.file(
+                            File(_selectedImagePath!),
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : (widget.existingReward?.image != null &&
+                              widget.existingReward!.image!.isNotEmpty)
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(15.r),
+                              child: Image.network(
+                                widget.existingReward!.image!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, _, _) => _imagePlaceholder(colorScheme),
+                              ),
+                            )
+                          : _imagePlaceholder(colorScheme),
+                ),
+              ),
+              SizedBox(height: 16.h),
               CustomTextFormField(
                 controller: _titleController,
-                hintText: 'Reward Title (e.g. 50 EGP Voucher)',
+                hintText: context.tr('reward_title_hint'),
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
                     return context.tr('field_required');
@@ -100,7 +155,7 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
               SizedBox(height: 16.h),
               CustomTextFormField(
                 controller: _pointsController,
-                hintText: '${context.tr('admin_points_required')} (e.g. 500)',
+                hintText: context.tr('points_required_hint'),
                 keyboardType: TextInputType.number,
                 validator: (val) {
                   if (val == null || val.trim().isEmpty) {
@@ -112,12 +167,7 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 16.h),
-              CustomTextFormField(
-                controller: _descController,
-                hintText: 'Description',
-              ),
-              const Spacer(),
+              SizedBox(height: 32.h),
               CustomPrimaryButton(
                 text: context.tr('admin_save'),
                 onTap: _saveReward,
@@ -126,6 +176,26 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _imagePlaceholder(ColorScheme  colorScheme) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.add_photo_alternate_outlined,
+          size: 40.r,
+          color: colorScheme.onSurfaceVariant,
+        ),
+        SizedBox(height: 8.h),
+        Text(
+          context.tr('tap_to_add_image'),
+          style: context.textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

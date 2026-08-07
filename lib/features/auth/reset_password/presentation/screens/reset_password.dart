@@ -110,8 +110,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                   SizedBox(height: 32.h),
 
                   CustomPrimaryButton(
-                    text: context.tr('updating'),
-                    // : context.tr('update_password'),
+                    text: context.tr('update_password'),
                     onTap: null,
                     width: double.infinity,
                   ),

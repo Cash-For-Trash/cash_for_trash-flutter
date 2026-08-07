@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,25 +62,12 @@ class HomeWorkerScreen extends StatelessWidget {
               ),
             );
           } else if (state is HomeWorkerErrorState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    state.errorMessage,
-                    style: context.textTheme.bodyLarge?.copyWith(
-                      color: context.colorScheme.error,
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<HomeWorkerBloc>().add(const GetHomeWorkerDataEvent());
-                    },
-                    child: Text(context.tr('retry')),
-                  ),
-                ],
-              ),
+            return CustomErrorOrEmptyWidget(
+              isError: true,
+              errorMessage: state.errorMessage,
+              onRetry: () {
+                context.read<HomeWorkerBloc>().add(const GetHomeWorkerDataEvent());
+              },
             );
           }
           return const SizedBox.shrink();

@@ -1,128 +1,223 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
+import 'package:cash_for_trash/features/rewards/data/model/redemption_model.dart';
+import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HistoryTabWidget extends StatelessWidget {
+class HistoryTabWidget extends StatefulWidget {
   const HistoryTabWidget({super.key});
 
-  static const List<Map<String, dynamic>> _transactions = [
-    {
-      'title': 'جمع بلاستيك مختلط',
-      'subtitle': 'اليوم',
-      'points': '+30',
-      'isPositive': true,
-      'icon': Icons.recycling_rounded,
-    },
-    {
-      'title': 'جمع ورق وكرتون',
-      'subtitle': 'أمس',
-      'points': '+45',
-      'isPositive': true,
-      'icon': Icons.recycling_rounded,
-    },
-    {
-      'title': 'شحن رصيد 20 جنيه',
-      'subtitle': 'الثلاثاء',
-      'points': '-150',
-      'isPositive': false,
-      'icon': Icons.shopping_cart_rounded,
-    },
-    {
-      'title': 'جمع معادن',
-      'subtitle': 'الثلاثاء',
-      'points': '+60',
-      'isPositive': true,
-      'icon': Icons.recycling_rounded,
-    },
-    {
-      'title': 'استبدال مكافأة',
-      'subtitle': 'الأحد',
-      'points': '-100',
-      'isPositive': false,
-      'icon': Icons.shopping_cart_rounded,
-    },
-  ];
+  @override
+  State<HistoryTabWidget> createState() => _HistoryTabWidgetState();
+}
+
+class _HistoryTabWidgetState extends State<HistoryTabWidget> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<RewardsBloc>().add(const GetMyRedemptionsEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RewardsBloc, RewardsState>(
+      builder: (context, state) {
+        if (state.isRedemptionsLoading) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: context.colorScheme.primary,
+            ),
+          );
+        }
+
+        if (state.redemptionsErrorMessage != null && state.redemptions.isEmpty) {
+          return CustomErrorOrEmptyWidget(
+            isError: true,
+            errorMessage: state.redemptionsErrorMessage,
+            onRetry: () {
+              context.read<RewardsBloc>().add(const GetMyRedemptionsEvent());
+            },
+          );
+        }
+
+        if (state.redemptions.isEmpty) {
+          return CustomErrorOrEmptyWidget(
+            isError: false,
+            title: context.tr('no_history'),
+            message: context.tr('no_history_desc'),
+            icon: Icons.history_rounded,
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            context.read<RewardsBloc>().add(const GetMyRedemptionsEvent());
+          },
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+            itemCount: state.redemptions.length,
+            itemBuilder: (context, index) {
+              return _RedemptionCard(
+                redemption: state.redemptions[index],
+                index: index,
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _RedemptionCard extends StatelessWidget {
+  final RedemptionModel redemption;
+  final int index;
+
+  const _RedemptionCard({required this.redemption, required this.index});
+
+  Color _statusColor(String status, ColorScheme colorScheme, dynamic extraColors) {
+    switch (status.toUpperCase()) {
+      case 'APPROVED':
+        return extraColors.success ?? colorScheme.primary;
+      case 'REJECTED':
+        return colorScheme.error;
+      default:
+        return colorScheme.secondary;
+    }
+  }
+
+  IconData _statusIcon(String status) {
+    switch (status.toUpperCase()) {
+      case 'APPROVED':
+        return Icons.check_circle_rounded;
+      case 'REJECTED':
+        return Icons.cancel_rounded;
+      default:
+        return Icons.hourglass_empty_rounded;
+    }
+  }
+
+  String _statusLabel(BuildContext context, String status) {
+    switch (status.toUpperCase()) {
+      case 'APPROVED':
+        return context.tr('status_approved');
+      case 'REJECTED':
+        return context.tr('status_rejected');
+      default:
+        return context.tr('status_pending');
+    }
+  }
+
+  String _formatDate(String dateStr) {
+    try {
+      final dt = DateTime.parse(dateStr).toLocal();
+      final d = dt.day.toString().padLeft(2, '0');
+      final m = dt.month.toString().padLeft(2, '0');
+      final y = dt.year.toString();
+      return '$d/$m/$y';
+    } catch (_) {
+      return dateStr;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    final success = context.extraColors.success ?? colorScheme.primary;
+    final extraColors = context.extraColors;
+    final statusColor = _statusColor(redemption.status, colorScheme, extraColors);
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-      child: Column(
-        children: _transactions.asMap().entries.map((entry) {
-          final index = entry.key;
-          final tx = entry.value;
-          final isPositive = tx['isPositive'] as bool;
-          final pointsColor = isPositive ? success : colorScheme.error;
-
-          return Container(
-            margin: EdgeInsets.only(bottom: 10.h),
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+    return Container(
+      margin: EdgeInsets.only(bottom: 10.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: colorScheme.outline, width: 1.2),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44.r,
+            height: 44.r,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(16.r),
-              border: Border.all(color: colorScheme.outline, width: 1.2),
+              color: statusColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(12.r),
             ),
-            child: Row(
+            child: Icon(
+              _statusIcon(redemption.status),
+              color: statusColor,
+              size: 22.r,
+            ),
+          ),
+          SizedBox(width: 14.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tx['points'] as String,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: pointsColor,
+                  redemption.rewardName,
+                  style: context.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 15.sp,
+                    fontSize: 13.sp,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(width: 14.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        tx['title'] as String,
-                        style: context.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13.sp,
-                        ),
+                SizedBox(height: 4.h),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.star_rounded,
+                      size: 13.r,
+                      color: colorScheme.primary,
+                    ),
+                    SizedBox(width: 3.w),
+                    Text(
+                      '${redemption.requiredPoints} ${context.tr('points')}',
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.primary,
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w600,
                       ),
-                      SizedBox(height: 3.h),
-                      Text(
-                        tx['subtitle'] as String,
-                        style: context.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withValues(alpha: 0.5),
-                          fontSize: 11.sp,
-                        ),
+                    ),
+                    SizedBox(width: 10.w),
+                    Text(
+                      _formatDate(redemption.createdAt),
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurface.withValues(alpha: 0.5),
+                        fontSize: 11.sp,
                       ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                Container(
-                  width: 40.r,
-                  height: 40.r,
-                  decoration: BoxDecoration(
-                    color: isPositive
-                        ? colorScheme.primaryContainer
-                        : colorScheme.error.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Icon(
-                    tx['icon'] as IconData,
-                    color: isPositive ? colorScheme.primary : colorScheme.error,
-                    size: 20.r,
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ).animate(delay: (index * 70).ms).fade(duration: 350.ms).slideY(
-                begin: 0.06,
-                curve: Curves.easeOut,
-              );
-        }).toList(),
+          ),
+          SizedBox(width: 10.w),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+            decoration: BoxDecoration(
+              color: statusColor.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(20.r),
+            ),
+            child: Text(
+              _statusLabel(context, redemption.status),
+              style: context.textTheme.labelSmall?.copyWith(
+                color: statusColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 10.sp,
+              ),
+            ),
+          ),
+        ],
       ),
-    );
+    ).animate(delay: (index * 60).ms).fade(duration: 350.ms).slideY(
+          begin: 0.06,
+          curve: Curves.easeOut,
+        );
   }
 }

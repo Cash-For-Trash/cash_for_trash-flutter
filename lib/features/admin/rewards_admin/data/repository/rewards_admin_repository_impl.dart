@@ -50,7 +50,7 @@ class RewardsAdminRepositoryImpl implements RewardsAdminRepository {
     String id,
     FormData formData,
   ) async {
-    return await apiConsumer.patch<RewardAdminModel>(
+    return await apiConsumer.put<RewardAdminModel>(
       '${EndPoint.rewardsAdmin}/$id',
       data: formData,
       isFromData: true,

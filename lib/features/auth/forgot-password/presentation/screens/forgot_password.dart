@@ -34,14 +34,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           children: [
             SizedBox(height: 30),
             Text(
-              "Forgot Password",
+              context.tr('forgot_password'),
               style: context.textTheme.titleLarge?.copyWith(
                 color: context.theme.colorScheme.primary,
               ),
             ),
             SizedBox(height: 10),
             Text(
-              "Enter your email address to reset your password",
+              context.tr('enter_email_reset_password'),
               style: context.textTheme.bodyLarge?.copyWith(
                 color: context.theme.colorScheme.primary,
               ),
