@@ -35,14 +35,14 @@ class CustomNavBar extends StatelessWidget {
                 context: context,
               ),
               navItem(
-                icon: Icons.card_giftcard_rounded,
-                label: context.tr("rewards"),
+                icon: Icons.delete_outline_rounded,
+                label: context.tr('request_collection'),
                 index: 1,
                 context: context,
               ),
               navItem(
-                icon: Icons.school_outlined,
-                label: context.tr("my_learning"),
+                icon: Icons.card_giftcard_rounded,
+                label: context.tr("rewards"),
                 index: 2,
                 context: context,
               ),

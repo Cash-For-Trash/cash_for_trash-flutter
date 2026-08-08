@@ -1,8 +1,10 @@
 import 'package:cash_for_trash/core/di/service_locator.dart';
-import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/widgets/app_exit_pop_scope.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/home_screen.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/screens/request_collection_screen.dart';
 import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/custom_nav_bar.dart';
@@ -37,11 +39,16 @@ class RootState extends State<Root> {
     List<Widget> screens = [
       const HomeScreen(),
       BlocProvider(
+        create: (context) => sl<RequestCollectionBloc>()
+          ..add(const GetGarbageTypesEvent())
+          ..add(const GetAddressesEvent()),
+        child: const RequestCollectionScreen(),
+      ),
+      BlocProvider(
         create: (context) =>
             sl<RewardsBloc>()..add(const GetRewardsEvent()),
         child: const RewardsScreen(),
       ),
-      Scaffold(body: Center(child: Text(context.tr('my_learning')))),
       const ProfileScreen(),
     ];
 

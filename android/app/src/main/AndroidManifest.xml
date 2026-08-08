@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <application
-        android:label="cash_for_trash"
+        android:label="Cash for Trash"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/app_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="${MAPS_API_KEY}"/>
         <activity

@@ -72,6 +72,8 @@
     "help_us_improve": "ساعدنا في التحسين",
     "logout_confirm_title": "تسجيل الخروج",
     "logout_confirm_message": "هل أنت متأكد من رغبتك في تسجيل الخروج؟",
+    "exit_title": "خروج من التطبيق",
+    "exit_confirm": "هل أنت متأكد من رغبتك في الخروج من التطبيق؟",
     "yes": "نعم",
     "no": "لا",
     "silver_level": "المستوى الفضي",

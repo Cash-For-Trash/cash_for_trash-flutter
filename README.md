@@ -1,4 +1,4 @@
-# cash_for_trash
+# Cash for Trash
 
 A new Flutter project.
 

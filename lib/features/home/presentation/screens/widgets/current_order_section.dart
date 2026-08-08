@@ -11,7 +11,8 @@ class CurrentOrderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final warningColor = context.extraColors.warning ?? context.colorScheme.secondary;
+    final warningColor =
+        context.extraColors.warning ?? context.colorScheme.secondary;
 
     return Container(
       width: double.infinity,
@@ -19,10 +20,7 @@ class CurrentOrderSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: context.colorScheme.surface,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(
-          color: context.colorScheme.outline,
-          width: 1.2,
-        ),
+        border: Border.all(color: context.colorScheme.outline, width: 1.2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,23 +70,33 @@ class CurrentOrderSection extends StatelessWidget {
                   ),
                 ),
               ),
-              Spacer(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    order.title,
-                    style: context.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+              SizedBox(width: 8.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      order.title,
+                      style: context.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(
-                    order.timeLeft,
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: context.colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ),
-                ],
+                    if (order.timeLeft.isNotEmpty)
+                      Text(
+                        '• ${order.timeLeft}',
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.onSurface.withValues(
+                            alpha: 0.5,
+                          ),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                      ),
+                  ],
+                ),
               ),
               SizedBox(width: 12.w),
               Container(
@@ -112,7 +120,9 @@ class CurrentOrderSection extends StatelessWidget {
               value: order.progress,
               minHeight: 6.h,
               backgroundColor: context.colorScheme.outline,
-              valueColor: AlwaysStoppedAnimation<Color>(context.colorScheme.primary),
+              valueColor: AlwaysStoppedAnimation<Color>(
+                context.colorScheme.primary,
+              ),
             ),
           ),
         ],

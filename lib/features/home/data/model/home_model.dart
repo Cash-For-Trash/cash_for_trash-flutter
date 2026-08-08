@@ -1,3 +1,4 @@
+import 'package:cash_for_trash/core/utils/date_formatter.dart';
 import 'package:equatable/equatable.dart';
 
 class OrderModel extends Equatable {
@@ -19,9 +20,12 @@ class OrderModel extends Equatable {
     final rawId = (json['collection_request_id'] ?? json['request_id'] ?? json['id'] ?? '').toString();
     final shortId = rawId.length > 6 ? rawId.substring(0, 6) : rawId;
 
-    final garbageTypesList = json['garbage_types'] is List ? json['garbage_types'] as List : [];
-    String wasteTypesText = garbageTypesList
-        .map((g) => (g['garbage_type_name'] ?? g['name'] ?? '').toString())
+    final garbageList = json['requestGarbages'] is List ? json['requestGarbages'] as List : [];
+    String wasteTypesText = garbageList
+        .map((g) {
+          final gt = g['garbageType'];
+          return gt != null ? (gt['garbage_type_name'] ?? '').toString() : '';
+        })
         .where((name) => name.isNotEmpty)
         .join(', ');
 
@@ -30,15 +34,24 @@ class OrderModel extends Equatable {
       wasteTypesText = qty != null ? '$qty kg' : 'Waste Collection';
     }
 
-    final rawPoints = json['earned_points'] ?? json['points'] ?? 0;
-    final formattedPoints = rawPoints is num ? (rawPoints > 0 ? '+$rawPoints' : '$rawPoints') : '+$rawPoints';
+    int totalPoints = 0;
+    for (final g in garbageList) {
+      final pts = g['earned_points'];
+      if (pts is num) {
+        totalPoints += pts.toInt();
+      }
+    }
+    final formattedPoints = totalPoints > 0 ? '+$totalPoints' : '$totalPoints';
+
+    final rawTime = (json['request_date'] ?? json['scheduled_day'] ?? json['created_at'] ?? '').toString();
+    final formattedTime = AppDateFormatter.format(rawTime);
 
     return OrderModel(
       id: shortId.isNotEmpty ? '#$shortId' : '#---',
       title: wasteTypesText,
       status: (json['status'] ?? 'PENDING').toString(),
       points: formattedPoints,
-      time: (json['scheduled_day'] ?? json['request_date'] ?? json['created_at'] ?? '').toString(),
+      time: formattedTime,
     );
   }
 
@@ -64,9 +77,12 @@ class CurrentOrderModel extends Equatable {
   factory CurrentOrderModel.fromJson(Map<String, dynamic> json) {
     final rawId = (json['collection_request_id'] ?? json['request_id'] ?? json['id'] ?? '').toString();
 
-    final garbageTypesList = json['garbage_types'] is List ? json['garbage_types'] as List : [];
-    String wasteTypesText = garbageTypesList
-        .map((g) => (g['garbage_type_name'] ?? g['name'] ?? '').toString())
+    final garbageList = json['requestGarbages'] is List ? json['requestGarbages'] as List : [];
+    String wasteTypesText = garbageList
+        .map((g) {
+          final gt = g['garbageType'];
+          return gt != null ? (gt['garbage_type_name'] ?? '').toString() : '';
+        })
         .where((name) => name.isNotEmpty)
         .join(', ');
 
@@ -75,12 +91,26 @@ class CurrentOrderModel extends Equatable {
       wasteTypesText = qty != null ? '$qty kg' : 'Waste Collection';
     }
 
-    final day = (json['scheduled_day'] ?? '').toString();
-    final fromTime = (json['scheduled_from_time'] ?? '').toString();
-    final toTime = (json['scheduled_to_time'] ?? '').toString();
-    String timeInfo = '$day $fromTime - $toTime'.trim();
-    if (timeInfo.isEmpty) {
-      timeInfo = (json['request_date'] ?? json['created_at'] ?? '').toString();
+    final rawDay = (json['scheduled_day'] ?? '').toString().trim();
+    final rawFrom = (json['scheduled_from_time'] ?? '').toString().trim();
+    final rawTo = (json['scheduled_to_time'] ?? '').toString().trim();
+
+    String timeInfo = '';
+
+    if (rawFrom.isNotEmpty && rawTo.isNotEmpty) {
+      final formattedDay = AppDateFormatter.format(rawDay, showTime: false);
+      final formattedFrom = AppDateFormatter.formatTimeOnly(rawFrom);
+      final formattedTo = AppDateFormatter.formatTimeOnly(rawTo);
+      timeInfo = '$formattedDay ($formattedFrom - $formattedTo)'.trim();
+    } else if (rawFrom.isNotEmpty) {
+      final formattedDay = AppDateFormatter.format(rawDay, showTime: false);
+      final formattedFrom = AppDateFormatter.formatTimeOnly(rawFrom);
+      timeInfo = '$formattedDay ($formattedFrom)'.trim();
+    } else if (rawDay.isNotEmpty) {
+      timeInfo = AppDateFormatter.format(rawDay);
+    } else {
+      final rawFallback = (json['request_date'] ?? json['created_at'] ?? '').toString();
+      timeInfo = AppDateFormatter.format(rawFallback);
     }
 
     final statusStr = (json['status'] ?? 'PENDING').toString();

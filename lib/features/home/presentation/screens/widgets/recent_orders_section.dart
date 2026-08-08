@@ -11,8 +11,10 @@ class RecentOrdersSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final successColor = context.extraColors.success ?? context.colorScheme.primary;
-    final warningColor = context.extraColors.warning ?? context.colorScheme.secondary;
+    final successColor =
+        context.extraColors.success ?? context.colorScheme.primary;
+    final warningColor =
+        context.extraColors.warning ?? context.colorScheme.secondary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +45,9 @@ class RecentOrdersSection extends StatelessWidget {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               final order = orders[index];
-              final isCompleted = order.status.toUpperCase() == "COLLECTED" || order.status == "مكتمل";
+              final isCompleted =
+                  order.status.toUpperCase() == "COLLECTED" ||
+                  order.status == "مكتمل";
               final itemColor = isCompleted ? successColor : warningColor;
 
               return Container(
@@ -83,15 +87,23 @@ class RecentOrdersSection extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            Text(
-                              order.id,
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: context.colorScheme.onSurface.withValues(alpha: 0.4),
+                            if (order.time.isNotEmpty) ...[
+                              SizedBox(width: 6.w),
+                              Text(
+                                order.time,
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: context.colorScheme.onSurface
+                                      .withValues(alpha: 0.5),
+                                  fontSize: 10.sp,
+                                ),
                               ),
-                            ),
+                            ],
                             SizedBox(width: 8.w),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 2.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: itemColor.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(6.r),

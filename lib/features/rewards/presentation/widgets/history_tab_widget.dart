@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/utils/date_formatter.dart';
 import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
 import 'package:cash_for_trash/features/rewards/data/model/redemption_model.dart';
 import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
@@ -34,7 +35,8 @@ class _HistoryTabWidgetState extends State<HistoryTabWidget> {
           );
         }
 
-        if (state.redemptionsErrorMessage != null && state.redemptions.isEmpty) {
+        if (state.redemptionsErrorMessage != null &&
+            state.redemptions.isEmpty) {
           return CustomErrorOrEmptyWidget(
             isError: true,
             errorMessage: state.redemptionsErrorMessage,
@@ -79,7 +81,11 @@ class _RedemptionCard extends StatelessWidget {
 
   const _RedemptionCard({required this.redemption, required this.index});
 
-  Color _statusColor(String status, ColorScheme colorScheme, dynamic extraColors) {
+  Color _statusColor(
+    String status,
+    ColorScheme colorScheme,
+    dynamic extraColors,
+  ) {
     switch (status.toUpperCase()) {
       case 'APPROVED':
         return extraColors.success ?? colorScheme.primary;
@@ -113,111 +119,107 @@ class _RedemptionCard extends StatelessWidget {
   }
 
   String _formatDate(String dateStr) {
-    try {
-      final dt = DateTime.parse(dateStr).toLocal();
-      final d = dt.day.toString().padLeft(2, '0');
-      final m = dt.month.toString().padLeft(2, '0');
-      final y = dt.year.toString();
-      return '$d/$m/$y';
-    } catch (_) {
-      return dateStr;
-    }
+    return AppDateFormatter.format(dateStr);
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     final extraColors = context.extraColors;
-    final statusColor = _statusColor(redemption.status, colorScheme, extraColors);
+    final statusColor = _statusColor(
+      redemption.status,
+      colorScheme,
+      extraColors,
+    );
 
     return Container(
-      margin: EdgeInsets.only(bottom: 10.h),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: colorScheme.outline, width: 1.2),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 44.r,
-            height: 44.r,
-            decoration: BoxDecoration(
-              color: statusColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(
-              _statusIcon(redemption.status),
-              color: statusColor,
-              size: 22.r,
-            ),
+          margin: EdgeInsets.only(bottom: 10.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerLowest,
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: colorScheme.outline, width: 1.2),
           ),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  redemption.rewardName,
-                  style: context.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13.sp,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          child: Row(
+            children: [
+              Container(
+                width: 44.r,
+                height: 44.r,
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                SizedBox(height: 4.h),
-                Row(
+                child: Icon(
+                  _statusIcon(redemption.status),
+                  color: statusColor,
+                  size: 22.r,
+                ),
+              ),
+              SizedBox(width: 14.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.star_rounded,
-                      size: 13.r,
-                      color: colorScheme.primary,
-                    ),
-                    SizedBox(width: 3.w),
                     Text(
-                      '${redemption.requiredPoints} ${context.tr('points')}',
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.primary,
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w600,
+                      redemption.rewardName,
+                      style: context.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13.sp,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(width: 10.w),
-                    Text(
-                      _formatDate(redemption.createdAt),
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface.withValues(alpha: 0.5),
-                        fontSize: 11.sp,
-                      ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star_rounded,
+                          size: 13.r,
+                          color: colorScheme.primary,
+                        ),
+                        SizedBox(width: 3.w),
+                        Text(
+                          '${redemption.requiredPoints} ${context.tr('points')}',
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.primary,
+                            fontSize: 11.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(width: 10.w),
+                        Text(
+                          _formatDate(redemption.createdAt),
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurface.withValues(alpha: 0.5),
+                            fontSize: 11.sp,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-            decoration: BoxDecoration(
-              color: statusColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: Text(
-              _statusLabel(context, redemption.status),
-              style: context.textTheme.labelSmall?.copyWith(
-                color: statusColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 10.sp,
               ),
-            ),
+              SizedBox(width: 10.w),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Text(
+                  _statusLabel(context, redemption.status),
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: statusColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10.sp,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ).animate(delay: (index * 60).ms).fade(duration: 350.ms).slideY(
-          begin: 0.06,
-          curve: Curves.easeOut,
-        );
+        )
+        .animate(delay: (index * 60).ms)
+        .fade(duration: 350.ms)
+        .slideY(begin: 0.06, curve: Curves.easeOut);
   }
 }

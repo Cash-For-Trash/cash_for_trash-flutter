@@ -74,17 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 120.w,
                         ),
                       ),
-                      SizedBox(height: 20.h),
-                      Center(
-                        child: Text(
-                          context.tr('cash_for_trash'),
-                          style: TextStyle(
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                            color: context.colorScheme.primary,
-                          ),
-                        ),
-                      ),
                       SizedBox(height: 30.h),
                       Text(
                         context.tr('welcome_back'),

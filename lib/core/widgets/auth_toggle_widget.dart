@@ -1,4 +1,5 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,7 +47,7 @@ class AuthToggleWidget extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  "Login",
+                  context.tr("login"),
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: isLogin ? FontWeight.bold : FontWeight.w500,
@@ -82,7 +83,7 @@ class AuthToggleWidget extends StatelessWidget {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  "Register",
+                  context.tr("register"),
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: !isLogin ? FontWeight.bold : FontWeight.w500,
