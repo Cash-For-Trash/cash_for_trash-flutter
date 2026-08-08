@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
 import '../bloc/rewards_admin_bloc.dart';
 import '../bloc/rewards_admin_event.dart';
-import '../bloc/rewards_admin_state.dart';
 import '../widgets/reward_card_rewards_admin_widget.dart';
 
 class RewardsAdminScreen extends StatefulWidget {
@@ -39,8 +38,11 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> {
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.push(AppRoutes.adminRewardFormScreen);
+        onPressed: () async {
+          await context.push(AppRoutes.adminRewardFormScreen);
+          if (context.mounted) {
+            context.read<RewardsAdminBloc>().add(const GetRewardsAdminEvent());
+          }
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(context.tr('admin_add_reward')),
@@ -57,8 +59,11 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> {
                 message: context.tr('empty_no_items_desc'),
                 icon: Icons.card_giftcard_rounded,
                 actionLabel: context.tr('admin_add_reward'),
-                onAction: () {
-                  context.push(AppRoutes.adminRewardFormScreen);
+                onAction: () async {
+                  await context.push(AppRoutes.adminRewardFormScreen);
+                  if (context.mounted) {
+                    context.read<RewardsAdminBloc>().add(const GetRewardsAdminEvent());
+                  }
                 },
               );
             }
@@ -73,8 +78,11 @@ class _RewardsAdminScreenState extends State<RewardsAdminScreen> {
                   final reward = state.rewards[index];
                   return RewardCardRewardsAdminWidget(
                     reward: reward,
-                    onTap: () {
-                      context.push(AppRoutes.adminRewardFormScreen, extra: reward);
+                    onTap: () async {
+                      await context.push(AppRoutes.adminRewardFormScreen, extra: reward);
+                      if (context.mounted) {
+                        context.read<RewardsAdminBloc>().add(const GetRewardsAdminEvent());
+                      }
                     },
                     onDelete: () {
                       context

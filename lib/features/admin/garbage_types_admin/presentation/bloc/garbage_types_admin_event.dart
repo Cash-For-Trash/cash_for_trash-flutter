@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:dio/dio.dart';
 
 abstract class GarbageTypesAdminEvent extends Equatable {
   const GarbageTypesAdminEvent();
@@ -13,22 +12,31 @@ class GetGarbageTypesAdminEvent extends GarbageTypesAdminEvent {
 }
 
 class CreateGarbageTypeAdminEvent extends GarbageTypesAdminEvent {
-  final FormData formData;
+  final Map<String, dynamic> fields;
+  final String imagePath;
 
-  const CreateGarbageTypeAdminEvent(this.formData);
+  const CreateGarbageTypeAdminEvent({
+    required this.fields,
+    required this.imagePath,
+  });
 
   @override
-  List<Object?> get props => [formData];
+  List<Object?> get props => [fields, imagePath];
 }
 
 class UpdateGarbageTypeAdminEvent extends GarbageTypesAdminEvent {
   final String id;
-  final FormData formData;
+  final Map<String, dynamic> fields;
+  final String? imagePath;
 
-  const UpdateGarbageTypeAdminEvent({required this.id, required this.formData});
+  const UpdateGarbageTypeAdminEvent({
+    required this.id,
+    required this.fields,
+    this.imagePath,
+  });
 
   @override
-  List<Object?> get props => [id, formData];
+  List<Object?> get props => [id, fields, imagePath];
 }
 
 class DeleteGarbageTypeAdminEvent extends GarbageTypesAdminEvent {

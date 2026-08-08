@@ -27,6 +27,7 @@ class _AreaFormAdminScreenState extends State<AreaFormAdminScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _priceController;
+  bool _isSubmitting = false;
 
   double _neLat = 26.1700;
   double _neLng = 32.7300;
@@ -67,6 +68,10 @@ class _AreaFormAdminScreenState extends State<AreaFormAdminScreen> {
         'service_price': double.parse(_priceController.text.trim()),
       };
 
+      setState(() {
+        _isSubmitting = true;
+      });
+
       if (widget.existingArea == null) {
         context.read<AreasAdminBloc>().add(CreateAreaAdminEvent(data));
       } else {
@@ -75,7 +80,6 @@ class _AreaFormAdminScreenState extends State<AreaFormAdminScreen> {
               data: data,
             ));
       }
-      context.pop();
     }
   }
 
@@ -92,90 +96,119 @@ class _AreaFormAdminScreenState extends State<AreaFormAdminScreen> {
           ),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.r),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomTextFormField(
-                controller: _nameController,
-                hintText: 'Area Name (e.g. Qena City, Qena)',
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return context.tr('field_required');
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.h),
-              CustomTextFormField(
-                controller: _priceController,
-                hintText: '${context.tr('admin_service_price')} (EGP)',
-                keyboardType: TextInputType.number,
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return context.tr('field_required');
-                  }
-                  if (double.tryParse(val) == null) {
-                    return context.tr('invalid_number');
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20.h),
-              Text(
-                context.tr('admin_select_area_on_map'),
-                style: context.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+      body: BlocConsumer<AreasAdminBloc, AreasAdminState>(
+        listener: (context, state) {
+          if (_isSubmitting) {
+            if (state is AreasAdminLoadedState && !state.isActionLoading) {
+              setState(() {
+                _isSubmitting = false;
+              });
+              context.pop();
+            } else if (state is AreasAdminErrorState) {
+              setState(() {
+                _isSubmitting = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: context.colorScheme.error,
+                  behavior: SnackBarBehavior.floating,
                 ),
-              ),
-              SizedBox(height: 10.h),
-              MapRectangleSelectorAreasAdminWidget(
-                initialNeLat: _neLat,
-                initialNeLng: _neLng,
-                initialSwLat: _swLat,
-                initialSwLng: _swLng,
-                onBoundsChanged: (neLat, neLng, swLat, swLng) {
-                  setState(() {
-                    _neLat = neLat;
-                    _neLng = neLng;
-                    _swLat = swLat;
-                    _swLng = swLng;
-                  });
-                },
-              ),
-              SizedBox(height: 16.h),
-              Container(
-                padding: EdgeInsets.all(12.r),
-                decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'NE Corner: ${_neLat.toStringAsFixed(4)}, ${_neLng.toStringAsFixed(4)}',
-                      style: context.textTheme.bodySmall,
+              );
+            }
+          }
+        },
+        builder: (context, state) {
+          final isLoading = _isSubmitting ||
+              (state is AreasAdminLoadedState && state.isActionLoading);
+
+          return Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(20.r),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextFormField(
+                    controller: _nameController,
+                    hintText: 'Area Name (e.g. Qena City, Qena)',
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return context.tr('field_required');
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextFormField(
+                    controller: _priceController,
+                    hintText: '${context.tr('admin_service_price')} (EGP)',
+                    keyboardType: TextInputType.number,
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return context.tr('field_required');
+                      }
+                      if (double.tryParse(val) == null) {
+                        return context.tr('invalid_number');
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20.h),
+                  Text(
+                    context.tr('admin_select_area_on_map'),
+                    style: context.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      'SW Corner: ${_swLat.toStringAsFixed(4)}, ${_swLng.toStringAsFixed(4)}',
-                      style: context.textTheme.bodySmall,
+                  ),
+                  SizedBox(height: 10.h),
+                  MapRectangleSelectorAreasAdminWidget(
+                    initialNeLat: _neLat,
+                    initialNeLng: _neLng,
+                    initialSwLat: _swLat,
+                    initialSwLng: _swLng,
+                    onBoundsChanged: (neLat, neLng, swLat, swLng) {
+                      setState(() {
+                        _neLat = neLat;
+                        _neLng = neLng;
+                        _swLat = swLat;
+                        _swLng = swLng;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  Container(
+                    padding: EdgeInsets.all(12.r),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
-                  ],
-                ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'NE Corner: ${_neLat.toStringAsFixed(4)}, ${_neLng.toStringAsFixed(4)}',
+                          style: context.textTheme.bodySmall,
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          'SW Corner: ${_swLat.toStringAsFixed(4)}, ${_swLng.toStringAsFixed(4)}',
+                          style: context.textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  CustomPrimaryButton(
+                    text: context.tr('admin_save'),
+                    isLoading: isLoading,
+                    onTap: isLoading ? null : _saveArea,
+                  ),
+                ],
               ),
-              SizedBox(height: 24.h),
-              CustomPrimaryButton(
-                text: context.tr('admin_save'),
-                onTap: _saveArea,
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

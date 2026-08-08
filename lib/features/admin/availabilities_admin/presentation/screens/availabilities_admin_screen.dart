@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../bloc/availabilities_admin_bloc.dart';
 import '../bloc/availabilities_admin_event.dart';
-import '../bloc/availabilities_admin_state.dart';
 import '../widgets/availability_card_availabilities_admin_widget.dart';
 
 class AvailabilitiesAdminScreen extends StatefulWidget {
@@ -34,79 +33,114 @@ class _AvailabilitiesAdminScreenState
     final fromController = TextEditingController(text: '09:00');
     final toController = TextEditingController(text: '17:00');
     final areaIdController = TextEditingController();
+    bool isSubmitting = false;
 
     showDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: Text(context.tr('add_availability')),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomTextFormField(
-                  controller: areaIdController,
-                  hintText: 'Area ID (Optional)',
-                ),
-                SizedBox(height: 12.h),
-                DropdownButtonFormField<int>(
-                  initialValue: selectedDay,
-                  decoration: InputDecoration(
-                    labelText: context.tr('select_day'),
-                    border: const OutlineInputBorder(),
+        builder: (context, setDialogState) =>
+            BlocConsumer<AvailabilitiesAdminBloc, AvailabilitiesAdminState>(
+          listener: (context, state) {
+            if (isSubmitting) {
+              if (state is AvailabilitiesAdminLoadedState &&
+                  !state.isActionLoading) {
+                setDialogState(() => isSubmitting = false);
+                Navigator.pop(dialogContext);
+              } else if (state is AvailabilitiesAdminErrorState) {
+                setDialogState(() => isSubmitting = false);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.errorMessage),
+                    backgroundColor: context.colorScheme.error,
+                    behavior: SnackBarBehavior.floating,
                   ),
-                  items: const [
-                    DropdownMenuItem(value: 0, child: Text('Sunday')),
-                    DropdownMenuItem(value: 1, child: Text('Monday')),
-                    DropdownMenuItem(value: 2, child: Text('Tuesday')),
-                    DropdownMenuItem(value: 3, child: Text('Wednesday')),
-                    DropdownMenuItem(value: 4, child: Text('Thursday')),
-                    DropdownMenuItem(value: 5, child: Text('Friday')),
-                    DropdownMenuItem(value: 6, child: Text('Saturday')),
+                );
+              }
+            }
+          },
+          builder: (context, state) {
+            final isLoading = isSubmitting ||
+                (state is AvailabilitiesAdminLoadedState &&
+                    state.isActionLoading);
+
+            return AlertDialog(
+              title: Text(context.tr('add_availability')),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTextFormField(
+                      controller: areaIdController,
+                      hintText: 'Area ID (Optional)',
+                    ),
+                    SizedBox(height: 12.h),
+                    DropdownButtonFormField<int>(
+                      initialValue: selectedDay,
+                      decoration: InputDecoration(
+                        labelText: context.tr('select_day'),
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: const [
+                        DropdownMenuItem(value: 0, child: Text('Sunday')),
+                        DropdownMenuItem(value: 1, child: Text('Monday')),
+                        DropdownMenuItem(value: 2, child: Text('Tuesday')),
+                        DropdownMenuItem(value: 3, child: Text('Wednesday')),
+                        DropdownMenuItem(value: 4, child: Text('Thursday')),
+                        DropdownMenuItem(value: 5, child: Text('Friday')),
+                        DropdownMenuItem(value: 6, child: Text('Saturday')),
+                      ],
+                      onChanged: isLoading
+                          ? null
+                          : (val) {
+                              if (val != null) {
+                                setDialogState(() {
+                                  selectedDay = val;
+                                });
+                              }
+                            },
+                    ),
+                    SizedBox(height: 12.h),
+                    CustomTextFormField(
+                      controller: fromController,
+                      hintText: 'From: HH:mm (e.g. 09:00)',
+                    ),
+                    SizedBox(height: 12.h),
+                    CustomTextFormField(
+                      controller: toController,
+                      hintText: 'To: HH:mm (e.g. 17:00)',
+                    ),
                   ],
-                  onChanged: (val) {
-                    if (val != null) {
-                      setDialogState(() {
-                        selectedDay = val;
-                      });
-                    }
-                  },
                 ),
-                SizedBox(height: 12.h),
-                CustomTextFormField(
-                  controller: fromController,
-                  hintText: 'From: HH:mm (e.g. 09:00)',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isLoading ? null : () => Navigator.pop(dialogContext),
+                  child: Text(context.tr('cancel')),
                 ),
-                SizedBox(height: 12.h),
-                CustomTextFormField(
-                  controller: toController,
-                  hintText: 'To: HH:mm (e.g. 17:00)',
+                CustomPrimaryButton(
+                  text: context.tr('admin_save'),
+                  isLoading: isLoading,
+                  onTap: isLoading
+                      ? null
+                      : () {
+                          final data = {
+                            'day_of_week': selectedDay,
+                            'from_time': fromController.text.trim(),
+                            'to_time': toController.text.trim(),
+                            if (areaIdController.text.trim().isNotEmpty)
+                              'area_id': areaIdController.text.trim(),
+                          };
+                          setDialogState(() {
+                            isSubmitting = true;
+                          });
+                          context
+                              .read<AvailabilitiesAdminBloc>()
+                              .add(CreateAvailabilityAdminEvent(data));
+                        },
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: Text(context.tr('cancel')),
-            ),
-            CustomPrimaryButton(
-              text: context.tr('admin_save'),
-              onTap: () {
-                final data = {
-                  'day_of_week': selectedDay,
-                  'from_time': fromController.text.trim(),
-                  'to_time': toController.text.trim(),
-                  if (areaIdController.text.trim().isNotEmpty)
-                    'area_id': areaIdController.text.trim(),
-                };
-                context
-                    .read<AvailabilitiesAdminBloc>()
-                    .add(CreateAvailabilityAdminEvent(data));
-                Navigator.pop(dialogContext);
-              },
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

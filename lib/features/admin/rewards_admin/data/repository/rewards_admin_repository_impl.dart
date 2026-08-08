@@ -30,12 +30,24 @@ class RewardsAdminRepositoryImpl implements RewardsAdminRepository {
 
   @override
   Future<Either<String, RewardAdminModel>> createReward(
-    FormData formData,
+    Map<String, dynamic> fields,
+    String? imagePath,
   ) async {
+    final bool hasImage = imagePath != null;
+    final Object data;
+    if (hasImage) {
+      final imageFile = await MultipartFile.fromFile(
+        imagePath,
+        filename: imagePath.split('/').last,
+      );
+      data = FormData.fromMap({...fields, 'image': imageFile});
+    } else {
+      data = fields;
+    }
     return await apiConsumer.post<RewardAdminModel>(
       EndPoint.rewardsAdmin,
-      data: formData,
-      isFromData: true,
+      data: data,
+      isFromData: hasImage,
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic>
             ? json['data'] as Map<String, dynamic>
@@ -48,12 +60,24 @@ class RewardsAdminRepositoryImpl implements RewardsAdminRepository {
   @override
   Future<Either<String, RewardAdminModel>> updateReward(
     String id,
-    FormData formData,
+    Map<String, dynamic> fields,
+    String? imagePath,
   ) async {
+    final bool hasImage = imagePath != null;
+    final Object data;
+    if (hasImage) {
+      final imageFile = await MultipartFile.fromFile(
+        imagePath,
+        filename: imagePath.split('/').last,
+      );
+      data = FormData.fromMap({...fields, 'image': imageFile});
+    } else {
+      data = fields;
+    }
     return await apiConsumer.put<RewardAdminModel>(
       '${EndPoint.rewardsAdmin}/$id',
-      data: formData,
-      isFromData: true,
+      data: data,
+      isFromData: hasImage,
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic>
             ? json['data'] as Map<String, dynamic>

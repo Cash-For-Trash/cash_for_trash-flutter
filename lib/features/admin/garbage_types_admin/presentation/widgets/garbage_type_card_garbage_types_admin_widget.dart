@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,6 @@ class GarbageTypeCardGarbageTypesAdminWidget extends StatelessWidget {
     required this.onTap,
     required this.onDelete,
   });
-
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -26,10 +25,23 @@ class GarbageTypeCardGarbageTypesAdminWidget extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         contentPadding: EdgeInsets.all(12.r),
-        leading: CircleAvatar(
-          backgroundColor: context.colorScheme.primaryContainer,
-          child: Icon(
-            Icons.delete_sweep_rounded,
+        leading: CachedNetworkImage(
+          imageUrl: item.image ?? "",
+          width: 24.w,
+          height: 24.h,
+          fit: BoxFit.contain,
+          color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+          placeholder: (context, url) => SizedBox(
+            width: 16.w,
+            height: 16.h,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: context.colorScheme.primary,
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(
+            Icons.recycling_rounded,
+            size: 22.sp,
             color: context.colorScheme.primary,
           ),
         ),

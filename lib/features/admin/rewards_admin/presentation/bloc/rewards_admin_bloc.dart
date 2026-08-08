@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repository/rewards_admin_repository.dart';
 import 'rewards_admin_event.dart';
 import 'rewards_admin_state.dart';
+export 'rewards_admin_state.dart';
 
 class RewardsAdminBloc extends Bloc<RewardsAdminEvent, RewardsAdminState> {
   final RewardsAdminRepository repository;
@@ -34,7 +35,7 @@ class RewardsAdminBloc extends Bloc<RewardsAdminEvent, RewardsAdminState> {
     if (currentState is RewardsAdminLoadedState) {
       emit(currentState.copyWith(isActionLoading: true));
     }
-    final result = await repository.createReward(event.formData);
+    final result = await repository.createReward(event.fields, event.imagePath);
     result.fold(
       (error) => emit(RewardsAdminErrorState(error)),
       (_) => add(const GetRewardsAdminEvent()),
@@ -49,7 +50,11 @@ class RewardsAdminBloc extends Bloc<RewardsAdminEvent, RewardsAdminState> {
     if (currentState is RewardsAdminLoadedState) {
       emit(currentState.copyWith(isActionLoading: true));
     }
-    final result = await repository.updateReward(event.id, event.formData);
+    final result = await repository.updateReward(
+      event.id,
+      event.fields,
+      event.imagePath,
+    );
     result.fold(
       (error) => emit(RewardsAdminErrorState(error)),
       (_) => add(const GetRewardsAdminEvent()),

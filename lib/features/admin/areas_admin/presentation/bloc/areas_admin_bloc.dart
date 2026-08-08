@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repository/areas_admin_repository.dart';
 import 'areas_admin_event.dart';
 import 'areas_admin_state.dart';
+export 'areas_admin_state.dart';
 
 class AreasAdminBloc extends Bloc<AreasAdminEvent, AreasAdminState> {
   final AreasAdminRepository repository;

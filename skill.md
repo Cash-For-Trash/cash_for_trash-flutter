@@ -385,80 +385,158 @@ lib/features/[feature_name]/
 When an admin screen needs to allow uploading an image, always use the shared helper located at:
 `lib/core/helpers/image_picker_helper.dart`
 
+### Architecture Rule: Repository Owns the Transport Format
+
+The decision of whether to send `FormData` (multipart) or a plain `Map<String, dynamic>` (JSON) belongs exclusively to the **repository implementation layer**. No other layer (Event, BLoC, Screen) should ever import `FormData`, `MultipartFile`, or carry an `isFormData` flag.
+
+| Layer | Responsibility |
+| --- | --- |
+| **Screen** | Collects `Map<String, dynamic> fields` and `String? imagePath`. Dispatches a typed event. |
+| **Event** | Carries `Map<String, dynamic> fields` and `String? imagePath`. No Dio imports. |
+| **BLoC** | Passes `event.fields` and `event.imagePath` straight to the repository. No format awareness. |
+| **Repository (impl)** | `if (imagePath != null)` → build `FormData` + `isFromData: true`. Else → plain `Map` + `isFromData: false`. |
+
 ### Usage Pattern
 
-1. **Add state variable** to your StatefulWidget:
+#### 1. Screen — collect fields and image path
 
-   ```dart
-   String? _selectedImagePath;
-   ```
+```dart
+String? _selectedImagePath;
 
-2. **Pick image from gallery** (call on tap of the image container):
+Future<void> _pickImage() async {
+  final path = await ImagePickerHelper.pickImageFromGallery();
+  if (path != null) setState(() => _selectedImagePath = path);
+}
 
-   ```dart
-   Future<void> _pickImage() async {
-     final path = await ImagePickerHelper.pickImageFromGallery();
-     if (path != null) {
-       setState(() => _selectedImagePath = path);
-     }
-   }
-   ```
+void _save() {
+  if (_formKey.currentState?.validate() ?? false) {
+    final fields = <String, dynamic>{
+      'field_name': controller.text.trim(),
+    };
+    context.read<FeatureBloc>().add(
+      CreateFeatureEvent(fields: fields, imagePath: _selectedImagePath),
+    );
+    context.pop();
+  }
+}
+```
 
-3. **Build FormData with image** (inside your save method):
+> **No `FormData`, no `MultipartFile`, no `dio` import in the screen.**
 
-   ```dart
-   final formFields = <String, dynamic>{
-     'field_name': valueController.text.trim(),
-   };
+#### 2. Event — strongly typed, no Dio
 
-   if (_selectedImagePath != null) {
-     formFields['image'] = await MultipartFile.fromFile(
-       _selectedImagePath!,
-       filename: _selectedImagePath!.split('/').last,
-     );
-   }
+```dart
+import 'package:equatable/equatable.dart';
 
-   final formData = FormData.fromMap(formFields);
-   ```
+class CreateFeatureEvent extends FeatureEvent {
+  final Map<String, dynamic> fields;
+  final String? imagePath;
 
-4. **Show image preview** in a tappable container:
+  const CreateFeatureEvent({required this.fields, this.imagePath});
 
-   ```dart
-   GestureDetector(
-     onTap: _pickImage,
-     child: Container(
-       width: double.infinity,
-       height: 160.h,
-       decoration: BoxDecoration(
-         color: colorScheme.surfaceContainerLowest,
-         borderRadius: BorderRadius.circular(16.r),
-         border: Border.all(color: colorScheme.outline, width: 1.5),
-       ),
-       child: _selectedImagePath != null
-           ? ClipRRect(
-               borderRadius: BorderRadius.circular(15.r),
-               child: Image.file(File(_selectedImagePath!), fit: BoxFit.cover),
-             )
-           : (existingImageUrl != null && existingImageUrl!.isNotEmpty)
-               ? ClipRRect(
-                   borderRadius: BorderRadius.circular(15.r),
-                   child: Image.network(existingImageUrl!, fit: BoxFit.cover),
-                 )
-               : Column(
-                   mainAxisAlignment: MainAxisAlignment.center,
-                   children: [
-                     Icon(Icons.add_photo_alternate_outlined, size: 40.r, color: colorScheme.onSurfaceVariant),
-                     SizedBox(height: 8.h),
-                     Text('Tap to add image', style: context.textTheme.bodySmall),
-                   ],
-                 ),
-     ),
-   )
-   ```
+  @override
+  List<Object?> get props => [fields, imagePath];
+}
+
+class UpdateFeatureEvent extends FeatureEvent {
+  final String id;
+  final Map<String, dynamic> fields;
+  final String? imagePath;
+
+  const UpdateFeatureEvent({required this.id, required this.fields, this.imagePath});
+
+  @override
+  List<Object?> get props => [id, fields, imagePath];
+}
+```
+
+#### 3. Domain Repository Interface — no Dio
+
+```dart
+Future<Either<String, FeatureModel>> createFeature(
+  Map<String, dynamic> fields,
+  String? imagePath,
+);
+
+Future<Either<String, FeatureModel>> updateFeature(
+  String id,
+  Map<String, dynamic> fields,
+  String? imagePath,
+);
+```
+
+#### 4. Repository Implementation — owns FormData logic
+
+```dart
+import 'package:dio/dio.dart';
+
+@override
+Future<Either<String, FeatureModel>> createFeature(
+  Map<String, dynamic> fields,
+  String? imagePath,
+) async {
+  final bool hasImage = imagePath != null;
+  final Object data;
+  if (hasImage) {
+    final imageFile = await MultipartFile.fromFile(
+      imagePath,
+      filename: imagePath.split('/').last,
+    );
+    data = FormData.fromMap({...fields, 'image': imageFile});
+  } else {
+    data = fields;
+  }
+  return await apiConsumer.post<FeatureModel>(
+    EndPoint.featurePath,
+    data: data,
+    isFromData: hasImage,
+    fromJson: (json) => FeatureModel.fromJson(json['data'] ?? json),
+  );
+}
+```
+
+> The same `if (hasImage)` pattern applies identically to `update` (PUT) methods.
+
+#### 5. Image preview container in the screen
+
+```dart
+GestureDetector(
+  onTap: _pickImage,
+  child: Container(
+    width: double.infinity,
+    height: 160.h,
+    decoration: BoxDecoration(
+      color: colorScheme.surfaceContainerLowest,
+      borderRadius: BorderRadius.circular(16.r),
+      border: Border.all(color: colorScheme.outline, width: 1.5),
+    ),
+    child: _selectedImagePath != null
+        ? ClipRRect(
+            borderRadius: BorderRadius.circular(15.r),
+            child: Image.file(File(_selectedImagePath!), fit: BoxFit.cover),
+          )
+        : (existingImageUrl != null && existingImageUrl!.isNotEmpty)
+            ? ClipRRect(
+                borderRadius: BorderRadius.circular(15.r),
+                child: Image.network(existingImageUrl!, fit: BoxFit.cover),
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_photo_alternate_outlined, size: 40.r, color: colorScheme.onSurfaceVariant),
+                  SizedBox(height: 8.h),
+                  Text(context.tr('tap_to_add_image'), style: context.textTheme.bodySmall),
+                ],
+              ),
+  ),
+)
+```
 
 ### Key Rules
 
-- Always use `multipart/form-data` — both `/api/rewards` and `/api/garbage-types` POST/PUT require `multipart/form-data`.
-- Import `dart:io` for `File`, and `package:dio/dio.dart` for `FormData` and `MultipartFile`.
+- **Never use `FormData` outside the repository implementation.** Screens, Events, and BLoCs must stay clean of Dio transport types.
+- When `imagePath != null` → send `FormData` with `isFromData: true` (multipart upload).
+- When `imagePath == null` → send plain `Map<String, dynamic>` with `isFromData: false` (JSON). This avoids unnecessary multipart overhead for text-only requests.
+- Import `dart:io` for `File` only in the screen (for preview). Import `package:dio/dio.dart` (`FormData`, `MultipartFile`) only in repository implementations.
 - Never hardcode the image field name `name` for garbage types — the backend expects `garbage_type_name`.
 - For update (PUT), always use `apiConsumer.put(...)` — not `patch`.

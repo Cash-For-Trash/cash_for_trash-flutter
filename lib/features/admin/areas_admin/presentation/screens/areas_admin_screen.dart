@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
 import '../bloc/areas_admin_bloc.dart';
 import '../bloc/areas_admin_event.dart';
-import '../bloc/areas_admin_state.dart';
 import '../widgets/area_card_areas_admin_widget.dart';
 
 class AreasAdminScreen extends StatefulWidget {
@@ -38,8 +37,11 @@ class _AreasAdminScreenState extends State<AreasAdminScreen> {
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.push(AppRoutes.adminAreaFormScreen);
+        onPressed: () async {
+          await context.push(AppRoutes.adminAreaFormScreen);
+          if (context.mounted) {
+            context.read<AreasAdminBloc>().add(const GetAreasAdminEvent());
+          }
         },
         icon: const Icon(Icons.add_location_alt_rounded),
         label: Text(context.tr('admin_add_area')),
@@ -56,8 +58,11 @@ class _AreasAdminScreenState extends State<AreasAdminScreen> {
                 message: context.tr('empty_no_items_desc'),
                 icon: Icons.map_outlined,
                 actionLabel: context.tr('admin_add_area'),
-                onAction: () {
-                  context.push(AppRoutes.adminAreaFormScreen);
+                onAction: () async {
+                  await context.push(AppRoutes.adminAreaFormScreen);
+                  if (context.mounted) {
+                    context.read<AreasAdminBloc>().add(const GetAreasAdminEvent());
+                  }
                 },
               );
             }
@@ -72,8 +77,11 @@ class _AreasAdminScreenState extends State<AreasAdminScreen> {
                   final area = state.areas[index];
                   return AreaCardAreasAdminWidget(
                     area: area,
-                    onTap: () {
-                      context.push(AppRoutes.adminAreaFormScreen, extra: area);
+                    onTap: () async {
+                      await context.push(AppRoutes.adminAreaFormScreen, extra: area);
+                      if (context.mounted) {
+                        context.read<AreasAdminBloc>().add(const GetAreasAdminEvent());
+                      }
                     },
                     onDelete: () {
                       context

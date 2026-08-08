@@ -12,31 +12,39 @@ class GarbageTypesAdminRepositoryImpl implements GarbageTypesAdminRepository {
 
   @override
   Future<Either<String, List<GarbageTypeAdminModel>>> getGarbageTypes() async {
-    final result =
-        await apiConsumer.get<Map<String, dynamic>>(EndPoint.garbageTypes);
-    return result.fold(
-      (error) => Left(error),
-      (json) {
-        final rawList = json['data'] is List ? json['data'] as List : [];
-        final list = rawList
-            .map((item) => GarbageTypeAdminModel.fromJson(
-                Map<String, dynamic>.from(item as Map)))
-            .toList();
-        return Right(list);
-      },
+    final result = await apiConsumer.get<Map<String, dynamic>>(
+      EndPoint.garbageTypes,
     );
+    return result.fold((error) => Left(error), (json) {
+      final rawList = json['data'] is List ? json['data'] as List : [];
+      final list = rawList
+          .map(
+            (item) => GarbageTypeAdminModel.fromJson(
+              Map<String, dynamic>.from(item as Map),
+            ),
+          )
+          .toList();
+      return Right(list);
+    });
   }
 
   @override
   Future<Either<String, GarbageTypeAdminModel>> createGarbageType(
-      FormData formData) async {
+    Map<String, dynamic> fields,
+    String imagePath,
+  ) async {
+    final imageFile = await MultipartFile.fromFile(
+      imagePath,
+      filename: imagePath.split('/').last,
+    );
     return await apiConsumer.post<GarbageTypeAdminModel>(
       EndPoint.garbageTypes,
-      data: formData,
+      data: FormData.fromMap({...fields, 'image': imageFile}),
       isFromData: true,
       fromJson: (json) {
-        final dataObj =
-            json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
+        final dataObj = json['data'] is Map<String, dynamic>
+            ? json['data'] as Map<String, dynamic>
+            : json;
         return GarbageTypeAdminModel.fromJson(dataObj);
       },
     );
@@ -44,14 +52,29 @@ class GarbageTypesAdminRepositoryImpl implements GarbageTypesAdminRepository {
 
   @override
   Future<Either<String, GarbageTypeAdminModel>> updateGarbageType(
-      String id, FormData formData) async {
+    String id,
+    Map<String, dynamic> fields,
+    String? imagePath,
+  ) async {
+    final bool hasImage = imagePath != null;
+    final Object data;
+    if (hasImage) {
+      final imageFile = await MultipartFile.fromFile(
+        imagePath,
+        filename: imagePath.split('/').last,
+      );
+      data = FormData.fromMap({...fields, 'image': imageFile});
+    } else {
+      data = fields;
+    }
     return await apiConsumer.put<GarbageTypeAdminModel>(
       '${EndPoint.garbageTypes}/$id',
-      data: formData,
-      isFromData: true,
+      data: data,
+      isFromData: hasImage,
       fromJson: (json) {
-        final dataObj =
-            json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
+        final dataObj = json['data'] is Map<String, dynamic>
+            ? json['data'] as Map<String, dynamic>
+            : json;
         return GarbageTypeAdminModel.fromJson(dataObj);
       },
     );
@@ -64,8 +87,9 @@ class GarbageTypesAdminRepositoryImpl implements GarbageTypesAdminRepository {
     );
     return result.fold(
       (error) => Left(error),
-      (json) =>
-          Right(json['message']?.toString() ?? 'Garbage type deleted successfully'),
+      (json) => Right(
+        json['message']?.toString() ?? 'Garbage type deleted successfully',
+      ),
     );
   }
 }

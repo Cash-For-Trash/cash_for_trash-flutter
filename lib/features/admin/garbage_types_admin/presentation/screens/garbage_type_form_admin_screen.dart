@@ -4,7 +4,6 @@ import 'package:cash_for_trash/core/helpers/image_picker_helper.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/widgets/custom_primary_button.dart';
 import 'package:cash_for_trash/core/widgets/custom_text_form_field.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,10 +15,7 @@ import '../bloc/garbage_types_admin_event.dart';
 class GarbageTypeFormAdminScreen extends StatefulWidget {
   final GarbageTypeAdminModel? existingItem;
 
-  const GarbageTypeFormAdminScreen({
-    super.key,
-    this.existingItem,
-  });
+  const GarbageTypeFormAdminScreen({super.key, this.existingItem});
 
   @override
   State<GarbageTypeFormAdminScreen> createState() =>
@@ -32,14 +28,17 @@ class _GarbageTypeFormAdminScreenState
   late TextEditingController _nameController;
   late TextEditingController _priceController;
   String? _selectedImagePath;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
-    _nameController =
-        TextEditingController(text: widget.existingItem?.name ?? '');
+    _nameController = TextEditingController(
+      text: widget.existingItem?.name ?? '',
+    );
     _priceController = TextEditingController(
-        text: widget.existingItem?.pricePerKg.toString() ?? '5.0');
+      text: widget.existingItem?.pricePerKg.toString() ?? '5.0',
+    );
   }
 
   @override
@@ -56,35 +55,43 @@ class _GarbageTypeFormAdminScreenState
     }
   }
 
-  Future<void> _saveItem() async {
+  void _saveItem() {
     if (_formKey.currentState?.validate() ?? false) {
-      final formFields = <String, dynamic>{
+      if (widget.existingItem == null && _selectedImagePath == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.tr('image_required')),
+            backgroundColor: context.colorScheme.error,
+          ),
+        );
+        return;
+      }
+
+      final fields = <String, dynamic>{
         'garbage_type_name': _nameController.text.trim(),
         'price_per_kg': double.parse(_priceController.text.trim()),
       };
 
-      if (_selectedImagePath != null) {
-        formFields['image'] = await MultipartFile.fromFile(
-          _selectedImagePath!,
-          filename: _selectedImagePath!.split('/').last,
-        );
-      }
-
-      if (!mounted) return;
-
-      final formData = FormData.fromMap(formFields);
+      setState(() {
+        _isSubmitting = true;
+      });
 
       if (widget.existingItem == null) {
-        context
-            .read<GarbageTypesAdminBloc>()
-            .add(CreateGarbageTypeAdminEvent(formData));
+        context.read<GarbageTypesAdminBloc>().add(
+          CreateGarbageTypeAdminEvent(
+            fields: fields,
+            imagePath: _selectedImagePath!,
+          ),
+        );
       } else {
-        context.read<GarbageTypesAdminBloc>().add(UpdateGarbageTypeAdminEvent(
-              id: widget.existingItem!.id,
-              formData: formData,
-            ));
+        context.read<GarbageTypesAdminBloc>().add(
+          UpdateGarbageTypeAdminEvent(
+            id: widget.existingItem!.id,
+            fields: fields,
+            imagePath: _selectedImagePath,
+          ),
+        );
       }
-      context.pop();
     }
   }
 
@@ -104,81 +111,111 @@ class _GarbageTypeFormAdminScreenState
           ),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.r),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  width: double.infinity,
-                  height: 160.h,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerLowest,
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(
-                      color: colorScheme.outline,
-                      width: 1.5,
-                      strokeAlign: BorderSide.strokeAlignInside,
-                    ),
-                  ),
-                  child: _selectedImagePath != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(15.r),
-                          child: Image.file(
-                            File(_selectedImagePath!),
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : (widget.existingItem?.image != null &&
-                              widget.existingItem!.image!.isNotEmpty)
+      body: BlocConsumer<GarbageTypesAdminBloc, GarbageTypesAdminState>(
+        listener: (context, state) {
+          if (_isSubmitting) {
+            if (state is GarbageTypesAdminLoadedState && !state.isActionLoading) {
+              setState(() {
+                _isSubmitting = false;
+              });
+              context.pop();
+            } else if (state is GarbageTypesAdminErrorState) {
+              setState(() {
+                _isSubmitting = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: context.colorScheme.error,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          }
+        },
+        builder: (context, state) {
+          final isLoading = _isSubmitting ||
+              (state is GarbageTypesAdminLoadedState && state.isActionLoading);
+
+          return Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(20.r),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: isLoading ? null : _pickImage,
+                    child: Container(
+                      width: double.infinity,
+                      height: 160.h,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerLowest,
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(
+                          color: colorScheme.outline,
+                          width: 1.5,
+                          strokeAlign: BorderSide.strokeAlignInside,
+                        ),
+                      ),
+                      child: _selectedImagePath != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(15.r),
+                              child: Image.file(
+                                File(_selectedImagePath!),
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : (widget.existingItem?.image != null &&
+                                widget.existingItem!.image!.isNotEmpty)
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(15.r),
                               child: Image.network(
                                 widget.existingItem!.image!,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_,_,_) => _imagePlaceholder(colorScheme),
+                                errorBuilder: (_, _, _) =>
+                                    _imagePlaceholder(colorScheme),
                               ),
                             )
                           : _imagePlaceholder(colorScheme),
-                ),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextFormField(
+                    controller: _nameController,
+                    hintText: context.tr('garbage_type_name_hint'),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return context.tr('field_required');
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextFormField(
+                    controller: _priceController,
+                    hintText: '${context.tr('admin_price_per_kg')} (EGP)',
+                    keyboardType: TextInputType.number,
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return context.tr('field_required');
+                      }
+                      if (double.tryParse(val) == null) {
+                        return context.tr('invalid_number');
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 32.h),
+                  CustomPrimaryButton(
+                    text: context.tr('admin_save'),
+                    isLoading: isLoading,
+                    onTap: isLoading ? null : _saveItem,
+                  ),
+                ],
               ),
-              SizedBox(height: 16.h),
-              CustomTextFormField(
-                controller: _nameController,
-                hintText: context.tr('garbage_type_name_hint'),
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return context.tr('field_required');
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.h),
-              CustomTextFormField(
-                controller: _priceController,
-                hintText: '${context.tr('admin_price_per_kg')} (EGP)',
-                keyboardType: TextInputType.number,
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return context.tr('field_required');
-                  }
-                  if (double.tryParse(val) == null) {
-                    return context.tr('invalid_number');
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 32.h),
-              CustomPrimaryButton(
-                text: context.tr('admin_save'),
-                onTap: _saveItem,
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:dio/dio.dart';
 
 abstract class RewardsAdminEvent extends Equatable {
   const RewardsAdminEvent();
@@ -13,22 +12,31 @@ class GetRewardsAdminEvent extends RewardsAdminEvent {
 }
 
 class CreateRewardAdminEvent extends RewardsAdminEvent {
-  final FormData formData;
+  final Map<String, dynamic> fields;
+  final String imagePath;
 
-  const CreateRewardAdminEvent(this.formData);
+  const CreateRewardAdminEvent({
+    required this.fields,
+    required this.imagePath,
+  });
 
   @override
-  List<Object?> get props => [formData];
+  List<Object?> get props => [fields, imagePath];
 }
 
 class UpdateRewardAdminEvent extends RewardsAdminEvent {
   final String id;
-  final FormData formData;
+  final Map<String, dynamic> fields;
+  final String? imagePath;
 
-  const UpdateRewardAdminEvent({required this.id, required this.formData});
+  const UpdateRewardAdminEvent({
+    required this.id,
+    required this.fields,
+    this.imagePath,
+  });
 
   @override
-  List<Object?> get props => [id, formData];
+  List<Object?> get props => [id, fields, imagePath];
 }
 
 class DeleteRewardAdminEvent extends RewardsAdminEvent {

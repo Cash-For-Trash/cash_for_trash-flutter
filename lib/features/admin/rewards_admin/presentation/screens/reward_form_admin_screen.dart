@@ -4,7 +4,6 @@ import 'package:cash_for_trash/core/helpers/image_picker_helper.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/widgets/custom_primary_button.dart';
 import 'package:cash_for_trash/core/widgets/custom_text_form_field.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,6 +29,7 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
   late TextEditingController _titleController;
   late TextEditingController _pointsController;
   String? _selectedImagePath;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -54,35 +54,43 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
     }
   }
 
-  Future<void> _saveReward() async {
+  void _saveReward() {
     if (_formKey.currentState?.validate() ?? false) {
-      final formFields = <String, dynamic>{
+      if (widget.existingReward == null && _selectedImagePath == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.tr('image_required')),
+            backgroundColor: context.colorScheme.error,
+          ),
+        );
+        return;
+      }
+
+      final fields = <String, dynamic>{
         'name': _titleController.text.trim(),
         'required_points': int.parse(_pointsController.text.trim()),
       };
 
-      if (_selectedImagePath != null) {
-        formFields['image'] = await MultipartFile.fromFile(
-          _selectedImagePath!,
-          filename: _selectedImagePath!.split('/').last,
-        );
-      }
-
-      if (!mounted) return;
-
-      final formData = FormData.fromMap(formFields);
+      setState(() {
+        _isSubmitting = true;
+      });
 
       if (widget.existingReward == null) {
-        context
-            .read<RewardsAdminBloc>()
-            .add(CreateRewardAdminEvent(formData));
+        context.read<RewardsAdminBloc>().add(
+          CreateRewardAdminEvent(
+            fields: fields,
+            imagePath: _selectedImagePath!,
+          ),
+        );
       } else {
-        context.read<RewardsAdminBloc>().add(UpdateRewardAdminEvent(
-              id: widget.existingReward!.id,
-              formData: formData,
-            ));
+        context.read<RewardsAdminBloc>().add(
+          UpdateRewardAdminEvent(
+            id: widget.existingReward!.id,
+            fields: fields,
+            imagePath: _selectedImagePath,
+          ),
+        );
       }
-      context.pop();
     }
   }
 
@@ -100,86 +108,116 @@ class _RewardFormAdminScreenState extends State<RewardFormAdminScreen> {
           ),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.r),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  width: double.infinity,
-                  height: 160.h,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerLowest,
-                    borderRadius: BorderRadius.circular(16.r),
-                    border: Border.all(
-                      color: colorScheme.outline,
-                      width: 1.5,
-                      strokeAlign: BorderSide.strokeAlignInside,
-                    ),
-                  ),
-                  child: _selectedImagePath != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(15.r),
-                          child: Image.file(
-                            File(_selectedImagePath!),
-                            fit: BoxFit.cover,
-                          ),
-                        )
-                      : (widget.existingReward?.image != null &&
-                              widget.existingReward!.image!.isNotEmpty)
+      body: BlocConsumer<RewardsAdminBloc, RewardsAdminState>(
+        listener: (context, state) {
+          if (_isSubmitting) {
+            if (state is RewardsAdminLoadedState && !state.isActionLoading) {
+              setState(() {
+                _isSubmitting = false;
+              });
+              context.pop();
+            } else if (state is RewardsAdminErrorState) {
+              setState(() {
+                _isSubmitting = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: context.colorScheme.error,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            }
+          }
+        },
+        builder: (context, state) {
+          final isLoading = _isSubmitting ||
+              (state is RewardsAdminLoadedState && state.isActionLoading);
+
+          return Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(20.r),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: isLoading ? null : _pickImage,
+                    child: Container(
+                      width: double.infinity,
+                      height: 160.h,
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerLowest,
+                        borderRadius: BorderRadius.circular(16.r),
+                        border: Border.all(
+                          color: colorScheme.outline,
+                          width: 1.5,
+                          strokeAlign: BorderSide.strokeAlignInside,
+                        ),
+                      ),
+                      child: _selectedImagePath != null
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(15.r),
-                              child: Image.network(
-                                widget.existingReward!.image!,
+                              child: Image.file(
+                                File(_selectedImagePath!),
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, _, _) => _imagePlaceholder(colorScheme),
                               ),
                             )
-                          : _imagePlaceholder(colorScheme),
-                ),
+                          : (widget.existingReward?.image != null &&
+                                  widget.existingReward!.image!.isNotEmpty)
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.r),
+                                  child: Image.network(
+                                    widget.existingReward!.image!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, _, _) =>
+                                        _imagePlaceholder(colorScheme),
+                                  ),
+                                )
+                              : _imagePlaceholder(colorScheme),
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextFormField(
+                    controller: _titleController,
+                    hintText: context.tr('reward_title_hint'),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return context.tr('field_required');
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextFormField(
+                    controller: _pointsController,
+                    hintText: context.tr('points_required_hint'),
+                    keyboardType: TextInputType.number,
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return context.tr('field_required');
+                      }
+                      if (int.tryParse(val) == null) {
+                        return context.tr('invalid_number');
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 32.h),
+                  CustomPrimaryButton(
+                    text: context.tr('admin_save'),
+                    isLoading: isLoading,
+                    onTap: isLoading ? null : _saveReward,
+                  ),
+                ],
               ),
-              SizedBox(height: 16.h),
-              CustomTextFormField(
-                controller: _titleController,
-                hintText: context.tr('reward_title_hint'),
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return context.tr('field_required');
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.h),
-              CustomTextFormField(
-                controller: _pointsController,
-                hintText: context.tr('points_required_hint'),
-                keyboardType: TextInputType.number,
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return context.tr('field_required');
-                  }
-                  if (int.tryParse(val) == null) {
-                    return context.tr('invalid_number');
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 32.h),
-              CustomPrimaryButton(
-                text: context.tr('admin_save'),
-                onTap: _saveReward,
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _imagePlaceholder(ColorScheme  colorScheme) {
+  Widget _imagePlaceholder(ColorScheme colorScheme) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repository/availabilities_admin_repository.dart';
 import 'availabilities_admin_event.dart';
 import 'availabilities_admin_state.dart';
+export 'availabilities_admin_state.dart';
 
 class AvailabilitiesAdminBloc
     extends Bloc<AvailabilitiesAdminEvent, AvailabilitiesAdminState> {

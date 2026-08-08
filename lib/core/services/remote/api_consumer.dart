@@ -35,4 +35,4 @@ abstract class ApiConsumer {
     bool isFromData = false,
     T Function(Map<String, dynamic>)? fromJson,
   });
-}
+}

@@ -25,7 +25,7 @@ class GarbageTypeAdminModel extends Equatable {
       id: (json['garbage_type_id'] ?? json['id'] ?? '').toString(),
       name: (json['garbage_type_name'] ?? json['name'] ?? '').toString(),
       pricePerKg: _toDouble(json['price_per_kg']),
-      image: json['image'] as String?,
+      image: json['garbage_type_image'] as String?,
     );
   }
 

@@ -16,6 +16,7 @@ class CustomPrimaryButton extends StatelessWidget {
   final TextStyle? textStyle;
   final ButtonStyle? style;
   final Color? color;
+  final bool isLoading;
 
   const CustomPrimaryButton({
     super.key,
@@ -30,6 +31,7 @@ class CustomPrimaryButton extends StatelessWidget {
     this.textStyle,
     this.style,
     this.color,
+    this.isLoading = false,
   });
 
   @override
@@ -43,39 +45,47 @@ class CustomPrimaryButton extends StatelessWidget {
       width: width?.w ?? (context.isDesktop ? 320 : 278.w),
       height: height?.h ?? (context.isDesktop ? 48 : 50.h),
       child: ElevatedButton(
-        onPressed: onTap,
-
+        onPressed: isLoading ? null : onTap,
         style: style ?? ElevatedButton.styleFrom(backgroundColor: color),
-        child: IconTheme(
-          data: IconThemeData(
-            color: defaultColor,
-            size: iconSize ?? (context.isDesktop ? 20 : 20.w),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (prefixIcon != null) ...[
-                prefixIcon!,
-                SizedBox(width: iconPadding ?? (context.isDesktop ? 8 : 8.w)),
-              ],
+        child: isLoading
+            ? SizedBox(
+                height: 20.r,
+                width: 20.r,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  valueColor: AlwaysStoppedAnimation<Color>(defaultColor),
+                ),
+              )
+            : IconTheme(
+                data: IconThemeData(
+                  color: defaultColor,
+                  size: iconSize ?? (context.isDesktop ? 20 : 20.w),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (prefixIcon != null) ...[
+                      prefixIcon!,
+                      SizedBox(width: iconPadding ?? (context.isDesktop ? 8 : 8.w)),
+                    ],
 
-              Flexible(
-                child: Text(
-                  text,
-                  maxLines: 1,
-                  style: (textStyle ?? context.textTheme.labelLarge)?.copyWith(
-                    color: defaultColor,
-                  ),
+                    Flexible(
+                      child: Text(
+                        text,
+                        maxLines: 1,
+                        style: (textStyle ?? context.textTheme.labelLarge)?.copyWith(
+                          color: defaultColor,
+                        ),
+                      ),
+                    ),
+
+                    if (suffixIcon != null) ...[
+                      SizedBox(width: iconPadding ?? (context.isDesktop ? 8 : 8.w)),
+                      suffixIcon!,
+                    ],
+                  ],
                 ),
               ),
-
-              if (suffixIcon != null) ...[
-                SizedBox(width: iconPadding ?? (context.isDesktop ? 8 : 8.w)),
-                suffixIcon!,
-              ],
-            ],
-          ),
-        ),
       ),
     );
   }

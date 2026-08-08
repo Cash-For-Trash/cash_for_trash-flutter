@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
 import '../bloc/garbage_types_admin_bloc.dart';
 import '../bloc/garbage_types_admin_event.dart';
-import '../bloc/garbage_types_admin_state.dart';
 import '../widgets/garbage_type_card_garbage_types_admin_widget.dart';
 
 class GarbageTypesAdminScreen extends StatefulWidget {
@@ -42,8 +41,13 @@ class _GarbageTypesAdminScreenState extends State<GarbageTypesAdminScreen> {
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          context.push(AppRoutes.adminGarbageTypeFormScreen);
+        onPressed: () async {
+          await context.push(AppRoutes.adminGarbageTypeFormScreen);
+          if (context.mounted) {
+            context
+                .read<GarbageTypesAdminBloc>()
+                .add(const GetGarbageTypesAdminEvent());
+          }
         },
         icon: const Icon(Icons.add_rounded),
         label: Text(context.tr('admin_add_garbage_type')),
@@ -60,8 +64,13 @@ class _GarbageTypesAdminScreenState extends State<GarbageTypesAdminScreen> {
                 message: context.tr('empty_no_items_desc'),
                 icon: Icons.recycling_rounded,
                 actionLabel: context.tr('admin_add_garbage_type'),
-                onAction: () {
-                  context.push(AppRoutes.adminGarbageTypeFormScreen);
+                onAction: () async {
+                  await context.push(AppRoutes.adminGarbageTypeFormScreen);
+                  if (context.mounted) {
+                    context
+                        .read<GarbageTypesAdminBloc>()
+                        .add(const GetGarbageTypesAdminEvent());
+                  }
                 },
               );
             }
@@ -78,9 +87,14 @@ class _GarbageTypesAdminScreenState extends State<GarbageTypesAdminScreen> {
                   final type = state.garbageTypes[index];
                   return GarbageTypeCardGarbageTypesAdminWidget(
                     item: type,
-                    onTap: () {
-                      context.push(AppRoutes.adminGarbageTypeFormScreen,
+                    onTap: () async {
+                      await context.push(AppRoutes.adminGarbageTypeFormScreen,
                           extra: type);
+                      if (context.mounted) {
+                        context
+                            .read<GarbageTypesAdminBloc>()
+                            .add(const GetGarbageTypesAdminEvent());
+                      }
                     },
                     onDelete: () {
                       context

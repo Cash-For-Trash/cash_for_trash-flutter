@@ -116,7 +116,8 @@ class _PricingAdminScreenState extends State<PricingAdminScreen> {
                     SizedBox(height: 32.h),
                     CustomPrimaryButton(
                       text: context.tr('admin_save'),
-                      onTap: _savePricing,
+                      isLoading: state.isActionLoading,
+                      onTap: state.isActionLoading ? null : _savePricing,
                     ),
                   ],
                 ),
