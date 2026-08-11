@@ -44,7 +44,6 @@ class MenuGroupProfileSection extends StatelessWidget {
         SizedBox(height: 8.h),
         Container(
           decoration: BoxDecoration(
-            color: context.colorScheme.surface,
             border: Border.all(
               color: context.colorScheme.outlineVariant.withValues(alpha: 0.1),
               width: 0.8.w,
@@ -58,63 +57,67 @@ class MenuGroupProfileSection extends StatelessWidget {
               ),
             ],
           ),
-          child: Column(
-            children: List.generate(items.length, (index) {
-              final item = items[index];
-              return Column(
-                children: [
-                  ListTile(
-                    onTap: item.onTap,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 4.h,
-                    ),
-                    leading: Container(
-                      width: 36.w,
-                      height: 36.w,
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.primaryContainer.withValues(
-                          alpha: 0.2,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.r),
+            child: Material(
+              color: context.colorScheme.surface,
+              child: Column(
+                children: List.generate(items.length, (index) {
+                  final item = items[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        onTap: item.onTap,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 4.h,
                         ),
-                        borderRadius: BorderRadius.circular(20.r),
+                        leading: Container(
+                          width: 36.w,
+                          height: 36.w,
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.primaryContainer
+                                .withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(20.r),
+                          ),
+                          child: Icon(
+                            item.icon,
+                            color: context.colorScheme.primary,
+                            size: 18.w,
+                          ),
+                        ),
+                        title: Text(
+                          item.title,
+                          style: context.textTheme.titleSmall?.copyWith(
+                            color: context.colorScheme.onSurface,
+                          ),
+                        ),
+                        subtitle: item.subtitle != null
+                            ? Text(
+                                item.subtitle!,
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: context.colorScheme.onSurface
+                                      .withValues(alpha: 0.5),
+                                ),
+                              )
+                            : null,
+                        trailing: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14.w,
+                          color: context.colorScheme.outline,
+                        ),
                       ),
-                      child: Icon(
-                        item.icon,
-                        color: context.colorScheme.primary,
-                        size: 18.w,
-                      ),
-                    ),
-                    title: Text(
-                      item.title,
-                      style: context.textTheme.titleSmall?.copyWith(
-                        color: context.colorScheme.onSurface,
-                      ),
-                    ),
-                    subtitle: item.subtitle != null
-                        ? Text(
-                            item.subtitle!,
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: context.colorScheme.onSurface.withValues(
-                                alpha: 0.5,
-                              ),
-                            ),
-                          )
-                        : null,
-                    trailing: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 14.w,
-                      color: context.colorScheme.outline,
-                    ),
-                  ),
-                  if (index < items.length - 1)
-                    Divider(
-                      height: 3.h,
-                      thickness: 0.8.h,
-                      color: context.colorScheme.outlineVariant,
-                    ),
-                ],
-              );
-            }),
+                      if (index < items.length - 1)
+                        Divider(
+                          height: 3.h,
+                          thickness: 0.8.h,
+                          color: context.colorScheme.outlineVariant,
+                        ),
+                    ],
+                  );
+                }),
+              ),
+            ),
           ),
         ),
       ],
