@@ -46,7 +46,7 @@ String? validateFirstName(String? value) {
   if (firstName.length > 30) {
     return 'First name must not exceed 30 characters';
   }
-  final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+  final nameRegex = RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$');
   if (!nameRegex.hasMatch(firstName)) {
     return 'First name can only contain letters and spaces';
   }
@@ -70,7 +70,7 @@ String? validateLastName(String? value) {
   if (lastName.length > 30) {
     return 'Last name must not exceed 30 characters';
   }
-  final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+  final nameRegex = RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$');
   if (!nameRegex.hasMatch(lastName)) {
     return 'Last name can only contain letters and spaces';
   }
