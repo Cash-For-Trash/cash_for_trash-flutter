@@ -53,8 +53,11 @@ dependencies:
 
   # Firebase
   firebase_core: ^4.13.0
+  firebase_messaging: ^16.6.0
+  firebase_analytics: ^12.4.5
+  firebase_crashlytics: ^5.2.6
+  firebase_auth: ^6.6.0
   
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

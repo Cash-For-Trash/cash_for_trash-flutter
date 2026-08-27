@@ -1,7 +1,7 @@
 class EndPoint {
   static String localUrl = "http://localhost:3000/api";
   static String remoteUrl = "http://23.21.86.102:3000/api";
-  static String newRemoteUrl = "https://cash-for-trash.vercel.app//api";
+  static String newRemoteUrl = "https://cash-for-trash.vercel.app/api";
   static String baseUrl = newRemoteUrl;
   static String get mediaBaseUrl => baseUrl.replaceFirst('/api', '');
 
@@ -10,6 +10,7 @@ class EndPoint {
   static String register = "/auth/register/";
   static String changePassword = "/auth/change-password/";
   static String logout = "/auth/logout/";
+  static String fcmToken = "/userdevice/register";
 
   static String forgotPassword = "/auth/forgot-password/";
   static String resendOtp = "/auth/resend-otp";
@@ -62,6 +63,7 @@ class ApiKey {
   static String student = "student";
   static String accessToken = "access";
   static String refreshToken = "refresh";
+  static String fcmToken = "fcm_token";
   static String user = "user";
   static String isLoggedIn = "is_logged_in";
   static String oldPassword = "old_password";
