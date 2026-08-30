@@ -73,6 +73,8 @@ import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.d
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
+import '../services/remote/firebase_consumer.dart';
+
 final sl = GetIt.instance;
 
 Future<void> setupServiceLocator() async {
@@ -86,6 +88,10 @@ Future<void> setupServiceLocator() async {
 
   // Remote package
   sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(dio: sl()));
+
+  // Firebase
+  final FirebaseConsumer firebaseConsumer = FirebaseConsumer(apiConsumer: sl(), cacheHelper: sl());
+  await firebaseConsumer.initFirebase();
 
   // Core Cubits
   sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit());

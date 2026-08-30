@@ -46,7 +46,7 @@ String? validateFirstName(String? value) {
   if (firstName.length > 30) {
     return 'First name must not exceed 30 characters';
   }
-  final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+  final nameRegex = RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$');
   if (!nameRegex.hasMatch(firstName)) {
     return 'First name can only contain letters and spaces';
   }
@@ -70,7 +70,7 @@ String? validateLastName(String? value) {
   if (lastName.length > 30) {
     return 'Last name must not exceed 30 characters';
   }
-  final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+  final nameRegex = RegExp(r'^[a-zA-Z\u0600-\u06FF\s]+$');
   if (!nameRegex.hasMatch(lastName)) {
     return 'Last name can only contain letters and spaces';
   }
@@ -94,7 +94,7 @@ String? validatePassword(String? value) {
     return 'Password must not exceed 32 characters';
   }
   final passwordRegex = RegExp(
-    r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,32}$',
+    r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,32}$',
   );
   if (!passwordRegex.hasMatch(value)) {
     if (!value.contains(RegExp(r'[A-Z]'))) {

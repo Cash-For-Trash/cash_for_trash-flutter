@@ -15,7 +15,6 @@ void main() async {
 
   await setupServiceLocator();
   await dotenv.load(fileName: ".env");
-
   runApp(const MyApp());
 }
 

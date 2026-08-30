@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
@@ -51,6 +53,20 @@ class LoginRepoImpl implements LoginRepository {
         key: ApiKey.user,
         value: success.data.user.userId.toString(),
       );
+
+      try {
+        final String? fcmToken = await CacheHelper.getSecretData(key: ApiKey.fcmToken);
+        log("FCM Token from login: $fcmToken");
+        await apiConsumer.post(
+          EndPoint.fcmToken,
+          data: {
+            "fcm_token": fcmToken,
+            "device_type": "android"
+          },
+        );
+      } catch (e) {
+        log("Error occurred while saving FCM token $e");
+      }
     });
 
     return result;

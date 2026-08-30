@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
@@ -42,6 +44,19 @@ class RegisterRepoImpl implements RegisterRepository {
         await CacheHelper.saveData(key: ApiKey.email, value: email);
         await CacheHelper.saveData(key: 'mobile', value: phone);
         await CacheHelper.saveData(key: ApiKey.role, value: role);
+
+        try {
+          final String? fcmToken = await CacheHelper.getSecretData(key: ApiKey.fcmToken);
+          await apiConsumer.post(
+            EndPoint.fcmToken,
+            data: {
+              "fcm_token": fcmToken,
+              "device_type": "android"
+            },
+          );
+        } catch (e) {
+          log("Error occurred while saving FCM token $e");
+        }
       },
     );
 

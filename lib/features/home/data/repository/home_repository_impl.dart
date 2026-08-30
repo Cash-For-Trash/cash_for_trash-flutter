@@ -26,18 +26,17 @@ class HomeRepositoryImpl implements HomeRepository {
             .map((item) => Map<String, dynamic>.from(item as Map))
             .toList();
 
-        Map<String, dynamic>? activeOrderJson;
+        List<Map<String, dynamic>>? activeOrderJson;
         for (final item in allOrders) {
           final status = (item['status'] ?? '').toString().toUpperCase();
           if (status != 'COLLECTED' && status != 'CANCELLED') {
-            activeOrderJson = item;
-            break;
+            activeOrderJson = [...?activeOrderJson, item];
           }
         }
 
-        final currentOrder = activeOrderJson != null
-            ? CurrentOrderModel.fromJson(activeOrderJson)
-            : null;
+        final List<CurrentOrderModel> currentOrders = activeOrderJson != null
+            ? activeOrderJson.map((item) => CurrentOrderModel.fromJson(item)).toList()
+            : [];
 
         final recentOrders = allOrders
             .map((item) => OrderModel.fromJson(item))
@@ -78,8 +77,8 @@ class HomeRepositoryImpl implements HomeRepository {
           monthlyImpactTrees: (points / 100).ceil(),
           monthlyImpactRecycledKg: (allOrders.length * 5.0),
           monthlyImpactCollectedKg: (allOrders.length * 7.5),
-          currentOrder: currentOrder,
-          recentOrders: recentOrders,
+          currentOrders: currentOrders.reversed.toList(),
+          recentOrders: recentOrders.reversed.toList(),
         ));
       },
     );

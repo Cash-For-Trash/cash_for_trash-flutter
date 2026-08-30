@@ -101,6 +101,8 @@ class CacheHelper {
     await removeData(key: ApiKey.image);
     await removeData(key: ApiKey.slug);
     await removeData(key: ApiKey.isLoggedIn);
+    await removeData(key: ApiKey.role);
+    await removeData(key: ApiKey.fcmToken);
   }
 
 

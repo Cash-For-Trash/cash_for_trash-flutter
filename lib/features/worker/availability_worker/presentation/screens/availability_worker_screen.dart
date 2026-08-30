@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -94,13 +95,12 @@ class _AvailabilityWorkerScreenState extends State<AvailabilityWorkerScreen> {
               ),
             );
           } else if (state is AvailabilityWorkerErrorState) {
-            return Center(
-              child: Text(
-                state.errorMessage,
-                style: context.textTheme.bodyLarge?.copyWith(
-                  color: context.colorScheme.error,
-                ),
-              ),
+            return CustomErrorOrEmptyWidget(
+              errorMessage: state.errorMessage,
+              isError: true,
+              onRetry: () {
+                context.read<AvailabilityWorkerBloc>().add(const GetMyAvailabilitiesEvent());
+              },
             );
           }
           return const SizedBox.shrink();
