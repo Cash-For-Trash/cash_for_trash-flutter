@@ -2,6 +2,8 @@ class EndPoint {
   static String localUrl = "http://localhost:3000/api";
   static String remoteUrl = "http://23.21.86.102:3000/api";
   static String newRemoteUrl = "https://cash-for-trash.vercel.app/api";
+  static String localIpUrl = "http://192.168.1.3:3000/api";
+
   static String baseUrl = newRemoteUrl;
   static String get mediaBaseUrl => baseUrl.replaceFirst('/api', '');
 

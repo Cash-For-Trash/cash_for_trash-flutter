@@ -2,6 +2,7 @@ import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class HeaderAddressWidget extends StatelessWidget {
   const HeaderAddressWidget({super.key});
@@ -32,7 +33,7 @@ class HeaderAddressWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).pop(),
+            onTap: () => context.pop(),
             child: Icon(
               Icons.arrow_back_ios_new_rounded,
               color: context.colorScheme.onPrimary,

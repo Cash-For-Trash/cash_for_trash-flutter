@@ -42,9 +42,9 @@ class HomeScreen extends StatelessWidget {
                           SizedBox(height: 24.h),
                           MonthlyImpactSection(data: data),
                           SizedBox(height: 24.h),
-                          if (data.currentOrder != null) ...[
+                          if (data.currentOrders.isNotEmpty) ...[
                             CurrentOrderSection(
-                              order: data.currentOrder!,
+                              orders: data.currentOrders,
                             ),
                             SizedBox(height: 24.h),
                           ],

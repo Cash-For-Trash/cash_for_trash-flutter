@@ -94,7 +94,7 @@ String? validatePassword(String? value) {
     return 'Password must not exceed 32 characters';
   }
   final passwordRegex = RegExp(
-    r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,32}$',
+    r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,32}$',
   );
   if (!passwordRegex.hasMatch(value)) {
     if (!value.contains(RegExp(r'[A-Z]'))) {

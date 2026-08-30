@@ -156,7 +156,7 @@ class HomeDataModel extends Equatable {
   final int monthlyImpactTrees;
   final double monthlyImpactRecycledKg;
   final double monthlyImpactCollectedKg;
-  final CurrentOrderModel? currentOrder;
+  final List<CurrentOrderModel?> currentOrders;
   final List<OrderModel> recentOrders;
 
   const HomeDataModel({
@@ -168,7 +168,7 @@ class HomeDataModel extends Equatable {
     required this.monthlyImpactTrees,
     required this.monthlyImpactRecycledKg,
     required this.monthlyImpactCollectedKg,
-    required this.currentOrder,
+    required this.currentOrders,
     required this.recentOrders,
   });
 
@@ -182,7 +182,7 @@ class HomeDataModel extends Equatable {
         monthlyImpactTrees,
         monthlyImpactRecycledKg,
         monthlyImpactCollectedKg,
-        currentOrder,
+        currentOrders,
         recentOrders,
       ];
 }
