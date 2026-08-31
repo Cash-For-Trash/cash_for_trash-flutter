@@ -59,7 +59,6 @@ abstract class AppDateFormatter {
   }
 
   /// Formats raw time strings or ISO strings (e.g. "1970-01-01T01:00:00.000Z" or "13:30:00")
-  /// into clean time-only strings like "1:00 AM" or "1:30 PM".
   static String formatTimeOnly(String? rawTime) {
     if (rawTime == null || rawTime.trim().isEmpty) return '';
     final trimmed = rawTime.trim();
@@ -67,7 +66,7 @@ abstract class AppDateFormatter {
     // Check if parsed as DateTime (e.g. "1970-01-01T01:00:00.000Z")
     final parsed = DateTime.tryParse(trimmed);
     if (parsed != null) {
-      final dt = parsed.toLocal();
+      final dt = parsed.year == 1970 ? parsed.toUtc() : parsed.toLocal();
       final hourNum = dt.hour == 0 ? 12 : (dt.hour > 12 ? dt.hour - 12 : dt.hour);
       final minuteStr = dt.minute.toString().padLeft(2, '0');
       final period = dt.hour >= 12 ? 'PM' : 'AM';
@@ -88,5 +87,51 @@ abstract class AppDateFormatter {
     }
 
     return trimmed;
+  }
+
+  /// Formats scheduled day, scheduled from time, and scheduled to time into a clean human-readable slot string,
+  static String formatScheduledSlot({
+    String? day,
+    String? fromTime,
+    String? toTime,
+  }) {
+    final rawDay = (day ?? '').trim();
+    final rawFrom = (fromTime ?? '').trim();
+    final rawTo = (toTime ?? '').trim();
+
+    String dayFormatted = '';
+    if (rawDay.isNotEmpty) {
+      final parsedDate = DateTime.tryParse(rawDay);
+      if (parsedDate != null) {
+        dayFormatted = format(rawDay, showTime: false);
+      } else {
+        // Format day name like "FRIDAY" -> "Friday"
+        dayFormatted = rawDay.toLowerCase().split(' ').map((word) {
+          if (word.isEmpty) return word;
+          return word[0].toUpperCase() + word.substring(1);
+        }).join(' ');
+      }
+    }
+
+    final formattedFrom = formatTimeOnly(rawFrom);
+    final formattedTo = formatTimeOnly(rawTo);
+
+    if (formattedFrom.isNotEmpty && formattedTo.isNotEmpty) {
+      if (dayFormatted.isNotEmpty) {
+        return '$dayFormatted ($formattedFrom - $formattedTo)';
+      } else {
+        return '$formattedFrom - $formattedTo';
+      }
+    } else if (formattedFrom.isNotEmpty) {
+      if (dayFormatted.isNotEmpty) {
+        return '$dayFormatted ($formattedFrom)';
+      } else {
+        return formattedFrom;
+      }
+    } else if (dayFormatted.isNotEmpty) {
+      return dayFormatted;
+    }
+
+    return '';
   }
 }

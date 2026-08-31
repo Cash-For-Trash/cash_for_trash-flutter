@@ -95,20 +95,13 @@ class CurrentOrderModel extends Equatable {
     final rawFrom = (json['scheduled_from_time'] ?? '').toString().trim();
     final rawTo = (json['scheduled_to_time'] ?? '').toString().trim();
 
-    String timeInfo = '';
+    String timeInfo = AppDateFormatter.formatScheduledSlot(
+      day: rawDay,
+      fromTime: rawFrom,
+      toTime: rawTo,
+    );
 
-    if (rawFrom.isNotEmpty && rawTo.isNotEmpty) {
-      final formattedDay = AppDateFormatter.format(rawDay, showTime: false);
-      final formattedFrom = AppDateFormatter.formatTimeOnly(rawFrom);
-      final formattedTo = AppDateFormatter.formatTimeOnly(rawTo);
-      timeInfo = '$formattedDay ($formattedFrom - $formattedTo)'.trim();
-    } else if (rawFrom.isNotEmpty) {
-      final formattedDay = AppDateFormatter.format(rawDay, showTime: false);
-      final formattedFrom = AppDateFormatter.formatTimeOnly(rawFrom);
-      timeInfo = '$formattedDay ($formattedFrom)'.trim();
-    } else if (rawDay.isNotEmpty) {
-      timeInfo = AppDateFormatter.format(rawDay);
-    } else {
+    if (timeInfo.isEmpty) {
       final rawFallback = (json['request_date'] ?? json['created_at'] ?? '').toString();
       timeInfo = AppDateFormatter.format(rawFallback);
     }

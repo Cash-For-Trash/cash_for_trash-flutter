@@ -33,7 +33,7 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
       child: BlocBuilder<RequestCollectionBloc, RequestCollectionState>(
         builder: (context, state) {
           final costText =
-              '${context.tr('request_cost_prefix')}${state.cost.toInt()} ${context.tr('currency_egp')}';
+              '${context.tr('request_cost_prefix')}${state.cost ?? '??'} ${context.tr('currency_egp')}';
 
           return Column(
             mainAxisSize: MainAxisSize.min,

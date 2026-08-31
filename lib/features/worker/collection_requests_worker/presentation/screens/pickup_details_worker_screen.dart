@@ -86,6 +86,23 @@ class PickupDetailsWorkerScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                  if (request.formattedScheduledSlot.isNotEmpty) ...[
+                    SizedBox(height: 6.h),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time_rounded, color: context.colorScheme.tertiary, size: 20.sp),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            request.formattedScheduledSlot,
+                            style: context.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),
