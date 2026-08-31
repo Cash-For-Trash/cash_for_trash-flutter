@@ -84,10 +84,17 @@ class RequestCardCollectionWorkerWidget extends StatelessWidget {
                   color: context.colorScheme.secondary,
                 ),
                 SizedBox(width: 6.w),
-                Text(
-                  '${request.scheduledDay} ${request.scheduledFromTime} - ${request.scheduledToTime}',
-                  style: context.textTheme.bodySmall?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
+                Expanded(
+                  child: Text(
+                    request.formattedScheduledSlot.isNotEmpty
+                        ? request.formattedScheduledSlot
+                        : context.tr('time_not_specified'),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

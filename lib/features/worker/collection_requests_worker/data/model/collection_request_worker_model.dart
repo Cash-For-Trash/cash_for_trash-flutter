@@ -1,3 +1,4 @@
+import 'package:cash_for_trash/core/utils/date_formatter.dart';
 import 'package:equatable/equatable.dart';
 import 'garbage_weight_worker_model.dart';
 
@@ -20,6 +21,12 @@ class CollectionRequestWorkerModel extends Equatable {
   final double earnedPoints;
   final double workerIncome;
   final String createdAt;
+
+  String get formattedScheduledSlot => AppDateFormatter.formatScheduledSlot(
+        day: scheduledDay,
+        fromTime: scheduledFromTime,
+        toTime: scheduledToTime,
+      );
 
   const CollectionRequestWorkerModel({
     required this.id,
