@@ -28,7 +28,7 @@ class RequestCollectionState extends Equatable {
   final String cityKey;
   final double? latitude;
   final double? longitude;
-  final double cost;
+  final double? cost;
 
   final bool isSubmitting;
   final bool submitSuccess;
@@ -56,7 +56,7 @@ class RequestCollectionState extends Equatable {
     this.cityKey = '',
     this.latitude,
     this.longitude,
-    this.cost = 5.0,
+    this.cost,
     this.isSubmitting = false,
     this.submitSuccess = false,
     this.submitErrorMessage,

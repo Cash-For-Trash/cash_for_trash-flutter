@@ -7,12 +7,14 @@ class AvailabilityItemModel extends Equatable {
   final String day;
   final String from;
   final String to;
+  final double servicePrice;
 
   const AvailabilityItemModel({
     required this.availabilityId,
     required this.day,
     required this.from,
     required this.to,
+    required this.servicePrice
   });
 
   String get id => availabilityId;
@@ -23,6 +25,7 @@ class AvailabilityItemModel extends Equatable {
       day: (json['day'] ?? '').toString(),
       from: (json['from'] ?? '').toString(),
       to: (json['to'] ?? '').toString(),
+      servicePrice: (json['service_price'] ?? 0.0).toDouble(),
     );
   }
 
@@ -32,6 +35,7 @@ class AvailabilityItemModel extends Equatable {
       'day': day,
       'from': from,
       'to': to,
+      'service_price': servicePrice,
     };
   }
 
