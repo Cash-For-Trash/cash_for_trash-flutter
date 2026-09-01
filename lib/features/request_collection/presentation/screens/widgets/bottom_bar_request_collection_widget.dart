@@ -3,6 +3,7 @@ import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
+import 'package:cash_for_trash/features/payment/presentation/screens/widgets/payment_method_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -51,13 +52,9 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
                 width: double.infinity,
                 height: 52.h,
                 child: ElevatedButton(
-                  onPressed: state.isSubmitting
-                      ? null
-                      : () {
-                          context.read<RequestCollectionBloc>().add(
-                            const SubmitCollectionRequestEvent(),
-                          );
-                        },
+                  onPressed: () {
+                    PaymentMethodBottomSheet.show(context, state.cost ?? 0.0);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.colorScheme.primary,
                     foregroundColor: context.colorScheme.onPrimary,
@@ -68,16 +65,7 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
                     ),
                     elevation: 0,
                   ),
-                  child: state.isSubmitting
-                      ? SizedBox(
-                          width: 22.r,
-                          height: 22.r,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: context.colorScheme.onPrimary,
-                          ),
-                        )
-                      : Text(
+                  child: Text(
                           context.tr('proceed_to_payment'),
                           style: context.textTheme.titleMedium?.copyWith(
                             color: context.colorScheme.onPrimary,

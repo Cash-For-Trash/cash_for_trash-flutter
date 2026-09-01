@@ -41,10 +41,15 @@ class EndPoint {
 
   // collection requests
   static String collectionRequests = "/collection-requests";
-  static String myCollectionRequests = "/collection-requests/my-collection-requests";
+  static String myCollectionRequests =
+      "/collection-requests/my-collection-requests";
   static String workerCollectionRequests = "/workers/collection-requests";
   static String collectionAvailabilities(String addressId) =>
       "/collection-requests/addresses/$addressId/availabilities";
+
+  // payment
+  static String initiatePayment(String requestId) => "/payment/$requestId";
+  static String myPayments = "/payment/my-payments";
 
   // rewards & points
   static String rewards = "/rewards";

@@ -32,6 +32,7 @@ class AppRoutes {
   static const String mapsScreen = '/maps_screen';
   static const String addressesScreen = '/addresses_screen';
   static const String addressFormScreen = '/address_form_screen';
+  static const String cardPaymentScreen = '/card_payment_screen';
 
   // Admin Routes
   static const String adminHomeScreen = '/admin_home_screen';

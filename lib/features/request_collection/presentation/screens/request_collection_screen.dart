@@ -31,12 +31,9 @@ class RequestCollectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<RequestCollectionBloc, RequestCollectionState>(
       listenWhen: (prev, curr) =>
-          curr.submitSuccess != prev.submitSuccess ||
           curr.submitErrorMessage != prev.submitErrorMessage,
       listener: (context, state) {
-        if (state.submitSuccess) {
-          SuccessCollectionDialog.show(context);
-        } else if (state.submitErrorMessage != null) {
+        if (state.submitErrorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(_resolveError(context, state.submitErrorMessage!)),
