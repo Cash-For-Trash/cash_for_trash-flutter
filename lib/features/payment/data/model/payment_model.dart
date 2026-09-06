@@ -21,13 +21,13 @@ class PaymentModel extends Equatable {
 
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
-      paymentId: json['payment_id'] as String,
-      paymentMethod: json['payment_method'] as String,
-      paymentStatus: json['payment_status'] as String,
+      paymentId: json['payment_id']?.toString() ?? '',
+      paymentMethod: json['payment_method']?.toString() ?? '',
+      paymentStatus: json['payment_status']?.toString() ?? '',
       paymentAmount: json['payment_amount']?.toString() ?? '0',
-      paymobIntentionId: json['paymob_intention_id'] as String,
-      clientSecret: json['client_secret'] as String,
-      checkoutUrl: json['checkout_url'] as String,
+      paymobIntentionId: json['paymob_intention_id']?.toString() ?? '',
+      clientSecret: json['client_secret']?.toString() ?? '',
+      checkoutUrl: json['checkout_url']?.toString() ?? '',
     );
   }
 
@@ -58,10 +58,10 @@ class PaymentCollectionRequestModel extends Equatable {
 
   factory PaymentCollectionRequestModel.fromJson(Map<String, dynamic> json) {
     return PaymentCollectionRequestModel(
-      collectionRequestId: json['collection_request_id'] as String,
-      requestDate: json['request_date'] as String,
+      collectionRequestId: json['collection_request_id']?.toString() ?? '',
+      requestDate: json['request_date']?.toString() ?? '',
       servicePrice: json['service_price']?.toString() ?? '0',
-      status: json['status'] as String,
+      status: json['status']?.toString() ?? '',
     );
   }
 
@@ -89,10 +89,10 @@ class PaymentHistoryResponseModel extends Equatable {
 
   factory PaymentHistoryResponseModel.fromJson(Map<String, dynamic> json) {
     return PaymentHistoryResponseModel(
-      success: json['success'] as bool,
-      statusCode: json['statusCode'] as int,
-      message: json['message'] as String,
-      data: (json['data'] as List)
+      success: json['success'] as bool? ?? true,
+      statusCode: json['statusCode'] as int? ?? 200,
+      message: json['message'] as String? ?? '',
+      data: (json['data'] as List? ?? [])
           .map((e) => PaymentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );

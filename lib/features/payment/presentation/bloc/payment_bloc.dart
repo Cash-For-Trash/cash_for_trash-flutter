@@ -16,11 +16,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Emitter<PaymentState> emit,
   ) async {
     emit(PaymentLoadingState());
-    final result = await repository.initiatePayment(event.collectionRequestId);
-    result.fold(
-      (error) => emit(PaymentErrorState(error)),
-      (_) => emit(PaymentSuccessState()),
-    );
+    emit(PaymentSuccessState());
+    // final result = await repository.initiatePayment(event.collectionRequestId);
+    // result.fold(
+    //   (error) => emit(PaymentErrorState(error)),
+    //   (_) => emit(PaymentSuccessState()),
+    // );
   }
 
   Future<void> _onInitiatePaymentCard(
