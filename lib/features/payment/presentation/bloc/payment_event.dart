@@ -7,10 +7,19 @@ abstract class PaymentEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class InitiatePaymentEvent extends PaymentEvent {
+class  InitiatePaymentCashEvent extends PaymentEvent {
   final String collectionRequestId;
 
-  const InitiatePaymentEvent(this.collectionRequestId);
+  const InitiatePaymentCashEvent(this.collectionRequestId);
+
+  @override
+  List<Object?> get props => [collectionRequestId];
+}
+
+class InitiatePaymentCardEvent extends PaymentEvent {
+  final String collectionRequestId;
+
+  const InitiatePaymentCardEvent(this.collectionRequestId);
 
   @override
   List<Object?> get props => [collectionRequestId];

@@ -20,12 +20,16 @@ class PaymentMethodBottomSheet extends StatefulWidget {
 
   static Future<void> show(BuildContext context, double cost) {
     final requestBloc = context.read<RequestCollectionBloc>();
+    final paymentBloc = context.read<PaymentBloc>();
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: requestBloc,
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: requestBloc),
+          BlocProvider.value(value: paymentBloc),
+        ],
         child: PaymentMethodBottomSheet(cost: cost),
       ),
     );
@@ -51,11 +55,11 @@ class _PaymentMethodBottomSheetState extends State<PaymentMethodBottomSheet> {
               state.collectionRequestResponse!.data.collectionRequestId;
           final paymentMethod =
               state.collectionRequestResponse!.data.paymentMethod;
+          final paymentBloc = context.read<PaymentBloc>();
           context.pop();
           if (paymentMethod == 'CARD') {
-            context.push(
-              AppRoutes.cardPaymentScreen,
-              extra: collectionRequestId,
+            paymentBloc.add(
+              InitiatePaymentCardEvent(collectionRequestId),
             );
           } else {
             _showCashPaymentDialog(context, collectionRequestId);
@@ -187,7 +191,7 @@ class _PaymentMethodBottomSheetState extends State<PaymentMethodBottomSheet> {
       barrierDismissible: false,
       builder: (_) => BlocProvider(
         create: (_) => sl<PaymentBloc>()
-          ..add(InitiatePaymentEvent(collectionRequestId)),
+          ..add(InitiatePaymentCashEvent(collectionRequestId)),
         child: _CashPaymentDialog(collectionRequestId: collectionRequestId),
       ),
     );

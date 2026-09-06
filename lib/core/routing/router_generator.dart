@@ -49,7 +49,6 @@ import 'package:cash_for_trash/features/admin/rewards_admin/presentation/screens
 import 'package:cash_for_trash/features/admin/redemptions_admin/presentation/bloc/redemptions_admin_bloc.dart';
 import 'package:cash_for_trash/features/admin/pricing_admin/presentation/bloc/pricing_admin_bloc.dart';
 import 'package:cash_for_trash/features/payment/presentation/bloc/payment_bloc.dart';
-import 'package:cash_for_trash/features/payment/presentation/screens/card_payment_screen.dart';
 import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
@@ -140,10 +139,17 @@ class RouterGenerator {
       ),
       GoRoute(
         path: AppRoutes.requestCollectionScreen,
-        builder: (context, state) => BlocProvider(
-          create: (context) => sl<RequestCollectionBloc>()
-            ..add(const GetGarbageTypesEvent())
-            ..add(const GetAddressesEvent()),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<RequestCollectionBloc>()
+                ..add(const GetGarbageTypesEvent())
+                ..add(const GetAddressesEvent()),
+            ),
+            BlocProvider(
+              create: (context) => sl<PaymentBloc>(),
+            ),
+          ],
           child: const RequestCollectionScreen(),
         ),
       ),
@@ -249,18 +255,6 @@ class RouterGenerator {
               sl<RewardsBloc>()..add(const GetRewardsEvent()),
           child: const RewardsScreen(),
         ),
-      ),
-      GoRoute(
-        path: AppRoutes.cardPaymentScreen,
-        builder: (context, state) {
-          final collectionRequestId = state.extra as String;
-          return BlocProvider(
-            create: (context) => sl<PaymentBloc>(),
-            child: CardPaymentScreen(
-              collectionRequestId: collectionRequestId,
-            ),
-          );
-        },
       ),
     ],
   );

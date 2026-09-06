@@ -1,7 +1,6 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
-import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
 import 'package:cash_for_trash/features/payment/presentation/screens/widgets/payment_method_bottom_sheet.dart';
 import 'package:flutter/material.dart';

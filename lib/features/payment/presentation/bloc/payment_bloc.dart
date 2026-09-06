@@ -7,15 +7,28 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   final PaymentRepository repository;
 
   PaymentBloc({required this.repository}) : super(PaymentInitialState()) {
-    on<InitiatePaymentEvent>(_onInitiatePayment);
+    on<InitiatePaymentCashEvent>(_onInitiatePayment);
+    on<InitiatePaymentCardEvent>(_onInitiatePaymentCard);
   }
 
   Future<void> _onInitiatePayment(
-    InitiatePaymentEvent event,
+    InitiatePaymentCashEvent event,
     Emitter<PaymentState> emit,
   ) async {
     emit(PaymentLoadingState());
     final result = await repository.initiatePayment(event.collectionRequestId);
+    result.fold(
+      (error) => emit(PaymentErrorState(error)),
+      (_) => emit(PaymentSuccessState()),
+    );
+  }
+
+  Future<void> _onInitiatePaymentCard(
+    InitiatePaymentCardEvent event,
+    Emitter<PaymentState> emit,
+  ) async {
+    emit(PaymentLoadingState());
+    final result = await repository.cardPayment(event.collectionRequestId);
     result.fold(
       (error) => emit(PaymentErrorState(error)),
       (_) => emit(PaymentSuccessState()),

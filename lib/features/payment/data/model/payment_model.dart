@@ -2,47 +2,44 @@ import 'package:equatable/equatable.dart';
 
 class PaymentModel extends Equatable {
   final String paymentId;
-  final String collectionRequestId;
   final String paymentMethod;
   final String paymentStatus;
-  final String paymentDate;
   final String paymentAmount;
-  final PaymentCollectionRequestModel? collectionRequest;
+  final String paymobIntentionId;
+  final String clientSecret;
+  final String checkoutUrl;
 
   const PaymentModel({
     required this.paymentId,
-    required this.collectionRequestId,
     required this.paymentMethod,
     required this.paymentStatus,
-    required this.paymentDate,
     required this.paymentAmount,
-    this.collectionRequest,
+    required this.paymobIntentionId,
+    required this.clientSecret,
+    required this.checkoutUrl,
   });
 
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
       paymentId: json['payment_id'] as String,
-      collectionRequestId: json['collection_request_id'] as String,
       paymentMethod: json['payment_method'] as String,
       paymentStatus: json['payment_status'] as String,
-      paymentDate: json['payment_date'] as String,
       paymentAmount: json['payment_amount']?.toString() ?? '0',
-      collectionRequest: json['collectionRequest'] != null
-          ? PaymentCollectionRequestModel.fromJson(
-              json['collectionRequest'] as Map<String, dynamic>)
-          : null,
+      paymobIntentionId: json['paymob_intention_id'] as String,
+      clientSecret: json['client_secret'] as String,
+      checkoutUrl: json['checkout_url'] as String,
     );
   }
 
   @override
   List<Object?> get props => [
     paymentId,
-    collectionRequestId,
+    paymobIntentionId,
+    clientSecret,
+    checkoutUrl,
     paymentMethod,
     paymentStatus,
-    paymentDate,
     paymentAmount,
-    collectionRequest,
   ];
 }
 

@@ -1,5 +1,8 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/features/payment/presentation/bloc/payment_bloc.dart';
+import 'package:cash_for_trash/features/payment/presentation/bloc/payment_state.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/bottom_bar_request_collection_widget.dart';
@@ -7,12 +10,12 @@ import 'package:cash_for_trash/features/request_collection/presentation/screens/
 import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/image_upload_request_collection_section.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/location_request_collection_section.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/quantity_selection_request_collection_section.dart';
-import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/success_collection_dialog.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/time_slot_request_collection_section.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/waste_type_selection_request_collection_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class RequestCollectionScreen extends StatelessWidget {
   const RequestCollectionScreen({super.key});
@@ -29,24 +32,58 @@ class RequestCollectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RequestCollectionBloc, RequestCollectionState>(
-      listenWhen: (prev, curr) =>
-          curr.submitErrorMessage != prev.submitErrorMessage,
-      listener: (context, state) {
-        if (state.submitErrorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(_resolveError(context, state.submitErrorMessage!)),
-              backgroundColor: context.colorScheme.error,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            ),
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<RequestCollectionBloc, RequestCollectionState>(
+          listenWhen: (prev, curr) =>
+              curr.submitErrorMessage != prev.submitErrorMessage,
+          listener: (context, state) {
+            if (state.submitErrorMessage != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(_resolveError(context, state.submitErrorMessage!)),
+                  backgroundColor: context.colorScheme.error,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                ),
+              );
+            }
+          },
+        ),
+        BlocListener<PaymentBloc, PaymentState>(
+          listener: (context, state) {
+            if (state is PaymentSuccessState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(context.tr('card_payment_success')),
+                  backgroundColor: context.colorScheme.primary,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                ),
+              );
+              context.go(AppRoutes.homeScreen);
+            } else if (state is PaymentErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage),
+                  backgroundColor: context.colorScheme.error,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                ),
+              );
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: context.colorScheme.surface,
         body: Column(

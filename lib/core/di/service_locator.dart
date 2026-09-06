@@ -77,6 +77,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import '../services/remote/firebase_consumer.dart';
+import '../services/remote/payment_service.dart';
 
 final sl = GetIt.instance;
 
@@ -91,6 +92,9 @@ Future<void> setupServiceLocator() async {
 
   // Remote package
   sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(dio: sl()));
+
+  // payment
+  sl.registerLazySingleton<PaymentService>(() => PaymentService());
 
   // Firebase
   final FirebaseConsumer firebaseConsumer = FirebaseConsumer(apiConsumer: sl(), cacheHelper: sl());
@@ -251,7 +255,7 @@ Future<void> setupServiceLocator() async {
 
   // Payment Feature
   sl.registerLazySingleton<PaymentRepository>(
-    () => PaymentRepositoryImpl(apiConsumer: sl()),
+    () => PaymentRepositoryImpl(apiConsumer: sl(), paymentService: sl()),
   );
   sl.registerFactory<PaymentBloc>(
     () => PaymentBloc(repository: sl()),

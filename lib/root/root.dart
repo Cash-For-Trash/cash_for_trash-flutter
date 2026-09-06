@@ -11,6 +11,8 @@ import 'package:cash_for_trash/root/custom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../features/payment/presentation/bloc/payment_bloc.dart';
+
 class Root extends StatefulWidget {
   const Root({super.key});
 
@@ -38,10 +40,17 @@ class RootState extends State<Root> {
   Widget build(BuildContext context) {
     List<Widget> screens = [
       const HomeScreen(),
-      BlocProvider(
-        create: (context) => sl<RequestCollectionBloc>()
-          ..add(const GetGarbageTypesEvent())
-          ..add(const GetAddressesEvent()),
+      MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => sl<RequestCollectionBloc>()
+              ..add(const GetGarbageTypesEvent())
+              ..add(const GetAddressesEvent()),
+          ),
+          BlocProvider(
+            create: (context) => sl<PaymentBloc>(),
+          ),
+        ],
         child: const RequestCollectionScreen(),
       ),
       BlocProvider(
