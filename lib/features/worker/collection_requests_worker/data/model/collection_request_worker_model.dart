@@ -58,12 +58,18 @@ class CollectionRequestWorkerModel extends Equatable {
   factory CollectionRequestWorkerModel.fromJson(Map<String, dynamic> json) {
     final customerObj = json['user'] as Map<String, dynamic>? ?? {};
     final addressObj = json['address'] as Map<String, dynamic>? ?? {};
-    final rawGarbageList = json['garbage_types'] as List<dynamic>? ?? [];
+    final rawGarbageList = (json['requestGarbages'] ??
+            json['request_garbages'] ??
+            json['garbage_types'] ??
+            []) as List<dynamic>;
 
     return CollectionRequestWorkerModel(
-      id: (json['request_id'] ?? json['id'] ?? json['_id'] ?? '').toString(),
+      id: (json['collection_request_id'] ?? json['request_id'] ?? json['id'] ?? json['_id'] ?? '')
+          .toString(),
       customerName: '${customerObj['first_name'] ?? ''} ${customerObj['last_name'] ?? ''}'.trim(),
-      customerPhone: (customerObj['mobile'] ?? customerObj['telephone'] ?? '').toString(),
+      customerPhone:
+          (customerObj['mobile'] ?? customerObj['email'] ?? customerObj['telephone'] ?? '')
+              .toString(),
       address: (addressObj['location'] ?? addressObj['address'] ?? '').toString(),
       buildingNum: (addressObj['building_num'] ?? '').toString(),
       floor: (addressObj['floor'] ?? '').toString(),
@@ -73,7 +79,7 @@ class CollectionRequestWorkerModel extends Equatable {
       scheduledFromTime: (json['scheduled_from_time'] ?? '').toString(),
       scheduledToTime: (json['scheduled_to_time'] ?? '').toString(),
       paymentMethod: (json['payment_method'] ?? 'CASH').toString(),
-      status: (json['status'] ?? 'ASSIGNED').toString(),
+      status: (json['status'] ?? 'PENDING').toString(),
       garbageTypes: rawGarbageList
           .map((item) => GarbageWeightWorkerModel.fromJson(item as Map<String, dynamic>))
           .toList(),

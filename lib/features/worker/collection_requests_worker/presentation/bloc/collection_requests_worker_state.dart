@@ -25,6 +25,15 @@ class CollectionRequestsWorkerLoadedState extends CollectionRequestsWorkerState 
   List<Object?> get props => [requests, activeTab];
 }
 
+class CollectionRequestDetailsLoadedState extends CollectionRequestsWorkerState {
+  final CollectionRequestWorkerModel requestDetails;
+
+  const CollectionRequestDetailsLoadedState(this.requestDetails);
+
+  @override
+  List<Object?> get props => [requestDetails];
+}
+
 class CollectionRequestsWorkerUpdatingState extends CollectionRequestsWorkerState {}
 
 class CollectionRequestsWorkerSuccessState extends CollectionRequestsWorkerState {

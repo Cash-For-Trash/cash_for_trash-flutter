@@ -28,6 +28,8 @@ import 'package:cash_for_trash/features/worker/root_worker.dart';
 import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_bloc.dart';
 import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_event.dart';
 import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/bloc/collection_requests_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/data/model/collection_request_worker_model.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/screens/pickup_details_worker_screen.dart';
 import 'package:cash_for_trash/features/worker/availability_worker/presentation/bloc/availability_worker_bloc.dart';
 import 'package:cash_for_trash/features/worker/earnings_worker/presentation/bloc/earnings_worker_bloc.dart';
 import 'package:cash_for_trash/features/admin/root_admin.dart';
@@ -255,6 +257,16 @@ class RouterGenerator {
               sl<RewardsBloc>()..add(const GetRewardsEvent()),
           child: const RewardsScreen(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.pickupDetailsWorkerScreen,
+        builder: (context, state) {
+          final request = state.extra as CollectionRequestWorkerModel;
+          return BlocProvider.value(
+            value: sl<CollectionRequestsWorkerBloc>(),
+            child: PickupDetailsWorkerScreen(request: request),
+          );
+        },
       ),
     ],
   );

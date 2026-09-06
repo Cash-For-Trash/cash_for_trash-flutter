@@ -1,5 +1,6 @@
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
+import 'package:cash_for_trash/features/request_collection/data/model/garbage_type_model.dart';
 import 'package:cash_for_trash/features/worker/collection_requests_worker/data/model/collection_request_worker_model.dart';
 import 'package:cash_for_trash/features/worker/collection_requests_worker/data/model/garbage_weight_worker_model.dart';
 import 'package:cash_for_trash/features/worker/collection_requests_worker/domain/repository/collection_requests_worker_repository.dart';
@@ -15,8 +16,7 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
     String? status,
   }) async {
     final result = await apiConsumer.get<Map<String, dynamic>>(
-      EndPoint.workerCollectionRequests,
-      queryParameters: status != null ? {'status': status} : null,
+      status == null ? EndPoint.workerCollectionRequests : EndPoint.workerCollectionRequestsByStatus(status),
     );
 
     return result.fold(
@@ -36,12 +36,38 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
   }
 
   @override
+  Future<Either<String, CollectionRequestWorkerModel>> getWorkerCollectionRequestDetails(
+    String requestId,
+  ) async {
+    return await apiConsumer.get<CollectionRequestWorkerModel>(
+      EndPoint.workerCollectionRequestDetails(requestId),
+      fromJson: (json) {
+        final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
+        return CollectionRequestWorkerModel.fromJson(dataObj);
+      },
+    );
+  }
+
+  @override
+  Future<Either<String, List<GarbageTypeItemModel>>> getGarbageTypes() async {
+    final result = await apiConsumer.get<GarbageTypeResponseModel>(
+      EndPoint.garbageTypes,
+      fromJson: (json) => GarbageTypeResponseModel.fromJson(json),
+    );
+
+    return result.fold(
+      (error) => Left(error),
+      (response) => Right(response.data),
+    );
+  }
+
+  @override
   Future<Either<String, CollectionRequestWorkerModel>> updateCollectionRequestStatus(
     String requestId,
     String status,
   ) async {
     return await apiConsumer.patch<CollectionRequestWorkerModel>(
-      '${EndPoint.workerCollectionRequests}/$requestId',
+      EndPoint.workerCollectionRequestDetails(requestId),
       data: {ApiKey.status: status},
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
@@ -56,10 +82,9 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
     List<GarbageWeightWorkerModel> weights,
   ) async {
     return await apiConsumer.patch<CollectionRequestWorkerModel>(
-      '${EndPoint.workerCollectionRequests}/$requestId',
+      EndPoint.workerCollectionRequestDetails(requestId),
       data: {
-        ApiKey.status: 'COLLECTED',
-        ApiKey.weights: weights.map((w) => w.toJson()).toList(),
+        ApiKey.requestGarbages: weights.map((w) => w.toJson()).toList(),
       },
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;

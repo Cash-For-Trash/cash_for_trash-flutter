@@ -45,4 +45,5 @@ class AppRoutes {
       '/admin_customer_detail_screen';
       
   static const String rewardsScreen = '/rewards_screen';
+  static const String pickupDetailsWorkerScreen = '/pickup_details_worker_screen';
 }

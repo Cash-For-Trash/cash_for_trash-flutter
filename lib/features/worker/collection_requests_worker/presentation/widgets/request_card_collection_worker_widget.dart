@@ -57,22 +57,24 @@ class RequestCardCollectionWorkerWidget extends StatelessWidget {
             SizedBox(height: 8.h),
             Row(
               children: [
+                if (request.address.isNotEmpty) ...[
                 Icon(
                   Icons.location_on_outlined,
                   size: 16.sp,
                   color: context.colorScheme.primary,
                 ),
                 SizedBox(width: 6.w),
-                Expanded(
-                  child: Text(
-                    request.address.isNotEmpty ? request.address : context.tr('default_address_street'),
-                    style: context.textTheme.bodyMedium?.copyWith(
+                  Expanded(
+                    child: Text(
+                      request.address,
+                      style: context.textTheme.bodyMedium?.copyWith(
                       color: context.colorScheme.onSurfaceVariant,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                ]
               ],
             ),
             SizedBox(height: 6.h),

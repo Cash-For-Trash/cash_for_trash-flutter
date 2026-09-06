@@ -30,6 +30,15 @@ class UpdateCollectionRequestStatusEvent extends CollectionRequestsWorkerEvent {
   List<Object?> get props => [requestId, status];
 }
 
+class GetWorkerCollectionRequestDetailsEvent extends CollectionRequestsWorkerEvent {
+  final String requestId;
+
+  const GetWorkerCollectionRequestDetailsEvent(this.requestId);
+
+  @override
+  List<Object?> get props => [requestId];
+}
+
 class SubmitGarbageWeightsEvent extends CollectionRequestsWorkerEvent {
   final String requestId;
   final List<GarbageWeightWorkerModel> weights;

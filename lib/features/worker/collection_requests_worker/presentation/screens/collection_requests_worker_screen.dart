@@ -1,15 +1,16 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
+import 'package:cash_for_trash/core/routing/app_routes.dart';
 import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../bloc/collection_requests_worker_bloc.dart';
 import '../bloc/collection_requests_worker_event.dart';
 import '../bloc/collection_requests_worker_state.dart';
 import '../widgets/request_card_collection_worker_widget.dart';
 import '../widgets/weight_recording_modal_worker_widget.dart';
-import 'pickup_details_worker_screen.dart';
 
 class CollectionRequestsWorkerScreen extends StatefulWidget {
   const CollectionRequestsWorkerScreen({super.key});
@@ -27,7 +28,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
     super.initState();
     tabController = TabController(length: 2, vsync: this);
     context.read<CollectionRequestsWorkerBloc>().add(
-          const GetAssignedCollectionRequestsEvent(status: 'ASSIGNED'),
+          const GetAssignedCollectionRequestsEvent(status: 'PENDING'),
         );
   }
 
@@ -50,7 +51,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
         bottom: TabBar(
           controller: tabController,
           onTap: (index) {
-            final status = index == 0 ? 'ASSIGNED' : 'COLLECTED';
+            final status = index == 0 ? 'PENDING' : 'COLLECTED';
             context.read<CollectionRequestsWorkerBloc>().add(
                   GetAssignedCollectionRequestsEvent(status: status),
                 );
@@ -67,7 +68,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
-            final status = tabController.index == 0 ? 'ASSIGNED' : 'COLLECTED';
+            final status = tabController.index == 0 ? 'PENDING' : 'COLLECTED';
             context.read<CollectionRequestsWorkerBloc>().add(
                   GetAssignedCollectionRequestsEvent(status: status),
                 );
@@ -90,7 +91,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
 
             return RefreshIndicator(
               onRefresh: () async {
-                final status = tabController.index == 0 ? 'ASSIGNED' : 'COLLECTED';
+                final status = tabController.index == 0 ? 'PENDING' : 'COLLECTED';
                 context.read<CollectionRequestsWorkerBloc>().add(
                       GetAssignedCollectionRequestsEvent(status: status),
                     );
@@ -103,27 +104,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
                   String? actionText;
                   VoidCallback? onAction;
 
-                  if (req.status == 'ASSIGNED') {
-                    actionText = context.tr('accept_request');
-                    onAction = () {
-                      context.read<CollectionRequestsWorkerBloc>().add(
-                            UpdateCollectionRequestStatusEvent(
-                              requestId: req.id,
-                              status: 'ACCEPTED',
-                            ),
-                          );
-                    };
-                  } else if (req.status == 'ACCEPTED') {
-                    actionText = context.tr('start_heading_there');
-                    onAction = () {
-                      context.read<CollectionRequestsWorkerBloc>().add(
-                            UpdateCollectionRequestStatusEvent(
-                              requestId: req.id,
-                              status: 'ON_THE_WAY',
-                            ),
-                          );
-                    };
-                  } else if (req.status == 'ON_THE_WAY') {
+                  if (req.status != 'COLLECTED' && req.status != 'COMPLETED') {
                     actionText = context.tr('record_weight_btn');
                     onAction = () {
                       showModalBottomSheet(
@@ -149,16 +130,17 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
                     request: req,
                     actionButtonText: actionText,
                     onStatusAction: onAction,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlocProvider.value(
-                            value: context.read<CollectionRequestsWorkerBloc>(),
-                            child: PickupDetailsWorkerScreen(request: req),
-                          ),
-                        ),
+                    onTap: () async {
+                      await context.push(
+                        AppRoutes.pickupDetailsWorkerScreen,
+                        extra: req,
                       );
+                      if (context.mounted) {
+                        final status = tabController.index == 0 ? 'PENDING' : 'COLLECTED';
+                        context.read<CollectionRequestsWorkerBloc>().add(
+                              GetAssignedCollectionRequestsEvent(status: status),
+                            );
+                      }
                     },
                   );
                 },
@@ -169,7 +151,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
               isError: true,
               errorMessage: state.errorMessage,
               onRetry: () {
-                final status = tabController.index == 0 ? 'ASSIGNED' : 'COLLECTED';
+                final status = tabController.index == 0 ? 'PENDING' : 'COLLECTED';
                 context.read<CollectionRequestsWorkerBloc>().add(
                       GetAssignedCollectionRequestsEvent(status: status),
                     );
