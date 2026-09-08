@@ -13,6 +13,15 @@ class PaymentLoadingState extends PaymentState {}
 
 class PaymentSuccessState extends PaymentState {}
 
+class PaymentInitiatePaymentCardSuccessState extends PaymentState {
+  final String iFrameUrl;
+
+  const PaymentInitiatePaymentCardSuccessState(this.iFrameUrl);
+
+  @override
+  List<Object?> get props => [iFrameUrl];
+}
+
 class PaymentErrorState extends PaymentState {
   final String errorMessage;
 

@@ -80,6 +80,8 @@ class RequestCollectionScreen extends StatelessWidget {
                   margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 ),
               );
+            } else if (state is PaymentInitiatePaymentCardSuccessState) {
+              context.push(AppRoutes.paymentWebView, extra: state.iFrameUrl);
             }
           },
         ),

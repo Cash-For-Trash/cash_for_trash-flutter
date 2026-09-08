@@ -29,10 +29,10 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     Emitter<PaymentState> emit,
   ) async {
     emit(PaymentLoadingState());
-    final result = await repository.cardPayment(event.collectionRequestId);
+    final result = await repository.initialCardPayment(event.collectionRequestId);
     result.fold(
       (error) => emit(PaymentErrorState(error)),
-      (_) => emit(PaymentSuccessState()),
+      (url) => emit(PaymentInitiatePaymentCardSuccessState(url)),
     );
   }
 }

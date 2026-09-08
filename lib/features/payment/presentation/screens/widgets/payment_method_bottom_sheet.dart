@@ -190,8 +190,9 @@ class _PaymentMethodBottomSheetState extends State<PaymentMethodBottomSheet> {
       context: context,
       barrierDismissible: false,
       builder: (_) => BlocProvider(
-        create: (_) => sl<PaymentBloc>()
-          ..add(InitiatePaymentCashEvent(collectionRequestId)),
+        create: (_) =>
+            sl<PaymentBloc>()
+              ..add(InitiatePaymentCashEvent(collectionRequestId)),
         child: _CashPaymentDialog(collectionRequestId: collectionRequestId),
       ),
     );

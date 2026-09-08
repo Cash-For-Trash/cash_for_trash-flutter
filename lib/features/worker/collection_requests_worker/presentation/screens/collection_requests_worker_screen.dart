@@ -104,27 +104,27 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
                   String? actionText;
                   VoidCallback? onAction;
 
-                  if (req.status != 'COLLECTED' && req.status != 'COMPLETED') {
-                    actionText = context.tr('record_weight_btn');
-                    onAction = () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (_) => WeightRecordingModalWorkerWidget(
-                          garbageTypes: req.garbageTypes,
-                          onConfirm: (weights) {
-                            context.read<CollectionRequestsWorkerBloc>().add(
-                                  SubmitGarbageWeightsEvent(
-                                    requestId: req.id,
-                                    weights: weights,
-                                  ),
-                                );
-                          },
-                        ),
-                      );
-                    };
-                  }
+                  // if (req.status != 'COLLECTED' && req.status != 'COMPLETED') {
+                  //   actionText = context.tr('record_weight_btn');
+                  //   onAction = () {
+                  //     showModalBottomSheet(
+                  //       context: context,
+                  //       isScrollControlled: true,
+                  //       backgroundColor: Colors.transparent,
+                  //       builder: (_) => WeightRecordingModalWorkerWidget(
+                  //         garbageTypes: req.garbageTypes,
+                  //         onConfirm: (weights) {
+                  //           context.read<CollectionRequestsWorkerBloc>().add(
+                  //                 SubmitGarbageWeightsEvent(
+                  //                   requestId: req.id,
+                  //                   weights: weights,
+                  //                 ),
+                  //               );
+                  //         },
+                  //       ),
+                  //     );
+                  //   };
+                  // }
 
                   return RequestCardCollectionWorkerWidget(
                     request: req,

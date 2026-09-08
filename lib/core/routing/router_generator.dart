@@ -17,6 +17,7 @@ import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
 import 'package:cash_for_trash/features/maps/presentation/screens/address_form_screen.dart';
 import 'package:cash_for_trash/features/maps/presentation/screens/maps_screen.dart';
 import 'package:cash_for_trash/features/onboarding/presentation/screens/onbording_screen.dart';
+import 'package:cash_for_trash/features/payment/presentation/screens/payment_web_view.dart';
 import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
@@ -154,6 +155,16 @@ class RouterGenerator {
           ],
           child: const RequestCollectionScreen(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.paymentWebView,
+        builder: (context, state) {
+          final iFrameUrl = state.extra as String;
+          return BlocProvider(
+            create: (context) => sl<PaymentBloc>(),
+            child: PaymentWebView(iFrameUrl: iFrameUrl)
+          );
+        }
       ),
       GoRoute(
         path: AppRoutes.mapsScreen,
