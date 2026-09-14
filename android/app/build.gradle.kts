@@ -53,6 +53,10 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 flutter {

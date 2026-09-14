@@ -41,10 +41,20 @@ class EndPoint {
 
   // collection requests
   static String collectionRequests = "/collection-requests";
-  static String myCollectionRequests = "/collection-requests/my-collection-requests";
+  static String myCollectionRequests =
+      "/collection-requests/my-collection-requests";
   static String workerCollectionRequests = "/workers/collection-requests";
+  static String workerCollectionRequestDetails(String requestId) =>
+      "/workers/collection-requests/$requestId";
+  static String workerCollectionRequestsByStatus(String status) =>
+      "/workers/collection-requests/status/$status";
+
   static String collectionAvailabilities(String addressId) =>
       "/collection-requests/addresses/$addressId/availabilities";
+
+  // payment
+  static String initiatePayment(String requestId) => "/payment/$requestId";
+  static String myPayments = "/payment/my-payments";
 
   // rewards & points
   static String rewards = "/rewards";
@@ -82,4 +92,6 @@ class ApiKey {
   static String weights = "weights";
   static String actualWeight = "actual_weight";
   static String garbageTypeId = "garbage_type_id";
+  static String requestGarbages = "requestGarbages";
+  static String requestGarbageId = "request_garbage_id";
 }

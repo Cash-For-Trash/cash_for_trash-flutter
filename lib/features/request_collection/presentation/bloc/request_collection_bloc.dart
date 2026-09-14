@@ -322,6 +322,7 @@ class RequestCollectionBloc
     final request = CollectionRequestModel(
       addressId: state.selectedAddress!.addressId,
       availabilityId: state.selectedAvailability!.availabilityId,
+      paymentMethod: event.paymentMethod,
       quantity: effectiveQuantity,
       collectionImg: uploadedImageUrl,
       garbageTypes: garbageTypes,

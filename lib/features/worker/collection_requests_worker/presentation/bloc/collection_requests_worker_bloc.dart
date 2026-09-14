@@ -10,6 +10,7 @@ class CollectionRequestsWorkerBloc
   CollectionRequestsWorkerBloc({required this.repository})
       : super(CollectionRequestsWorkerInitialState()) {
     on<GetAssignedCollectionRequestsEvent>(_onGetAssignedCollectionRequests);
+    on<GetWorkerCollectionRequestDetailsEvent>(_onGetWorkerCollectionRequestDetails);
     on<UpdateCollectionRequestStatusEvent>(_onUpdateCollectionRequestStatus);
     on<SubmitGarbageWeightsEvent>(_onSubmitGarbageWeights);
   }
@@ -26,6 +27,18 @@ class CollectionRequestsWorkerBloc
         requests: requests,
         activeTab: event.status ?? 'active',
       )),
+    );
+  }
+
+  Future<void> _onGetWorkerCollectionRequestDetails(
+    GetWorkerCollectionRequestDetailsEvent event,
+    Emitter<CollectionRequestsWorkerState> emit,
+  ) async {
+    emit(CollectionRequestsWorkerLoadingState());
+    final result = await repository.getWorkerCollectionRequestDetails(event.requestId);
+    result.fold(
+      (error) => emit(CollectionRequestsWorkerErrorState(error)),
+      (requestDetails) => emit(CollectionRequestDetailsLoadedState(requestDetails)),
     );
   }
 

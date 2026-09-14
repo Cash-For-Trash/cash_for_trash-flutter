@@ -17,6 +17,7 @@ import 'package:cash_for_trash/features/maps/presentation/bloc/maps_bloc.dart';
 import 'package:cash_for_trash/features/maps/presentation/screens/address_form_screen.dart';
 import 'package:cash_for_trash/features/maps/presentation/screens/maps_screen.dart';
 import 'package:cash_for_trash/features/onboarding/presentation/screens/onbording_screen.dart';
+import 'package:cash_for_trash/features/payment/presentation/screens/payment_web_view.dart';
 import 'package:cash_for_trash/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:cash_for_trash/features/profile/presentation/screens/profile_screen.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
@@ -28,6 +29,8 @@ import 'package:cash_for_trash/features/worker/root_worker.dart';
 import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_bloc.dart';
 import 'package:cash_for_trash/features/worker/home_worker/presentation/bloc/home_worker_event.dart';
 import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/bloc/collection_requests_worker_bloc.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/data/model/collection_request_worker_model.dart';
+import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/screens/pickup_details_worker_screen.dart';
 import 'package:cash_for_trash/features/worker/availability_worker/presentation/bloc/availability_worker_bloc.dart';
 import 'package:cash_for_trash/features/worker/earnings_worker/presentation/bloc/earnings_worker_bloc.dart';
 import 'package:cash_for_trash/features/admin/root_admin.dart';
@@ -48,6 +51,7 @@ import 'package:cash_for_trash/features/admin/rewards_admin/data/model/reward_ad
 import 'package:cash_for_trash/features/admin/rewards_admin/presentation/screens/reward_form_admin_screen.dart';
 import 'package:cash_for_trash/features/admin/redemptions_admin/presentation/bloc/redemptions_admin_bloc.dart';
 import 'package:cash_for_trash/features/admin/pricing_admin/presentation/bloc/pricing_admin_bloc.dart';
+import 'package:cash_for_trash/features/payment/presentation/bloc/payment_bloc.dart';
 import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
@@ -138,12 +142,29 @@ class RouterGenerator {
       ),
       GoRoute(
         path: AppRoutes.requestCollectionScreen,
-        builder: (context, state) => BlocProvider(
-          create: (context) => sl<RequestCollectionBloc>()
-            ..add(const GetGarbageTypesEvent())
-            ..add(const GetAddressesEvent()),
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<RequestCollectionBloc>()
+                ..add(const GetGarbageTypesEvent())
+                ..add(const GetAddressesEvent()),
+            ),
+            BlocProvider(
+              create: (context) => sl<PaymentBloc>(),
+            ),
+          ],
           child: const RequestCollectionScreen(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.paymentWebView,
+        builder: (context, state) {
+          final iFrameUrl = state.extra as String;
+          return BlocProvider(
+            create: (context) => sl<PaymentBloc>(),
+            child: PaymentWebView(iFrameUrl: iFrameUrl)
+          );
+        }
       ),
       GoRoute(
         path: AppRoutes.mapsScreen,
@@ -247,6 +268,16 @@ class RouterGenerator {
               sl<RewardsBloc>()..add(const GetRewardsEvent()),
           child: const RewardsScreen(),
         ),
+      ),
+      GoRoute(
+        path: AppRoutes.pickupDetailsWorkerScreen,
+        builder: (context, state) {
+          final request = state.extra as CollectionRequestWorkerModel;
+          return BlocProvider.value(
+            value: sl<CollectionRequestsWorkerBloc>(),
+            child: PickupDetailsWorkerScreen(request: request),
+          );
+        },
       ),
     ],
   );

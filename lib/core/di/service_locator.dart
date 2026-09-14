@@ -67,6 +67,9 @@ import 'package:cash_for_trash/features/admin/redemptions_admin/presentation/blo
 import 'package:cash_for_trash/features/admin/pricing_admin/data/repository/pricing_admin_repository_impl.dart';
 import 'package:cash_for_trash/features/admin/pricing_admin/domain/repository/pricing_admin_repository.dart';
 import 'package:cash_for_trash/features/admin/pricing_admin/presentation/bloc/pricing_admin_bloc.dart';
+import 'package:cash_for_trash/features/payment/data/repository/payment_repository_impl.dart';
+import 'package:cash_for_trash/features/payment/domain/repository/payment_repository.dart';
+import 'package:cash_for_trash/features/payment/presentation/bloc/payment_bloc.dart';
 import 'package:cash_for_trash/features/rewards/data/repository/rewards_repository_impl.dart';
 import 'package:cash_for_trash/features/rewards/domain/repository/rewards_repository.dart';
 import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
@@ -74,6 +77,7 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import '../services/remote/firebase_consumer.dart';
+import '../services/remote/payment_service.dart';
 
 final sl = GetIt.instance;
 
@@ -88,6 +92,9 @@ Future<void> setupServiceLocator() async {
 
   // Remote package
   sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(dio: sl()));
+
+  // payment
+  sl.registerLazySingleton<PaymentService>(() => PaymentService());
 
   // Firebase
   final FirebaseConsumer firebaseConsumer = FirebaseConsumer(apiConsumer: sl(), cacheHelper: sl());
@@ -244,5 +251,13 @@ Future<void> setupServiceLocator() async {
 
   sl.registerFactory<RewardsBloc>(
     () => RewardsBloc(repository: sl()),
+  );
+
+  // Payment Feature
+  sl.registerLazySingleton<PaymentRepository>(
+    () => PaymentRepositoryImpl(apiConsumer: sl(), paymentService: sl()),
+  );
+  sl.registerFactory<PaymentBloc>(
+    () => PaymentBloc(repository: sl()),
   );
 }

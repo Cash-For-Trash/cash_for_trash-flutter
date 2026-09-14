@@ -10,21 +10,20 @@ import '../../../firebase_options.dart';
 
 import 'api_consumer.dart';
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage message,
+    ) async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  log("Handling background message: ${message.messageId}");
+}
 
 class FirebaseConsumer {
   final ApiConsumer apiConsumer;
   final CacheHelper cacheHelper;
   FirebaseConsumer({required this.apiConsumer, required this.cacheHelper});
-
-  @pragma('vm:entry-point')
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message,
-      ) async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    log("Handling background message: ${message.messageId}");
-  }
 
   Future<void> initFirebase() async {
     log("Init Firebase Join");

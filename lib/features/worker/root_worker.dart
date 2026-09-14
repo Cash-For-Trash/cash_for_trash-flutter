@@ -33,7 +33,7 @@ class RootWorkerState extends State<RootWorker> {
   @override
   Widget build(BuildContext context) {
     List<Widget> screens = [
-      HomeWorkerScreen(onNavigateToPickups: () => changePage(1)),
+      // HomeWorkerScreen(onNavigateToPickups: () => changePage(1)),
       const CollectionRequestsWorkerScreen(),
       const AvailabilityWorkerScreen(),
       const EarningsWorkerScreen(),

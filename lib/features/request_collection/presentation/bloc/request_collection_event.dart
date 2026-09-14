@@ -121,5 +121,10 @@ class UpdateAddressInCollectionEvent extends RequestCollectionEvent {
 }
 
 class SubmitCollectionRequestEvent extends RequestCollectionEvent {
-  const SubmitCollectionRequestEvent();
+  final String paymentMethod;
+
+  const SubmitCollectionRequestEvent({this.paymentMethod = 'CASH'});
+
+  @override
+  List<Object?> get props => [paymentMethod];
 }

@@ -66,6 +66,19 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>com.cashfortrash.app</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>cashfortrash</string>
+            </array>
+        </dict>
+    </array>
 	<key>MAPS_API_KEY</key>
 	<string>$(MAPS_API_KEY)</string>
 </dict>
