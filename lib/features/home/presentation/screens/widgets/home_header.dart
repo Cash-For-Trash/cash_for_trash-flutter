@@ -12,15 +12,14 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onPrimary = context.colorScheme.onPrimary;
-    final warning = context.extraColors.warning ?? context.colorScheme.secondary;
+    final warning =
+        context.extraColors.warning ?? context.colorScheme.secondary;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.colorScheme.primary,
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(32.r),
-        ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(32.r)),
       ),
       child: SafeArea(
         bottom: false,

@@ -18,7 +18,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class RequestCollectionScreen extends StatelessWidget {
-  const RequestCollectionScreen({super.key});
+  final bool isFromBottomNav;
+
+  const RequestCollectionScreen({
+    super.key,
+    this.isFromBottomNav = false,
+  });
 
   String _resolveError(BuildContext context, String key) {
     final known = {
@@ -90,7 +95,9 @@ class RequestCollectionScreen extends StatelessWidget {
         backgroundColor: context.colorScheme.surface,
         body: Column(
           children: [
-            const HeaderRequestCollectionWidget(),
+            HeaderRequestCollectionWidget(
+              isFromBottomNav: isFromBottomNav,
+            ),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),

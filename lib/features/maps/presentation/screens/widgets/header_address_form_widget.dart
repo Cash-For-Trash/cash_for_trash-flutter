@@ -43,9 +43,7 @@ class HeaderAddressFormWidget extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           Text(
-            isEditMode
-                ? context.tr('edit_address')
-                : context.tr('add_address'),
+            isEditMode ? context.tr('edit_address') : context.tr('add_address'),
             style: context.textTheme.headlineSmall?.copyWith(
               color: context.colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
