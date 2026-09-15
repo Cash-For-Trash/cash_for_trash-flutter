@@ -59,6 +59,8 @@ class EndPoint {
   // rewards & points
   static String rewards = "/rewards";
   static String customerPoints = "/customer/points";
+  static String customerLeaderboard = "/customer/leaderboard";
+  
 }
 
 class ApiKey {

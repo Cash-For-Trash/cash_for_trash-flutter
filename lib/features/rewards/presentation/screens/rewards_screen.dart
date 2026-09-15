@@ -79,7 +79,7 @@ class _RewardsScreenState extends State<RewardsScreen>
                     ),
                     tabs: [
                       Tab(text: context.tr('rewards')),
-                      Tab(text: context.tr('explore')),
+                      Tab(text: context.tr('leaderboard')),
                       Tab(text: context.tr('history_pickups')),
                     ],
                   ),

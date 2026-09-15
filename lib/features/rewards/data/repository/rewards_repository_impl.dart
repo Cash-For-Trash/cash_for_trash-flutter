@@ -4,6 +4,7 @@ import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import '../../domain/repository/rewards_repository.dart';
 import '../model/redemption_model.dart';
 import '../model/reward_model.dart';
+import '../model/rewards_leaderboard_model.dart';
 
 class RewardsRepositoryImpl implements RewardsRepository {
   final ApiConsumer apiConsumer;
@@ -28,16 +29,16 @@ class RewardsRepositoryImpl implements RewardsRepository {
     final result = await apiConsumer.get<Map<String, dynamic>>(
       EndPoint.myRedemptions,
     );
-    return result.fold(
-      (error) => Left(error),
-      (json) {
-        final rawList = json['data'] is List ? json['data'] as List : [];
-        final list = rawList
-            .map((e) => RedemptionModel.fromJson(Map<String, dynamic>.from(e as Map)))
-            .toList();
-        return Right(list);
-      },
-    );
+    return result.fold((error) => Left(error), (json) {
+      final rawList = json['data'] is List ? json['data'] as List : [];
+      final list = rawList
+          .map(
+            (e) =>
+                RedemptionModel.fromJson(Map<String, dynamic>.from(e as Map)),
+          )
+          .toList();
+      return Right(list);
+    });
   }
 
   @override
@@ -56,20 +57,42 @@ class RewardsRepositoryImpl implements RewardsRepository {
     final result = await apiConsumer.get<Map<String, dynamic>>(
       EndPoint.customerPoints,
     );
-    return result.fold(
-      (error) => Left(error),
-      (json) {
-        final dataObj = json['data'] is Map<String, dynamic>
-            ? json['data'] as Map<String, dynamic>
-            : (json['data'] is num || json['data'] is String ? {'points': json['data']} : json);
-        final rawPts = dataObj['points'] ?? dataObj['green_points'] ?? json['points'] ?? json['data'] ?? 0;
-        if (rawPts is num) {
-          return Right(rawPts.toInt());
-        } else if (rawPts is String) {
-          return Right(int.tryParse(rawPts) ?? 0);
-        }
-        return const Right(0);
-      },
+    return result.fold((error) => Left(error), (json) {
+      final dataObj = json['data'] is Map<String, dynamic>
+          ? json['data'] as Map<String, dynamic>
+          : (json['data'] is num || json['data'] is String
+                ? {'points': json['data']}
+                : json);
+      final rawPts =
+          dataObj['points'] ??
+          dataObj['green_points'] ??
+          json['points'] ??
+          json['data'] ??
+          0;
+      if (rawPts is num) {
+        return Right(rawPts.toInt());
+      } else if (rawPts is String) {
+        return Right(int.tryParse(rawPts) ?? 0);
+      }
+      return const Right(0);
+    });
+  }
+
+  @override
+  Future<Either<String, List<RewardsLeaderboardModel>>> getLeaderboard() async {
+    final result = await apiConsumer.get<Map<String, dynamic>>(
+      EndPoint.customerLeaderboard,
     );
+    return result.fold((error) => Left(error), (json) {
+      final rawList = json['data'] is List ? json['data'] as List : [];
+      final list = rawList
+          .map(
+            (e) => RewardsLeaderboardModel.fromJson(
+              Map<String, dynamic>.from(e as Map),
+            ),
+          )
+          .toList();
+      return Right(list);
+    });
   }
 }
