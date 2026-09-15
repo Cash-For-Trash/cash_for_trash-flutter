@@ -52,11 +52,13 @@ class HeaderProfileSection extends StatelessWidget {
                   Text(
                     email,
                     style: context.textTheme.bodyMedium?.copyWith(
-                      color: context.colorScheme.onPrimary.withValues(alpha: 0.8),
+                      color: context.colorScheme.onPrimary.withValues(
+                        alpha: 0.8,
+                      ),
                     ),
                   ),
                   SizedBox(height: 12.h),
-                  Row(
+                  /*Row(
                     children: [
                       // Level Badge
                       Container(
@@ -101,7 +103,7 @@ class HeaderProfileSection extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
+                  ),*/
                 ],
               ),
             ),
@@ -118,11 +120,7 @@ class HeaderProfileSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: Center(
-                child: Icon(
-                  Icons.person,
-                  size: 36.w,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.person, size: 36.w, color: Colors.white),
               ),
             ),
           ],

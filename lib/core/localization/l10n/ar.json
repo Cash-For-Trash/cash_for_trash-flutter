@@ -318,5 +318,12 @@
     "card_payment_success_desc": "تم تأكيد الدفع لطلبك. سنتواصل معك في أقرب وقت لتأكيد الاستلام.",
     "leaderboard": "قائمة المتصدرين",
     "no_leaderboard": "لا توجد قائمة صدارة",
-    "no_leaderboard_desc": "بيانات قائمة المتصدرين غير متاحة حالياً."
+    "no_leaderboard_desc": "بيانات قائمة المتصدرين غير متاحة حالياً.",
+    "saturday": "السبت",
+    "sunday": "الأحد",
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة"
 }
