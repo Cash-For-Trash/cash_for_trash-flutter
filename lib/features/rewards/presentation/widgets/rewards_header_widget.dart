@@ -51,6 +51,9 @@ class _RewardsHeaderWidgetState extends State<RewardsHeaderWidget> {
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.colorScheme.primary,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(32.r),
+        ),
       ),
       child: SafeArea(
         bottom: false,

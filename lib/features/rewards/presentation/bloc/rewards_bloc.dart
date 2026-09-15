@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../data/model/redemption_model.dart';
 import '../../data/model/reward_model.dart';
+import '../../data/model/rewards_leaderboard_model.dart';
 import '../../domain/repository/rewards_repository.dart';
 
 part 'rewards_event.dart';
@@ -16,6 +17,7 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
     on<RedeemRewardEvent>(_onRedeemReward);
     on<ClearRedeemStatusEvent>(_onClearRedeemStatus);
     on<GetCustomerPointsEvent>(_onGetCustomerPoints);
+    on<GetLeaderboardEvent>(_onGetLeaderboard);
   }
 
   Future<void> _onGetRewards(
@@ -103,6 +105,25 @@ class RewardsBloc extends Bloc<RewardsEvent, RewardsState> {
       (points) => emit(state.copyWith(
         isCustomerPointsLoading: false,
         customerPoints: points,
+      )),
+    );
+  }
+
+  Future<void> _onGetLeaderboard(
+    GetLeaderboardEvent event,
+    Emitter<RewardsState> emit,
+  ) async {
+    emit(state.copyWith(
+        isLeaderboardLoading: true, clearLeaderboardError: true));
+    final result = await repository.getLeaderboard();
+    result.fold(
+      (error) => emit(state.copyWith(
+        isLeaderboardLoading: false,
+        leaderboardErrorMessage: error,
+      )),
+      (leaderboard) => emit(state.copyWith(
+        isLeaderboardLoading: false,
+        leaderboard: leaderboard,
       )),
     );
   }

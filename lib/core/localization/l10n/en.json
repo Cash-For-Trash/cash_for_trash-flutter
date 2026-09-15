@@ -315,5 +315,15 @@
     "pay_now": "Pay Now",
     "secure_payment": "Payments are 100% secure and encrypted",
     "card_payment_success": "Payment Successful!",
-    "card_payment_success_desc": "Your payment has been processed and order confirmed. We will reach you soon."
+    "card_payment_success_desc": "Your payment has been processed and order confirmed. We will reach you soon.",
+    "leaderboard": "Leaderboard",
+    "no_leaderboard": "No Leaderboard",
+    "no_leaderboard_desc": "Leaderboard data is currently unavailable.",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday"
 }
