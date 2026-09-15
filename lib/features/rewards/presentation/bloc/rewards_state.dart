@@ -17,6 +17,10 @@ class RewardsState extends Equatable {
   final int customerPoints;
   final String? customerPointsErrorMessage;
 
+  final bool isLeaderboardLoading;
+  final List<RewardsLeaderboardModel> leaderboard;
+  final String? leaderboardErrorMessage;
+
   const RewardsState({
     this.isRewardsLoading = false,
     this.rewards = const [],
@@ -30,6 +34,9 @@ class RewardsState extends Equatable {
     this.isCustomerPointsLoading = false,
     this.customerPoints = 0,
     this.customerPointsErrorMessage,
+    this.isLeaderboardLoading = false,
+    this.leaderboard = const [],
+    this.leaderboardErrorMessage,
   });
 
   RewardsState copyWith({
@@ -50,6 +57,10 @@ class RewardsState extends Equatable {
     int? customerPoints,
     String? customerPointsErrorMessage,
     bool clearCustomerPointsError = false,
+    bool? isLeaderboardLoading,
+    List<RewardsLeaderboardModel>? leaderboard,
+    String? leaderboardErrorMessage,
+    bool clearLeaderboardError = false,
   }) {
     return RewardsState(
       isRewardsLoading: isRewardsLoading ?? this.isRewardsLoading,
@@ -75,6 +86,11 @@ class RewardsState extends Equatable {
       customerPointsErrorMessage: clearCustomerPointsError
           ? null
           : (customerPointsErrorMessage ?? this.customerPointsErrorMessage),
+      isLeaderboardLoading: isLeaderboardLoading ?? this.isLeaderboardLoading,
+      leaderboard: leaderboard ?? this.leaderboard,
+      leaderboardErrorMessage: clearLeaderboardError
+          ? null
+          : (leaderboardErrorMessage ?? this.leaderboardErrorMessage),
     );
   }
 
@@ -92,5 +108,8 @@ class RewardsState extends Equatable {
         isCustomerPointsLoading,
         customerPoints,
         customerPointsErrorMessage,
+        isLeaderboardLoading,
+        leaderboard,
+        leaderboardErrorMessage,
       ];
 }

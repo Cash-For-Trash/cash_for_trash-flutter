@@ -28,6 +28,7 @@ class HeaderRequestCollectionWidget extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(32.r)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

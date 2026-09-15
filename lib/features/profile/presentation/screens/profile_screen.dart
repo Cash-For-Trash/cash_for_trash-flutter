@@ -79,20 +79,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     // Header Segment
-                    HeaderProfileSection(
-                      name: userFullName,
-                      email: userEmail,
-                    ),
-                    
+                    HeaderProfileSection(name: userFullName, email: userEmail),
+
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 20.h,
+                      ),
                       child: Column(
                         children: [
                           // Stats grid card layout
-                          const StatsGridProfileSection(),
-                          
+                          // const StatsGridProfileSection(),
                           SizedBox(height: 16.h),
-                          
+
                           // Account group
                           MenuGroupProfileSection(
                             groupTitle: context.tr('my_account'),
@@ -124,9 +123,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-                          
+
                           SizedBox(height: 16.h),
-                          
+
                           // Preferences group
                           MenuGroupProfileSection(
                             groupTitle: context.tr('preferences'),
@@ -150,9 +149,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-                          
+
                           SizedBox(height: 16.h),
-                          
+
                           // Support group
                           MenuGroupProfileSection(
                             groupTitle: context.tr('support'),
@@ -171,14 +170,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-                          
+
                           SizedBox(height: 24.h),
-                          
+
                           // Logout button
                           LogoutButtonProfileWidget(
                             onTap: () => _showLogoutConfirmation(context),
                           ),
-                          
+
                           SizedBox(height: 48.h),
                         ],
                       ),
@@ -189,9 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (state is ProfileLoadingState)
                 Container(
                   color: Colors.black26,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: const Center(child: CircularProgressIndicator()),
                 ),
             ],
           );

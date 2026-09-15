@@ -31,3 +31,7 @@ class ClearRedeemStatusEvent extends RewardsEvent {
 class GetCustomerPointsEvent extends RewardsEvent {
   const GetCustomerPointsEvent();
 }
+
+class GetLeaderboardEvent extends RewardsEvent {
+  const GetLeaderboardEvent();
+}

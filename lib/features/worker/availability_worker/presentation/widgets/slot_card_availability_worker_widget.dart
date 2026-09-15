@@ -1,4 +1,5 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
+import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../data/model/availability_worker_model.dart';
@@ -45,7 +46,7 @@ class SlotCardAvailabilityWorkerWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  availability.dayOfWeek,
+                  context.tr(availability.dayOfWeek.toLowerCase()),
                   style: context.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -71,7 +72,11 @@ class SlotCardAvailabilityWorkerWidget extends StatelessWidget {
           ),
           if (onEdit != null)
             IconButton(
-              icon: Icon(Icons.edit_outlined, color: context.colorScheme.primary, size: 20.sp),
+              icon: Icon(
+                Icons.edit_outlined,
+                color: context.colorScheme.primary,
+                size: 20.sp,
+              ),
               onPressed: onEdit,
             ),
         ],

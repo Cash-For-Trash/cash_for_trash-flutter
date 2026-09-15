@@ -39,51 +39,45 @@ class _RewardsScreenState extends State<RewardsScreen>
       body: Column(
         children: [
           const RewardsHeaderWidget(),
-          Container(
-            color: colorScheme.primary,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
             child: Container(
-              decoration: BoxDecoration(color: colorScheme.surface),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                child: Container(
-                  height: 50.h,
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(30.r),
-                    border: Border.all(
-                      color: colorScheme.outline.withValues(alpha: 0.15),
-                      width: 1.5,
-                    ),
-                  ),
-                  child: TabBar(
-                    controller: _tabController,
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    dividerColor: Colors.transparent,
-                    indicator: BoxDecoration(
-                      color: colorScheme.primary,
-                      borderRadius: BorderRadius.circular(30.r),
-                    ),
-                    labelColor: colorScheme.onPrimary,
-                    unselectedLabelColor: colorScheme.onSurface.withValues(
-                      alpha: 0.6,
-                    ),
-                    labelStyle: TextStyle(
-                      fontFamily: 'Tajawal',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    unselectedLabelStyle: TextStyle(
-                      fontFamily: 'Tajawal',
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.normal,
-                    ),
-                    tabs: [
-                      Tab(text: context.tr('rewards')),
-                      Tab(text: context.tr('explore')),
-                      Tab(text: context.tr('history_pickups')),
-                    ],
-                  ),
+              height: 50.h,
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                borderRadius: BorderRadius.circular(30.r),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: 0.15),
+                  width: 1.5,
                 ),
+              ),
+              child: TabBar(
+                controller: _tabController,
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                indicator: BoxDecoration(
+                  color: colorScheme.primary,
+                  borderRadius: BorderRadius.circular(30.r),
+                ),
+                labelColor: colorScheme.onPrimary,
+                unselectedLabelColor: colorScheme.onSurface.withValues(
+                  alpha: 0.6,
+                ),
+                labelStyle: TextStyle(
+                  fontFamily: 'Tajawal',
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                unselectedLabelStyle: TextStyle(
+                  fontFamily: 'Tajawal',
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.normal,
+                ),
+                tabs: [
+                  Tab(text: context.tr('rewards')),
+                  Tab(text: context.tr('leaderboard')),
+                  Tab(text: context.tr('history_pickups')),
+                ],
               ),
             ),
           ),
