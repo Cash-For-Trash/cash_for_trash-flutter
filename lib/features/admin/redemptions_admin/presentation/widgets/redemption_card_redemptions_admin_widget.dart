@@ -57,7 +57,7 @@ class RedemptionCardRedemptionsAdminWidget extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Customer: ${redemption.customerName ?? 'N/A'}',
+                        'Customer: ${redemption.customerName ?? context.tr('N/A')}',
                         style: context.textTheme.bodySmall?.copyWith(
                           color: context.colorScheme.onSurfaceVariant,
                         ),

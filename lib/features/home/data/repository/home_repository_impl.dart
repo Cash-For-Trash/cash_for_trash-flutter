@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cash_for_trash/core/models/profile_model.dart';
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:cash_for_trash/features/home/data/model/home_model.dart';
@@ -9,78 +12,110 @@ class HomeRepositoryImpl implements HomeRepository {
 
   HomeRepositoryImpl({required this.apiConsumer});
 
+  // @override
+  // Future<Either<String, HomeDataModel>> getHome() async {
+  //   final reqResult = await apiConsumer.get<Map<String, dynamic>>(
+  //     EndPoint.myCollectionRequests,
+  //   );
+  //
+  //   return reqResult.fold((error) => Left(error), (json) async {
+  //     final rawList = json['data'] is List
+  //         ? json['data'] as List
+  //         : (json['requests'] is List ? json['requests'] as List : []);
+  //
+  //     final allOrders = rawList
+  //         .map((item) => Map<String, dynamic>.from(item as Map))
+  //         .toList();
+  //
+  //     List<Map<String, dynamic>>? activeOrderJson;
+  //     for (final item in allOrders) {
+  //       final status = (item['status'] ?? '').toString().toUpperCase();
+  //       if (status != 'COLLECTED' && status != 'CANCELLED') {
+  //         activeOrderJson = [...?activeOrderJson, item];
+  //       }
+  //     }
+  //
+  //     final List<CurrentOrderModel> currentOrders = activeOrderJson != null
+  //         ? activeOrderJson
+  //               .map((item) => CurrentOrderModel.fromJson(item))
+  //               .toList()
+  //         : [];
+  //
+  //     final recentOrders = allOrders
+  //         .map((item) => OrderModel.fromJson(item))
+  //         .toList();
+  //
+  //     String userName = 'Customer';
+  //     int points = 0;
+  //     final profileResult = await apiConsumer.get<Map<String, dynamic>>(
+  //       EndPoint.userProfile,
+  //     );
+  //
+  //     profileResult.fold((_) {}, (profileJson) {
+  //       final dataObj = profileJson['data'] is Map<String, dynamic>
+  //           ? profileJson['data'] as Map<String, dynamic>
+  //           : profileJson;
+  //       final fName = (dataObj['first_name'] ?? '').toString();
+  //       final lName = (dataObj['last_name'] ?? '').toString();
+  //       if (fName.isNotEmpty) {
+  //         userName = '$fName $lName'.trim();
+  //       }
+  //       final rawPts = dataObj['points'] ?? dataObj['green_points'] ?? 0;
+  //       if (rawPts is num) {
+  //         points = rawPts.toInt();
+  //       } else if (rawPts is String) {
+  //         points = int.tryParse(rawPts) ?? 0;
+  //       }
+  //     });
+  //
+  //     return Right(
+  //       HomeDataModel(
+  //         userName: userName,
+  //         points: points,
+  //         levelProgress: 0.75,
+  //         nextLevelCurrent: points,
+  //         nextLevelTotal: points > 0 ? (points + 200) : 500,
+  //         monthlyImpactTrees: (points / 100).ceil(),
+  //         monthlyImpactRecycledKg: (allOrders.length * 5.0),
+  //         monthlyImpactCollectedKg: (allOrders.length * 7.5),
+  //         currentOrders: currentOrders.reversed.toList(),
+  //         recentOrders: recentOrders.reversed.toList(),
+  //       ),
+  //     );
+  //   });
+  // }
+
   @override
-  Future<Either<String, HomeDataModel>> getHome() async {
-    final reqResult = await apiConsumer.get<Map<String, dynamic>>(
+  Future<Either<String, CustomerCollectionRequestResponseModel>>
+  getCustomerCollectionRequests(
+    int? page,
+    int? pageSize,
+    String? status,
+  ) async {
+    log("The Status is: $status");
+    final queryParams = <String, dynamic>{};
+    if (page != null) queryParams['page'] = page;
+    if (pageSize != null) queryParams['page_size'] = pageSize;
+    if (status != null && status.isNotEmpty) queryParams['status'] = status;
+
+    final result = await apiConsumer.get<Map<String, dynamic>>(
       EndPoint.myCollectionRequests,
+      queryParameters: queryParams.isNotEmpty ? queryParams : null,
     );
-
-    return reqResult.fold(
+    return result.fold(
       (error) => Left(error),
-      (json) async {
-        final rawList = json['data'] is List
-            ? json['data'] as List
-            : (json['requests'] is List ? json['requests'] as List : []);
+      (json) => Right(CustomerCollectionRequestResponseModel.fromJson(json)),
+    );
+  }
 
-        final allOrders = rawList
-            .map((item) => Map<String, dynamic>.from(item as Map))
-            .toList();
-
-        List<Map<String, dynamic>>? activeOrderJson;
-        for (final item in allOrders) {
-          final status = (item['status'] ?? '').toString().toUpperCase();
-          if (status != 'COLLECTED' && status != 'CANCELLED') {
-            activeOrderJson = [...?activeOrderJson, item];
-          }
-        }
-
-        final List<CurrentOrderModel> currentOrders = activeOrderJson != null
-            ? activeOrderJson.map((item) => CurrentOrderModel.fromJson(item)).toList()
-            : [];
-
-        final recentOrders = allOrders
-            .map((item) => OrderModel.fromJson(item))
-            .toList();
-
-        String userName = 'Customer';
-        int points = 0;
-        final profileResult = await apiConsumer.get<Map<String, dynamic>>(
-          EndPoint.userProfile,
-        );
-
-        profileResult.fold(
-          (_) {},
-          (profileJson) {
-            final dataObj = profileJson['data'] is Map<String, dynamic>
-                ? profileJson['data'] as Map<String, dynamic>
-                : profileJson;
-            final fName = (dataObj['first_name'] ?? '').toString();
-            final lName = (dataObj['last_name'] ?? '').toString();
-            if (fName.isNotEmpty) {
-              userName = '$fName $lName'.trim();
-            }
-            final rawPts = dataObj['points'] ?? dataObj['green_points'] ?? 0;
-            if (rawPts is num) {
-              points = rawPts.toInt();
-            } else if (rawPts is String) {
-              points = int.tryParse(rawPts) ?? 0;
-            }
-          },
-        );
-
-        return Right(HomeDataModel(
-          userName: userName,
-          points: points,
-          levelProgress: 0.75,
-          nextLevelCurrent: points,
-          nextLevelTotal: points > 0 ? (points + 200) : 500,
-          monthlyImpactTrees: (points / 100).ceil(),
-          monthlyImpactRecycledKg: (allOrders.length * 5.0),
-          monthlyImpactCollectedKg: (allOrders.length * 7.5),
-          currentOrders: currentOrders.reversed.toList(),
-          recentOrders: recentOrders.reversed.toList(),
-        ));
-      },
+  @override
+  Future<Either<String, ProfileResponseModel>> getCustomerProfile() async {
+    final result = await apiConsumer.get<Map<String, dynamic>>(
+      EndPoint.userProfile,
+    );
+    return result.fold(
+      (error) => Left(error),
+      (json) => Right(ProfileResponseModel.fromJson(json)),
     );
   }
 }

@@ -143,7 +143,7 @@ class WorkerDetailAdminScreen extends StatelessWidget {
                               _DetailRow(
                                 icon: Icons.badge_outlined,
                                 label: 'National ID',
-                                value: worker.nationalId ?? 'N/A',
+                                value: worker.nationalId ?? context.tr('N/A'),
                               ),
                               if (worker.areaId != null) ...[
                                 const Divider(height: 1, indent: 56),

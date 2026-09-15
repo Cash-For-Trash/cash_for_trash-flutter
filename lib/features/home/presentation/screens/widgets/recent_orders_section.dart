@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RecentOrdersSection extends StatelessWidget {
-  final List<OrderModel> orders;
+  final List<CustomerCollectionRequestModel?> collectionRequests;
 
-  const RecentOrdersSection({super.key, required this.orders});
+  const RecentOrdersSection({super.key, required this.collectionRequests});
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +20,12 @@ class RecentOrdersSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          context.tr('recent_orders'),
+          context.tr('recent_collection_requests'),
           style: context.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 12.h),
-        if (orders.isEmpty)
+        if (collectionRequests.isEmpty)
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: Center(
@@ -42,100 +41,89 @@ class RecentOrdersSection extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: orders.length,
+            itemCount: collectionRequests.length,
             itemBuilder: (context, index) {
-              final order = orders[index];
+              final order = collectionRequests[index];
               final isCompleted =
-                  order.status.toUpperCase() == "COLLECTED" ||
-                  order.status == "مكتمل";
+                  order?.status.toUpperCase() == "COLLECTED" ||
+                  order?.status == "مكتمل";
               final itemColor = isCompleted ? successColor : warningColor;
 
-              return Container(
-                margin: EdgeInsets.only(bottom: 12.h),
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: context.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(
-                    color: context.colorScheme.outline,
-                    width: 1.2,
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          order.points,
-                          style: context.textTheme.titleMedium?.copyWith(
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: itemColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          context.tr(order?.status ?? 'N/A'),
+                          style: context.textTheme.bodySmall?.copyWith(
                             color: itemColor,
+                            fontSize: 10.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          order.title,
-                          style: context.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Row(
+                      ),
+
+                      SizedBox(width: 8.w),
+
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            if (order.time.isNotEmpty) ...[
-                              SizedBox(width: 6.w),
-                              Text(
-                                order.time,
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: context.colorScheme.onSurface
-                                      .withValues(alpha: 0.5),
-                                  fontSize: 10.sp,
+                            Text(
+                              "${context.tr('order')}# ${index + 1}",
+                              style: context.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+
+                            Text(
+                              '• ${order?.scheduledDay} ${order?.scheduledFromTime} - ${order?.scheduledToTime}',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.onSurface.withValues(
+                                  alpha: 0.5,
                                 ),
                               ),
-                            ],
-                            SizedBox(width: 8.w),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 8.w,
-                                vertical: 2.h,
-                              ),
-                              decoration: BoxDecoration(
-                                color: itemColor.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(6.r),
-                              ),
-                              child: Text(
-                                order.status,
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: itemColor,
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.end,
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                    SizedBox(width: 12.w),
-                    Container(
-                      padding: EdgeInsets.all(10.r),
-                      decoration: BoxDecoration(
-                        color: itemColor.withValues(alpha: 0.08),
-                        shape: BoxShape.circle,
                       ),
-                      child: Icon(
-                        Icons.autorenew_rounded,
-                        color: itemColor,
-                        size: 24.sp,
+
+                      SizedBox(width: 12.w),
+
+                      Container(
+                        padding: EdgeInsets.all(10.r),
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.primary.withValues(
+                            alpha: 0.1,
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.local_shipping_outlined,
+                          color: context.colorScheme.primary,
+                          size: 24.sp,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+
+                  // if (index != collectionRequests.length - 1)
+                    SizedBox(height: 32.h),
+                ],
               );
             },
           ),

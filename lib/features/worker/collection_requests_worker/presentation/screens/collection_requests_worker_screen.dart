@@ -10,7 +10,6 @@ import '../bloc/collection_requests_worker_bloc.dart';
 import '../bloc/collection_requests_worker_event.dart';
 import '../bloc/collection_requests_worker_state.dart';
 import '../widgets/request_card_collection_worker_widget.dart';
-import '../widgets/weight_recording_modal_worker_widget.dart';
 
 class CollectionRequestsWorkerScreen extends StatefulWidget {
   const CollectionRequestsWorkerScreen({super.key});

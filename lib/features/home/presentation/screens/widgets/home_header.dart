@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeHeader extends StatelessWidget {
-  final HomeDataModel data;
+  final HeaderDataModel? data;
 
   const HomeHeader({super.key, required this.data});
 
@@ -42,7 +42,7 @@ class HomeHeader extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        data.userName,
+                        data?.userName ?? context.tr("customer"),
                         style: context.textTheme.headlineMedium?.copyWith(
                           color: onPrimary,
                         ),
@@ -96,17 +96,16 @@ class HomeHeader extends StatelessWidget {
                           width: 60.r,
                           height: 60.r,
                           child: CircularProgressIndicator(
-                            value: data.levelProgress,
+                            value: (data?.levelProgress ?? 0) / 100,
                             strokeWidth: 5.r,
                             backgroundColor: onPrimary.withValues(alpha: 0.24),
                             color: onPrimary,
                           ),
                         ),
                         Text(
-                          "${(data.levelProgress * 100).toInt()}%",
+                          "${((data?.levelProgress ?? 0)).toInt()}%",
                           style: context.textTheme.titleSmall?.copyWith(
                             color: onPrimary,
-                            fontSize: 13.sp,
                           ),
                         ),
                       ],
@@ -118,16 +117,14 @@ class HomeHeader extends StatelessWidget {
                         children: [
                           Text(
                             context.tr('to_next_level'),
-                            style: context.textTheme.bodyMedium?.copyWith(
+                            style: context.textTheme.bodySmall?.copyWith(
                               color: onPrimary.withValues(alpha: 0.7),
-                              fontSize: 12.sp,
                             ),
                           ),
                           Text(
-                            "${data.nextLevelCurrent} / ${data.nextLevelTotal}",
-                            style: context.textTheme.titleMedium?.copyWith(
+                            "${data?.points ?? 0} / ${data?.nextLevelPoints ?? 1}",
+                            style: context.textTheme.titleSmall?.copyWith(
                               color: onPrimary,
-                              fontSize: 14.sp,
                             ),
                           ),
                         ],
@@ -144,16 +141,14 @@ class HomeHeader extends StatelessWidget {
                       children: [
                         Text(
                           context.tr('current_points'),
-                          style: context.textTheme.bodyMedium?.copyWith(
+                          style: context.textTheme.bodySmall?.copyWith(
                             color: onPrimary.withValues(alpha: 0.7),
-                            fontSize: 12.sp,
                           ),
                         ),
                         Text(
-                          "${data.points}",
+                          "${data?.points ?? 0}",
                           style: context.textTheme.headlineLarge?.copyWith(
                             color: onPrimary,
-                            fontSize: 28.sp,
                           ),
                         ),
                         Row(
@@ -165,10 +160,9 @@ class HomeHeader extends StatelessWidget {
                             ),
                             SizedBox(width: 4.w),
                             Text(
-                              context.tr('green_points'),
+                              context.tr(data?.level ?? '??'),
                               style: context.textTheme.bodySmall?.copyWith(
                                 color: onPrimary.withValues(alpha: 0.7),
-                                fontSize: 10.sp,
                               ),
                             ),
                           ],

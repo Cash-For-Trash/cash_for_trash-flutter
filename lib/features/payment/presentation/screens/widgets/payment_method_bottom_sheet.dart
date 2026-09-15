@@ -1,13 +1,12 @@
 import 'package:cash_for_trash/core/di/service_locator.dart';
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
-import 'package:cash_for_trash/core/routing/app_routes.dart';
 import 'package:cash_for_trash/features/payment/presentation/bloc/payment_bloc.dart';
 import 'package:cash_for_trash/features/payment/presentation/bloc/payment_event.dart';
-import 'package:cash_for_trash/features/payment/presentation/bloc/payment_state.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/screens/widgets/success_collection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -193,7 +192,7 @@ class _PaymentMethodBottomSheetState extends State<PaymentMethodBottomSheet> {
         create: (_) =>
             sl<PaymentBloc>()
               ..add(InitiatePaymentCashEvent(collectionRequestId)),
-        child: _CashPaymentDialog(collectionRequestId: collectionRequestId),
+        child: const SuccessCollectionDialog(),
       ),
     );
   }
@@ -288,197 +287,6 @@ class _PaymentOptionTile extends StatelessWidget {
               activeColor: context.colorScheme.primary,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _CashPaymentDialog extends StatelessWidget {
-  final String collectionRequestId;
-
-  const _CashPaymentDialog({required this.collectionRequestId});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<PaymentBloc, PaymentState>(
-      listener: (context, state) {},
-      child: Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24.r),
-        ),
-        backgroundColor: context.colorScheme.surfaceContainerLowest,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-          child: BlocBuilder<PaymentBloc, PaymentState>(
-            builder: (context, state) {
-              if (state is PaymentLoadingState) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 56.r,
-                      height: 56.r,
-                      child: CircularProgressIndicator(
-                        color: context.colorScheme.primary,
-                        strokeWidth: 3,
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    Text(
-                      context.tr('processing_payment'),
-                      style: context.textTheme.titleMedium?.copyWith(
-                        color: context.colorScheme.onSurface,
-                        fontSize: 16.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                );
-              }
-              if (state is PaymentErrorState) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 72.r,
-                      height: 72.r,
-                      decoration: BoxDecoration(
-                        color: context.colorScheme.errorContainer,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.error_outline_rounded,
-                        color: context.colorScheme.error,
-                        size: 40.r,
-                      ),
-                    ),
-                    SizedBox(height: 20.h),
-                    Text(
-                      context.tr('payment_failed'),
-                      style: context.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.onSurface,
-                        fontSize: 18.sp,
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      state.errorMessage,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                        fontSize: 13.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 24.h),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50.h,
-                      child: ElevatedButton(
-                        onPressed: () => context.pop(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: context.colorScheme.primary,
-                          foregroundColor: context.colorScheme.onPrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14.r),
-                          ),
-                          elevation: 0,
-                        ),
-                        child: Text(
-                          context.tr('ok'),
-                          style: context.textTheme.titleMedium?.copyWith(
-                            color: context.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              }
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 80.r,
-                    height: 80.r,
-                    decoration: BoxDecoration(
-                      color: context.colorScheme.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.check_rounded,
-                      color: context.colorScheme.onPrimary,
-                      size: 44.r,
-                    ),
-                  ),
-                  SizedBox(height: 24.h),
-                  Text(
-                    context.tr('cash_payment_confirmed'),
-                    style: context.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: context.colorScheme.onSurface,
-                      fontSize: 20.sp,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    context.tr('cash_payment_confirmed_desc'),
-                    style: context.textTheme.bodyMedium?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
-                      fontSize: 13.sp,
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 28.h),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.pop();
-                        context.go(AppRoutes.homeScreen);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: context.colorScheme.primary,
-                        foregroundColor: context.colorScheme.onPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        context.tr('track_order_now'),
-                        style: context.textTheme.titleMedium?.copyWith(
-                          color: context.colorScheme.onPrimary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15.sp,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  GestureDetector(
-                    onTap: () {
-                      context.pop();
-                      context.go(AppRoutes.homeScreen);
-                    },
-                    child: Text(
-                      context.tr('return_home'),
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                        fontSize: 12.sp,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
         ),
       ),
     );
