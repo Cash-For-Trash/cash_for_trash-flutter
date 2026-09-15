@@ -15,6 +15,14 @@ class HomeState extends Equatable {
   final int? levelProgress;
   final int? nextLevelProgress;
 
+  final int currentOrdersPage;
+  final bool hasMoreCurrentOrders;
+  final bool isFetchingMoreCurrentOrders;
+
+  final int recentOrdersPage;
+  final bool hasMoreRecentOrders;
+  final bool isFetchingMoreRecentOrders;
+
   const HomeState({
     this.currentOrdersStatus,
     this.recentCollectionRequestsStatus,
@@ -27,6 +35,12 @@ class HomeState extends Equatable {
     this.points,
     this.levelProgress,
     this.nextLevelProgress,
+    this.currentOrdersPage = 1,
+    this.hasMoreCurrentOrders = true,
+    this.isFetchingMoreCurrentOrders = false,
+    this.recentOrdersPage = 1,
+    this.hasMoreRecentOrders = true,
+    this.isFetchingMoreRecentOrders = false,
   });
 
   HomeState copyWith({
@@ -41,6 +55,12 @@ class HomeState extends Equatable {
     int? points,
     int? levelProgress,
     int? nextLevelProgress,
+    int? currentOrdersPage,
+    bool? hasMoreCurrentOrders,
+    bool? isFetchingMoreCurrentOrders,
+    int? recentOrdersPage,
+    bool? hasMoreRecentOrders,
+    bool? isFetchingMoreRecentOrders,
   }) {
     return HomeState(
       currentOrdersStatus: currentOrdersStatus ?? this.currentOrdersStatus,
@@ -54,6 +74,12 @@ class HomeState extends Equatable {
       points: points ?? this.points,
       levelProgress: levelProgress ?? this.levelProgress,
       nextLevelProgress: nextLevelProgress ?? this.nextLevelProgress,
+      currentOrdersPage: currentOrdersPage ?? this.currentOrdersPage,
+      hasMoreCurrentOrders: hasMoreCurrentOrders ?? this.hasMoreCurrentOrders,
+      isFetchingMoreCurrentOrders: isFetchingMoreCurrentOrders ?? this.isFetchingMoreCurrentOrders,
+      recentOrdersPage: recentOrdersPage ?? this.recentOrdersPage,
+      hasMoreRecentOrders: hasMoreRecentOrders ?? this.hasMoreRecentOrders,
+      isFetchingMoreRecentOrders: isFetchingMoreRecentOrders ?? this.isFetchingMoreRecentOrders,
     );
   }
 
@@ -69,5 +95,11 @@ class HomeState extends Equatable {
     points,
     levelProgress,
     nextLevelProgress,
+    currentOrdersPage,
+    hasMoreCurrentOrders,
+    isFetchingMoreCurrentOrders,
+    recentOrdersPage,
+    hasMoreRecentOrders,
+    isFetchingMoreRecentOrders,
   ];
 }

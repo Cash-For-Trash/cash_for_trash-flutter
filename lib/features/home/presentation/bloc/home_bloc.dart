@@ -22,41 +22,125 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     GetCustomerCollectionRecentRequests event,
     Emitter<HomeState> emit,
   ) async {
-    emit(state.copyWith(currentOrdersStatus: HomeStatus.loading));
+    if (event.isLoadMore) {
+      if (state.isFetchingMoreCurrentOrders || !state.hasMoreCurrentOrders) return;
+      emit(state.copyWith(isFetchingMoreCurrentOrders: true));
+    } else {
+      emit(state.copyWith(
+        currentOrdersStatus: HomeStatus.loading,
+        currentOrdersPage: 1,
+        hasMoreCurrentOrders: true,
+      ));
+    }
+
     final result = await repository.getCustomerCollectionRequests(
       event.page,
       event.pageSize,
-      event.status
+      event.status,
     );
+
     result.fold(
-      (error) => emit(state.copyWith(currentOrdersStatus: HomeStatus.error, errorMessage: error)),
-      (data) => emit(
-        state.copyWith(
-          currentOrdersStatus: HomeStatus.success,
-          currentCollectionRequest: data,
-        ),
-      ),
+      (error) => emit(state.copyWith(
+        currentOrdersStatus: event.isLoadMore ? state.currentOrdersStatus : HomeStatus.error,
+        isFetchingMoreCurrentOrders: false,
+        errorMessage: error,
+      )),
+      (data) {
+        final newItems = data.customerCollectionRequests;
+        final existingItems = event.isLoadMore
+            ? (state.currentCollectionRequest?.customerCollectionRequests ?? [])
+            : <CustomerCollectionRequestModel?>[];
+
+        final updatedList = [...existingItems, ...newItems];
+
+        final totalItems = data.totalItems > 0 ? data.totalItems : data.total;
+        final bool hasMore = newItems.length >= event.pageSize &&
+            (totalItems == 0 || updatedList.length < totalItems);
+
+        final mergedResponse = CustomerCollectionRequestResponseModel(
+          success: data.success,
+          statusCode: data.statusCode,
+          message: data.message,
+          page: event.page,
+          pageSize: data.pageSize,
+          totalItems: totalItems,
+          total: data.total,
+          customerCollectionRequests: updatedList,
+        );
+
+        emit(
+          state.copyWith(
+            currentOrdersStatus: HomeStatus.success,
+            currentCollectionRequest: mergedResponse,
+            currentOrdersPage: event.page,
+            hasMoreCurrentOrders: hasMore,
+            isFetchingMoreCurrentOrders: false,
+          ),
+        );
+      },
     );
   }
 
   Future<void> _onGetCustomerCollectionRequests(
-      GetCustomerCollectionRequests event,
-      Emitter<HomeState> emit
-      ) async {
-    emit(state.copyWith(recentCollectionRequestsStatus: HomeStatus.loading));
+    GetCustomerCollectionRequests event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (event.isLoadMore) {
+      if (state.isFetchingMoreRecentOrders || !state.hasMoreRecentOrders) return;
+      emit(state.copyWith(isFetchingMoreRecentOrders: true));
+    } else {
+      emit(state.copyWith(
+        recentCollectionRequestsStatus: HomeStatus.loading,
+        recentOrdersPage: 1,
+        hasMoreRecentOrders: true,
+      ));
+    }
+
     final result = await repository.getCustomerCollectionRequests(
-        event.page,
-        event.pageSize,
-        null
+      event.page,
+      event.pageSize,
+      event.status,
     );
+
     result.fold(
-          (error) => emit(state.copyWith(recentCollectionRequestsStatus: HomeStatus.error, errorMessage: error)),
-          (data) => emit(
-        state.copyWith(
-          recentCollectionRequestsStatus: HomeStatus.success,
-          recentCollectionRequest: data,
-        ),
-      ),
+      (error) => emit(state.copyWith(
+        recentCollectionRequestsStatus: event.isLoadMore ? state.recentCollectionRequestsStatus : HomeStatus.error,
+        isFetchingMoreRecentOrders: false,
+        errorMessage: error,
+      )),
+      (data) {
+        final newItems = data.customerCollectionRequests;
+        final existingItems = event.isLoadMore
+            ? (state.recentCollectionRequests?.customerCollectionRequests ?? [])
+            : <CustomerCollectionRequestModel?>[];
+
+        final updatedList = [...existingItems, ...newItems];
+
+        final totalItems = data.totalItems > 0 ? data.totalItems : data.total;
+        final bool hasMore = newItems.length >= event.pageSize &&
+            (totalItems == 0 || updatedList.length < totalItems);
+
+        final mergedResponse = CustomerCollectionRequestResponseModel(
+          success: data.success,
+          statusCode: data.statusCode,
+          message: data.message,
+          page: event.page,
+          pageSize: data.pageSize,
+          totalItems: totalItems,
+          total: data.total,
+          customerCollectionRequests: updatedList,
+        );
+
+        emit(
+          state.copyWith(
+            recentCollectionRequestsStatus: HomeStatus.success,
+            recentCollectionRequest: mergedResponse,
+            recentOrdersPage: event.page,
+            hasMoreRecentOrders: hasMore,
+            isFetchingMoreRecentOrders: false,
+          ),
+        );
+      },
     );
   }
 

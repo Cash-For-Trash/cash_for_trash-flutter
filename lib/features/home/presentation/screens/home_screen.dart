@@ -67,6 +67,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             CurrentOrderSection(
                               currentCollectionRequest:
                                   currentCollectionRequest?.customerCollectionRequests ?? [],
+                              hasMore: state.hasMoreCurrentOrders,
+                              isLoadingMore: state.isFetchingMoreCurrentOrders,
+                              onShowMore: () {
+                                context.read<HomeBloc>().add(
+                                      GetCustomerCollectionRecentRequests(
+                                        page: state.currentOrdersPage + 1,
+                                        pageSize: 4,
+                                        status: "PENDING",
+                                        isLoadMore: true,
+                                      ),
+                                    );
+                              },
                             ),
                             SizedBox(height: 12.h),
                           ],
@@ -74,6 +86,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             RecentOrdersSection(
                               collectionRequests:
                                   recentCollectionRequests!.customerCollectionRequests,
+                              hasMore: state.hasMoreRecentOrders,
+                              isLoadingMore: state.isFetchingMoreRecentOrders,
+                              onShowMore: () {
+                                context.read<HomeBloc>().add(
+                                      GetCustomerCollectionRequests(
+                                        page: state.recentOrdersPage + 1,
+                                        pageSize: 10,
+                                        isLoadMore: true,
+                                      ),
+                                    );
+                              },
                             ),
                           ],
                         ],

@@ -189,13 +189,13 @@ class _WeightRecordingModalWorkerWidgetState extends State<WeightRecordingModalW
               children: [
                 Text(
                   context.tr('record_garbage_weights'),
-                  style: context.textTheme.titleLarge?.copyWith(
+                  style: context.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 TextButton.icon(
                   onPressed: _showAddDialog,
-                  icon: Icon(Icons.add_rounded, size: 20.sp),
+                  icon: Icon(Icons.add_rounded, size: 16.sp),
                   label: Text(context.tr('add_garbage_type')),
                 ),
               ],

@@ -20,20 +20,26 @@ class _RewardsHeaderWidgetState extends State<RewardsHeaderWidget> {
   }
 
   _LevelDetails _calculateLevel(int points) {
-    if (points < 200) {
+    if (points == -1) {
+      return _LevelDetails(
+        levelKey: '??',
+        subText: '--',
+      );
+    }
+    if (points < 1000) {
       return _LevelDetails(
         levelKey: 'bronze_level',
-        subText: '${200 - points} ${context.tr('for_silver')}',
+        subText: '${1000 - points} ${context.tr('for_silver')}',
       );
-    } else if (points < 500) {
+    } else if (points < 10000) {
       return _LevelDetails(
         levelKey: 'silver_level',
-        subText: '${500 - points} ${context.tr('for_gold')}',
+        subText: '${10000 - points} ${context.tr('for_gold')}',
       );
-    } else if (points < 1000) {
+    } else if (points < 50000) {
       return _LevelDetails(
         levelKey: 'gold_level',
-        subText: '${1000 - points} ${context.tr('for_platinum')}',
+        subText: '${50000 - points} ${context.tr('for_platinum')}',
       );
     } else {
       return _LevelDetails(

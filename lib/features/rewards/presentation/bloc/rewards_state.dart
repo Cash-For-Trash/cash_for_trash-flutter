@@ -32,7 +32,7 @@ class RewardsState extends Equatable {
     this.redeemSuccessMessage,
     this.redeemErrorMessage,
     this.isCustomerPointsLoading = false,
-    this.customerPoints = 0,
+    this.customerPoints = -1,
     this.customerPointsErrorMessage,
     this.isLeaderboardLoading = false,
     this.leaderboard = const [],

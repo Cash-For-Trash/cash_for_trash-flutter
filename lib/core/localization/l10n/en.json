@@ -321,7 +321,8 @@
     "PENDING": "Pending",
     "COLLECTED": "Collected",
     "CANCELLED": "Cancelled",
-    "order": "order"
+    "order": "order",
+    "show_more": "Show More",
     "leaderboard": "Leaderboard",
     "no_leaderboard": "No Leaderboard",
     "no_leaderboard_desc": "Leaderboard data is currently unavailable.",
