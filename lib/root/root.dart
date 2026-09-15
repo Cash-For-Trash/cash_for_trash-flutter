@@ -51,7 +51,7 @@ class RootState extends State<Root> {
             create: (context) => sl<PaymentBloc>(),
           ),
         ],
-        child: const RequestCollectionScreen(),
+        child: const RequestCollectionScreen(isFromBottomNav: true),
       ),
       BlocProvider(
         create: (context) =>

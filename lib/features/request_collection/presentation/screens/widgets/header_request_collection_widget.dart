@@ -5,7 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class HeaderRequestCollectionWidget extends StatelessWidget {
-  const HeaderRequestCollectionWidget({super.key});
+  final bool isFromBottomNav;
+
+  const HeaderRequestCollectionWidget({
+    super.key,
+    this.isFromBottomNav = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,36 +38,40 @@ class HeaderRequestCollectionWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(12.r),
-            clipBehavior: Clip.antiAlias,
-            child: InkWell(
-              onTap: () => context.pop(),
-              child: Container(
-                width: 40.w,
-                height: 40.h,
-                decoration: BoxDecoration(
-                  color: context.colorScheme.onPrimary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
+          if (!isFromBottomNav) ...[
+            Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(12.r),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                onTap: () => context.pop(),
+                child: Container(
+                  width: 40.w,
+                  height: 40.h,
+                  decoration: BoxDecoration(
                     color: context.colorScheme.onPrimary.withValues(
-                      alpha: 0.25,
+                      alpha: 0.15,
                     ),
-                    width: 1,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: context.colorScheme.onPrimary.withValues(
+                        alpha: 0.25,
+                      ),
+                      width: 1,
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: context.colorScheme.onPrimary,
-                    size: 18.sp,
+                  child: Center(
+                    child: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: context.colorScheme.onPrimary,
+                      size: 18.sp,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          SizedBox(height: 16.h),
+            SizedBox(height: 16.h),
+          ],
           Text(
             context.tr('request_collection_screen_title'),
             style: context.textTheme.headlineSmall?.copyWith(

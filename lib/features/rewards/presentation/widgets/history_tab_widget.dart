@@ -170,31 +170,37 @@ class _RedemptionCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 4.h),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star_rounded,
-                          size: 13.r,
-                          color: colorScheme.primary,
-                        ),
-                        SizedBox(width: 3.w),
-                        Text(
-                          '${redemption.requiredPoints} ${context.tr('points')}',
-                          style: context.textTheme.bodySmall?.copyWith(
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.star_rounded,
+                            size: 13.r,
                             color: colorScheme.primary,
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.w600,
                           ),
-                        ),
-                        SizedBox(width: 10.w),
-                        Text(
-                          _formatDate(redemption.createdAt),
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.onSurface.withValues(alpha: 0.5),
-                            fontSize: 11.sp,
+                          SizedBox(width: 3.w),
+                          Text(
+                            '${redemption.requiredPoints} ${context.tr('points')}',
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: colorScheme.primary,
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                      ],
+                          SizedBox(width: 10.w),
+                          Text(
+                            _formatDate(redemption.createdAt),
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurface.withValues(
+                                alpha: 0.5,
+                              ),
+                              fontSize: 11.sp,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

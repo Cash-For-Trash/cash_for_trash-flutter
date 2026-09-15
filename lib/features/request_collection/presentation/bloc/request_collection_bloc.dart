@@ -119,7 +119,6 @@ class RequestCollectionBloc
             availabilities: response.data,
             selectedAvailability: firstAvailability,
             selectedTimeSlot: firstAvailability?.id ?? '',
-            cost: firstAvailability?.servicePrice,
           ),
         );
       },
@@ -187,7 +186,6 @@ class RequestCollectionBloc
       state.copyWith(
         selectedAvailability: event.availability,
         selectedTimeSlot: event.availability.id,
-        cost: event.availability.servicePrice,
       ),
     );
   }
@@ -322,7 +320,6 @@ class RequestCollectionBloc
     final request = CollectionRequestModel(
       addressId: state.selectedAddress!.addressId,
       availabilityId: state.selectedAvailability!.availabilityId,
-      paymentMethod: event.paymentMethod,
       quantity: effectiveQuantity,
       collectionImg: uploadedImageUrl,
       garbageTypes: garbageTypes,

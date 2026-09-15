@@ -1,7 +1,8 @@
 import 'package:cash_for_trash/core/di/service_locator.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
 import 'package:cash_for_trash/features/address/data/model/address_model.dart';
-import 'package:cash_for_trash/features/address/presentation/bloc/address_bloc.dart' as address;
+import 'package:cash_for_trash/features/address/presentation/bloc/address_bloc.dart'
+    as address;
 import 'package:cash_for_trash/features/address/presentation/screens/address_screen.dart';
 import 'package:cash_for_trash/features/auth/forgot-password/presentation/screens/forgot_password.dart';
 import 'package:cash_for_trash/features/auth/login/presentation/bloc/login_bloc.dart';
@@ -110,8 +111,7 @@ class RouterGenerator {
         path: AppRoutes.homeScreen,
         builder: (context, state) => MultiBlocProvider(
           providers: [
-            BlocProvider(
-              create: (context) => sl<HomeBloc>()),
+            BlocProvider(create: (context) => sl<HomeBloc>()),
             BlocProvider(create: (context) => sl<ProfileBloc>()),
           ],
           child: const Root(),
@@ -122,9 +122,12 @@ class RouterGenerator {
         builder: (context, state) => MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => sl<HomeWorkerBloc>()..add(const GetHomeWorkerDataEvent()),
+              create: (context) =>
+                  sl<HomeWorkerBloc>()..add(const GetHomeWorkerDataEvent()),
             ),
-            BlocProvider(create: (context) => sl<CollectionRequestsWorkerBloc>()),
+            BlocProvider(
+              create: (context) => sl<CollectionRequestsWorkerBloc>(),
+            ),
             BlocProvider(create: (context) => sl<AvailabilityWorkerBloc>()),
             BlocProvider(create: (context) => sl<EarningsWorkerBloc>()),
             BlocProvider(create: (context) => sl<ProfileBloc>()),
@@ -141,19 +144,20 @@ class RouterGenerator {
       ),
       GoRoute(
         path: AppRoutes.requestCollectionScreen,
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => sl<RequestCollectionBloc>()
-                ..add(const GetGarbageTypesEvent())
-                ..add(const GetAddressesEvent()),
-            ),
-            BlocProvider(
-              create: (context) => sl<PaymentBloc>(),
-            ),
-          ],
-          child: const RequestCollectionScreen(),
-        ),
+        builder: (context, state) {
+          final isFromBottomNav = state.extra as bool? ?? false;
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => sl<RequestCollectionBloc>()
+                  ..add(const GetGarbageTypesEvent())
+                  ..add(const GetAddressesEvent()),
+              ),
+              BlocProvider(create: (context) => sl<PaymentBloc>()),
+            ],
+            child: RequestCollectionScreen(isFromBottomNav: isFromBottomNav),
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.paymentWebView,
@@ -161,9 +165,9 @@ class RouterGenerator {
           final iFrameUrl = state.extra as String;
           return BlocProvider(
             create: (context) => sl<PaymentBloc>(),
-            child: PaymentWebView(iFrameUrl: iFrameUrl)
+            child: PaymentWebView(iFrameUrl: iFrameUrl),
           );
-        }
+        },
       ),
       GoRoute(
         path: AppRoutes.mapsScreen,
@@ -171,8 +175,9 @@ class RouterGenerator {
           final extra = state.extra as Map<String, dynamic>?;
           final initialLatLng = extra?['initialLatLng'] as LatLng?;
           return BlocProvider(
-            create: (context) => sl<MapsBloc>()
-              ..add(MapsInitializedEvent(initialLatLng: initialLatLng)),
+            create: (context) =>
+                sl<MapsBloc>()
+                  ..add(MapsInitializedEvent(initialLatLng: initialLatLng)),
             child: const MapsScreen(),
           );
         },
@@ -254,8 +259,8 @@ class RouterGenerator {
         builder: (context, state) {
           final userId = state.extra as String;
           return BlocProvider(
-            create: (_) => sl<WorkersAdminBloc>()
-              ..add(GetWorkerDetailAdminEvent(userId)),
+            create: (_) =>
+                sl<WorkersAdminBloc>()..add(GetWorkerDetailAdminEvent(userId)),
             child: WorkerDetailAdminScreen(userId: userId),
           );
         },
@@ -263,8 +268,7 @@ class RouterGenerator {
       GoRoute(
         path: AppRoutes.rewardsScreen,
         builder: (context, state) => BlocProvider(
-          create: (context) =>
-              sl<RewardsBloc>()..add(const GetRewardsEvent()),
+          create: (context) => sl<RewardsBloc>()..add(const GetRewardsEvent()),
           child: const RewardsScreen(),
         ),
       ),
