@@ -35,7 +35,7 @@ class RootWorkerState extends State<RootWorker> {
       // HomeWorkerScreen(onNavigateToPickups: () => changePage(1)),
       const CollectionRequestsWorkerScreen(),
       const AvailabilityWorkerScreen(),
-      const EarningsWorkerScreen(),
+      // const EarningsWorkerScreen(),
       const ProfileScreen(),
     ];
 

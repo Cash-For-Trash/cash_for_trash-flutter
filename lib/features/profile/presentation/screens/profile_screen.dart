@@ -8,7 +8,6 @@ import 'package:cash_for_trash/features/profile/presentation/bloc/profile_state.
 import 'package:cash_for_trash/features/profile/presentation/widgets/header_profile_section.dart';
 import 'package:cash_for_trash/features/profile/presentation/widgets/logout_button_profile_widget.dart';
 import 'package:cash_for_trash/features/profile/presentation/widgets/menu_group_profile_section.dart';
-import 'package:cash_for_trash/features/profile/presentation/widgets/stats_grid_profile_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

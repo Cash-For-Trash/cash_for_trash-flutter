@@ -1,5 +1,4 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
-import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

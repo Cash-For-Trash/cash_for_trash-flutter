@@ -46,16 +46,16 @@ class CustomWorkerNavBar extends StatelessWidget {
                 index: 1,
                 context: context,
               ),
-              navItem(
-                icon: Icons.account_balance_wallet_rounded,
-                label: context.tr("total_earnings"),
-                index: 2,
-                context: context,
-              ),
+              // navItem(
+              //   icon: Icons.account_balance_wallet_rounded,
+              //   label: context.tr("total_earnings"),
+              //   index: 2,
+              //   context: context,
+              // ),
               navItem(
                 icon: Icons.person_rounded,
                 label: context.tr("profile"),
-                index: 3,
+                index: 2,
                 context: context,
               ),
             ],
