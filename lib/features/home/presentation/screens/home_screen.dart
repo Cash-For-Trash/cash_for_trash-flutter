@@ -2,7 +2,6 @@ import 'package:cash_for_trash/core/widgets/custom_error_or_empty_widget.dart';
 import 'package:cash_for_trash/features/home/presentation/bloc/home_bloc.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/widgets/home_header.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/widgets/quick_actions_section.dart';
-import 'package:cash_for_trash/features/home/presentation/screens/widgets/monthly_impact_section.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/widgets/current_order_section.dart';
 import 'package:cash_for_trash/features/home/presentation/screens/widgets/recent_orders_section.dart';
 import 'package:flutter/material.dart';
@@ -10,27 +9,49 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(
+          const GetCustomerCollectionRecentRequests(status: "PENDING"),
+        );
+    context.read<HomeBloc>().add(const GetCustomerCollectionRequests());
+    context.read<HomeBloc>().add(GetCustomerProfile());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
-          if (state is HomeLoading) {
+          if (state.currentOrdersStatus == HomeStatus.loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is HomeLoaded) {
-            final data = state.data;
+          } else if (state.currentOrdersStatus == HomeStatus.success) {
+            final currentCollectionRequest = state.currentCollectionRequest;
+            final recentCollectionRequests = state.recentCollectionRequests;
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<HomeBloc>().add(GetHomeData());
+                context.read<HomeBloc>().add(
+                      const GetCustomerCollectionRecentRequests(
+                        status: "PENDING",
+                      ),
+                    );
+                context.read<HomeBloc>().add(const GetCustomerCollectionRequests());
+                context.read<HomeBloc>().add(GetCustomerProfile());
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    HomeHeader(data: data),
+                    HomeHeader(data: state.headerData),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 20.w,
@@ -39,18 +60,22 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           const QuickActionsSection(),
-                          SizedBox(height: 24.h),
-                          MonthlyImpactSection(data: data),
-                          SizedBox(height: 24.h),
-                          if (data.currentOrders.isNotEmpty) ...[
+                          SizedBox(height: 12.h),
+                          // MonthlyImpactSection(data: collectionRequest),
+                          // SizedBox(height: 12.h),
+                          if (currentCollectionRequest?.customerCollectionRequests != null) ...[
                             CurrentOrderSection(
-                              orders: data.currentOrders,
+                              currentCollectionRequest:
+                                  currentCollectionRequest?.customerCollectionRequests ?? [],
                             ),
-                            SizedBox(height: 24.h),
+                            SizedBox(height: 12.h),
                           ],
-                          RecentOrdersSection(
-                            orders: data.recentOrders,
-                          ),
+                          if (recentCollectionRequests?.customerCollectionRequests != null) ...[
+                            RecentOrdersSection(
+                              collectionRequests:
+                                  recentCollectionRequests!.customerCollectionRequests,
+                            ),
+                          ],
                         ],
                       )
                           .animate()
@@ -61,11 +86,15 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             );
-          } else if (state is HomeStateError) {
+          } else if (state.currentOrdersStatus == HomeStatus.error) {
             return CustomErrorOrEmptyWidget(
               isError: true,
-              errorMessage: state.message,
-              onRetry: () => context.read<HomeBloc>().add(GetHomeData()),
+              errorMessage: state.errorMessage,
+              onRetry: () => context.read<HomeBloc>().add(
+                    const GetCustomerCollectionRecentRequests(
+                      status: "PENDING",
+                    ),
+                  ),
             );
           }
           return const SizedBox.shrink();

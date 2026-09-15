@@ -23,7 +23,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => context.pop(),
         ),
       ),
@@ -32,14 +32,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Text(
               context.tr('forgot_password'),
               style: context.textTheme.titleLarge?.copyWith(
                 color: context.theme.colorScheme.primary,
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               context.tr('enter_email_reset_password'),
               style: context.textTheme.bodyLarge?.copyWith(

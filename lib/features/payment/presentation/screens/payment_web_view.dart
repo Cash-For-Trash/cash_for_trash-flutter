@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:cash_for_trash/core/routing/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../../request_collection/presentation/screens/widgets/success_collection_dialog.dart';
 
 class PaymentWebView extends StatefulWidget {
   final String iFrameUrl;
@@ -54,7 +54,13 @@ class _PaymentWebViewState extends State<PaymentWebView> {
               final bool isSuccess = request.url.contains('success=true');
 
               isSuccess
-                  ? context.push(AppRoutes.homeScreen)
+                  ? showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return const SuccessCollectionDialog();
+                      },
+                    )
                   : Navigator.pop(context);
               return NavigationDecision.prevent;
             }

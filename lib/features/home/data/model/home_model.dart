@@ -1,181 +1,153 @@
-import 'package:cash_for_trash/core/utils/date_formatter.dart';
-import 'package:equatable/equatable.dart';
+import 'package:cash_for_trash/features/address/data/model/address_model.dart';
 
-class OrderModel extends Equatable {
-  final String id;
-  final String title;
-  final String status;
-  final String points;
-  final String time;
+class CustomerCollectionRequestResponseModel {
+  final bool success;
+  final int statusCode;
+  final String message;
+  final int page;
+  final int pageSize;
+  final int totalItems;
+  final int total;
+  final List<CustomerCollectionRequestModel?> customerCollectionRequests;
 
-  const OrderModel({
-    required this.id,
-    required this.title,
-    required this.status,
-    required this.points,
-    required this.time,
+  const CustomerCollectionRequestResponseModel({
+    required this.success,
+    required this.statusCode,
+    required this.message,
+    required this.page,
+    required this.pageSize,
+    required this.totalItems,
+    required this.total,
+    required this.customerCollectionRequests,
   });
 
-  factory OrderModel.fromJson(Map<String, dynamic> json) {
-    final rawId = (json['collection_request_id'] ?? json['request_id'] ?? json['id'] ?? '').toString();
-    final shortId = rawId.length > 6 ? rawId.substring(0, 6) : rawId;
-
-    final garbageList = json['requestGarbages'] is List ? json['requestGarbages'] as List : [];
-    String wasteTypesText = garbageList
-        .map((g) {
-          final gt = g['garbageType'];
-          return gt != null ? (gt['garbage_type_name'] ?? '').toString() : '';
-        })
-        .where((name) => name.isNotEmpty)
-        .join(', ');
-
-    if (wasteTypesText.isEmpty) {
-      final qty = json['quantity'] ?? json['total_weight'];
-      wasteTypesText = qty != null ? '$qty kg' : 'Waste Collection';
-    }
-
-    int totalPoints = 0;
-    for (final g in garbageList) {
-      final pts = g['earned_points'];
-      if (pts is num) {
-        totalPoints += pts.toInt();
-      }
-    }
-    final formattedPoints = totalPoints > 0 ? '+$totalPoints' : '$totalPoints';
-
-    final rawTime = (json['request_date'] ?? json['scheduled_day'] ?? json['created_at'] ?? '').toString();
-    final formattedTime = AppDateFormatter.format(rawTime);
-
-    return OrderModel(
-      id: shortId.isNotEmpty ? '#$shortId' : '#---',
-      title: wasteTypesText,
-      status: (json['status'] ?? 'PENDING').toString(),
-      points: formattedPoints,
-      time: formattedTime,
+  factory CustomerCollectionRequestResponseModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return CustomerCollectionRequestResponseModel(
+      success: json['success'] as bool,
+      statusCode: json['statusCode'] as int,
+      message: json['message'] as String,
+      page: json['page'] as int,
+      pageSize: json['page_size'] as int,
+      totalItems: json['total_items'] as int,
+      total: json['total'] as int,
+      customerCollectionRequests: (json['data'] as List)
+          .map(
+            (e) => CustomerCollectionRequestModel.fromJson(
+              e as Map<String, dynamic>,
+            ),
+          )
+          .toList(),
     );
   }
-
-  @override
-  List<Object?> get props => [id, title, status, points, time];
 }
 
-class CurrentOrderModel extends Equatable {
-  final String id;
-  final String title;
-  final String timeLeft;
+class CustomerCollectionRequestModel {
+  final String collectionRequestId;
+  final String? userId;
+  final String? addressId;
+  final String requestDate;
+  final String? quantity;
+  final String? collectionImg;
   final String status;
-  final double progress;
+  final String? paymentMethod;
+  final String scheduledDay;
+  final String scheduledFromTime;
+  final String scheduledToTime;
+  final String? servicePrice;
+  final String? availabilityId;
+  final AddressModel? addressModel;
 
-  const CurrentOrderModel({
-    required this.id,
-    required this.title,
-    required this.timeLeft,
+  const CustomerCollectionRequestModel({
+    required this.collectionRequestId,
+    this.userId,
+    this.addressId,
+    required this.requestDate,
+    this.quantity,
+    this.collectionImg,
     required this.status,
-    required this.progress,
+    this.paymentMethod,
+    required this.scheduledDay,
+    required this.scheduledFromTime,
+    required this.scheduledToTime,
+    this.servicePrice,
+    this.availabilityId,
+    this.addressModel,
   });
 
-  factory CurrentOrderModel.fromJson(Map<String, dynamic> json) {
-    final rawId = (json['collection_request_id'] ?? json['request_id'] ?? json['id'] ?? '').toString();
-
-    final garbageList = json['requestGarbages'] is List ? json['requestGarbages'] as List : [];
-    String wasteTypesText = garbageList
-        .map((g) {
-          final gt = g['garbageType'];
-          return gt != null ? (gt['garbage_type_name'] ?? '').toString() : '';
-        })
-        .where((name) => name.isNotEmpty)
-        .join(', ');
-
-    if (wasteTypesText.isEmpty) {
-      final qty = json['quantity'] ?? json['total_weight'];
-      wasteTypesText = qty != null ? '$qty kg' : 'Waste Collection';
-    }
-
-    final rawDay = (json['scheduled_day'] ?? '').toString().trim();
-    final rawFrom = (json['scheduled_from_time'] ?? '').toString().trim();
-    final rawTo = (json['scheduled_to_time'] ?? '').toString().trim();
-
-    String timeInfo = AppDateFormatter.formatScheduledSlot(
-      day: rawDay,
-      fromTime: rawFrom,
-      toTime: rawTo,
-    );
-
-    if (timeInfo.isEmpty) {
-      final rawFallback = (json['request_date'] ?? json['created_at'] ?? '').toString();
-      timeInfo = AppDateFormatter.format(rawFallback);
-    }
-
-    final statusStr = (json['status'] ?? 'PENDING').toString();
-    double progressVal = 0.15;
-    switch (statusStr.toUpperCase()) {
-      case 'COLLECTED':
-        progressVal = 1.0;
-        break;
-      case 'ON_THE_WAY':
-        progressVal = 0.75;
-        break;
-      case 'ACCEPTED':
-        progressVal = 0.5;
-        break;
-      case 'ASSIGNED':
-        progressVal = 0.3;
-        break;
-      case 'PENDING':
-      default:
-        progressVal = 0.15;
-        break;
-    }
-
-    return CurrentOrderModel(
-      id: rawId,
-      title: wasteTypesText,
-      timeLeft: timeInfo,
-      status: statusStr,
-      progress: progressVal,
+  factory CustomerCollectionRequestModel.fromJson(Map<String, dynamic> json) {
+    return CustomerCollectionRequestModel(
+      collectionRequestId: json['collection_request_id'] as String,
+      userId: json['user_id'] as String?,
+      addressId: json['address_id'] as String?,
+      requestDate: json['request_date'] as String,
+      quantity: json['quantity']?.toString(),
+      collectionImg: json['collection_img'] as String?,
+      status: json['status'] as String,
+      paymentMethod: json['payment_method'] as String?,
+      scheduledDay: json['scheduled_day'] as String,
+      scheduledFromTime: json['scheduled_from_time'] as String,
+      scheduledToTime: json['scheduled_to_time'] as String,
+      servicePrice: json['service_price']?.toString(),
+      availabilityId: json['availability_id'] as String?,
+      addressModel: json['address_model'] != null
+          ? AddressModel.fromJson(json['address_model'] as Map<String, dynamic>)
+          : null,
     );
   }
-
-  @override
-  List<Object?> get props => [id, title, timeLeft, status, progress];
 }
 
-class HomeDataModel extends Equatable {
+class HeaderDataModel {
   final String userName;
-  final int points;
-  final double levelProgress;
-  final int nextLevelCurrent;
-  final int nextLevelTotal;
-  final int monthlyImpactTrees;
-  final double monthlyImpactRecycledKg;
-  final double monthlyImpactCollectedKg;
-  final List<CurrentOrderModel?> currentOrders;
-  final List<OrderModel> recentOrders;
+  final String points;
 
-  const HomeDataModel({
+  HeaderDataModel({
     required this.userName,
     required this.points,
-    required this.levelProgress,
-    required this.nextLevelCurrent,
-    required this.nextLevelTotal,
-    required this.monthlyImpactTrees,
-    required this.monthlyImpactRecycledKg,
-    required this.monthlyImpactCollectedKg,
-    required this.currentOrders,
-    required this.recentOrders,
   });
 
-  @override
-  List<Object?> get props => [
-        userName,
-        points,
-        levelProgress,
-        nextLevelCurrent,
-        nextLevelTotal,
-        monthlyImpactTrees,
-        monthlyImpactRecycledKg,
-        monthlyImpactCollectedKg,
-        currentOrders,
-        recentOrders,
-      ];
+
+  String get level {
+    final pointsValue = double.tryParse(points) ?? 0;
+
+    if (pointsValue < 1000) {
+      return "bronze_level";
+    } else if (pointsValue < 10000) {
+      return "silver_level";
+    } else if (pointsValue < 50000) {
+      return "gold_level";
+    } else {
+      return "platinum_level";
+    }
+  }
+
+  int get nextLevelPoints {
+    final pointsValue = double.tryParse(points) ?? 0;
+
+    if (pointsValue < 1000) {
+      return 1000;
+    } else if (pointsValue < 10000) {
+      return 10000;
+    } else if (pointsValue < 50000) {
+      return 50000;
+    } else {
+      return 500000;
+    }
+  }
+
+  double get levelProgress {
+    final pointsValue = double.tryParse(points) ?? 0;
+
+    if (pointsValue < 1000) {
+      return 1000 / pointsValue;
+    } else if (pointsValue < 10000) {
+      return 10000 / pointsValue;
+    } else if (pointsValue < 50000) {
+      return 50000 / pointsValue;
+    } else {
+      return 1.0;
+    }
+  }
+
 }

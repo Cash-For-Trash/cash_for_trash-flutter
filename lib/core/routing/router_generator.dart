@@ -111,8 +111,7 @@ class RouterGenerator {
         builder: (context, state) => MultiBlocProvider(
           providers: [
             BlocProvider(
-              create: (context) => sl<HomeBloc>()..add(GetHomeData()),
-            ),
+              create: (context) => sl<HomeBloc>()),
             BlocProvider(create: (context) => sl<ProfileBloc>()),
           ],
           child: const Root(),

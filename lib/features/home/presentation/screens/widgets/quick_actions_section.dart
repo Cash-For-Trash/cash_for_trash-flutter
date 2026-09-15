@@ -19,7 +19,7 @@ class QuickActionsSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 24.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -82,10 +82,8 @@ class QuickActionsSection extends StatelessWidget {
             SizedBox(height: 8.h),
             Text(
               label,
-              style: context.textTheme.bodySmall?.copyWith(
+              style: context.textTheme.labelMedium?.copyWith(
                 color: context.colorScheme.onSurface,
-                fontWeight: FontWeight.w500,
-                fontSize: 11.sp,
               ),
               textAlign: TextAlign.center,
               maxLines: 1,

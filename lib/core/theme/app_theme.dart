@@ -189,7 +189,7 @@ class AppTheme {
         textStyle: TextStyle(color: Colors.white, fontSize: 12.sp),
       ),
       extensions: [
-        CustomColors(
+        const CustomColors(
           success: AppColors.success,
           successContainer: AppColors.successContainer,
           warning: AppColors.warning,
@@ -291,7 +291,7 @@ class AppTheme {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: Color(0xFF0B0E0B),
+        backgroundColor: const Color(0xFF0B0E0B),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
@@ -365,16 +365,16 @@ class AppTheme {
         thumbColor: AppColors.secondary,
       ),
       extensions: [
-        CustomColors(
+        const CustomColors(
           success: AppColors.success,
-          successContainer: const Color(0xFF142E1B),
+          successContainer: Color(0xFF142E1B),
           warning: AppColors.warning,
-          warningContainer: const Color(0xFF33250A),
+          warningContainer: Color(0xFF33250A),
           info: AppColors.info,
-          infoContainer: const Color(0xFF0A1D3A),
+          infoContainer: Color(0xFF0A1D3A),
           headerGradient: AppGradients.header,
           progressGradient: AppGradients.progress,
-          ecoCardGradient: const LinearGradient(
+          ecoCardGradient: LinearGradient(
             colors: [Color(0xFF142E1B), Color(0xFF1B2E14)],
           ),
         ),

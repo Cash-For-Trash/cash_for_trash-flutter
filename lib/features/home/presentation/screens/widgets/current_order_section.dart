@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CurrentOrderSection extends StatelessWidget {
-  final List<CurrentOrderModel?> orders;
+  final List<CustomerCollectionRequestModel?> currentCollectionRequest;
 
-  const CurrentOrderSection({super.key, required this.orders});
+  const CurrentOrderSection({
+    super.key,
+    required this.currentCollectionRequest,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +31,22 @@ class CurrentOrderSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(),
-
               Text(
                 context.tr('current_order'),
                 style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              const SizedBox(),
             ],
           ),
-
-          SizedBox(height: 16.h),
 
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: orders.length,
+            itemCount: currentCollectionRequest.length,
             itemBuilder: (context, index) {
-              final order = orders[index];
+              final order = currentCollectionRequest[index];
 
               if (order == null) {
                 return const SizedBox.shrink();
@@ -66,8 +66,8 @@ class CurrentOrderSection extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8.r),
                         ),
                         child: Text(
-                          order.status,
-                          style: context.textTheme.bodySmall?.copyWith(
+                          context.tr(order.status),
+                          style: context.textTheme.labelMedium?.copyWith(
                             color: warningColor,
                             fontWeight: FontWeight.bold,
                           ),
@@ -81,7 +81,7 @@ class CurrentOrderSection extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              order.title,
+                              "${context.tr('order')}# ${index + 1}",
                               style: context.textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -89,17 +89,17 @@ class CurrentOrderSection extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
 
-                            if (order.timeLeft.isNotEmpty)
-                              Text(
-                                '• ${order.timeLeft}',
-                                style: context.textTheme.bodySmall?.copyWith(
-                                  color: context.colorScheme.onSurface
-                                      .withValues(alpha: 0.5),
+                            Text(
+                              '• ${order.scheduledDay} ${order.scheduledFromTime} - ${order.scheduledToTime}',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.onSurface.withValues(
+                                  alpha: 0.5,
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.end,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.end,
+                            ),
                           ],
                         ),
                       ),
@@ -128,7 +128,7 @@ class CurrentOrderSection extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(4.r),
                     child: LinearProgressIndicator(
-                      value: order.progress,
+                      value: 0.25,
                       minHeight: 6.h,
                       backgroundColor: context.colorScheme.outline,
                       valueColor: AlwaysStoppedAnimation<Color>(
@@ -137,7 +137,8 @@ class CurrentOrderSection extends StatelessWidget {
                     ),
                   ),
 
-                  if (index != orders.length - 1) SizedBox(height: 16.h),
+                  if (index != currentCollectionRequest.length - 1)
+                    SizedBox(height: 16.h),
                 ],
               );
             },

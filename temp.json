@@ -1,0 +1,465 @@
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Collection requests fetched successfully",
+  "page": 1,
+  "page_size": 10,
+  "total_items": 70,
+  "total_pages": 7,
+  "data": [
+    {
+      "collection_request_id": "cmttu2x9t0001l904d8kh88g5",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-09T08:25:41.874Z",
+      "quantity": "8",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CASH",
+      "scheduled_day": "SATURDAY",
+      "scheduled_from_time": "1970-01-01T05:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T06:00:00.000Z",
+      "service_price": "50",
+      "worker_share": "35",
+      "availability_id": "cms0y43r90001v1e05l80wxad",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmttu2xgq0002l904foeqbhyr",
+          "collection_request_id": "cmttu2x9t0001l904d8kh88g5",
+          "garbage_type_id": "cms9xhgcj0003ol1wq0ja9uch",
+          "expected_weight": "8",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9xhgcj0003ol1wq0ja9uch",
+            "garbage_type_name": "ورق وكارتون",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679742/garbage-types/altpcpewflvy0x6xiehj.png",
+            "price_per_kg": "12"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtss24zn0001jp04g0xgxjiv",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T14:41:19.811Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "SATURDAY",
+      "scheduled_from_time": "1970-01-01T01:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T04:00:00.000Z",
+      "service_price": "50",
+      "worker_share": "35",
+      "availability_id": "cms0y2wzk0001v1bwz18b68kz",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtss256t0002jp04hy6rlp8x",
+          "collection_request_id": "cmtss24zn0001jp04g0xgxjiv",
+          "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+            "garbage_type_name": "زجاج",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679714/garbage-types/gklhnytup2ittjuqvd3c.png",
+            "price_per_kg": "15"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtsm4eql0001jf04lc3n0p1z",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T11:55:08.061Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "SATURDAY",
+      "scheduled_from_time": "1970-01-01T01:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T04:00:00.000Z",
+      "service_price": "50",
+      "worker_share": "35",
+      "availability_id": "cms0y2wzk0001v1bwz18b68kz",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtsm4ey30002jf04bpfybltk",
+          "collection_request_id": "cmtsm4eql0001jf04lc3n0p1z",
+          "garbage_type_id": "cmsbvouba000nolfaogsj9412",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cmsbvouba000nolfaogsj9412",
+            "garbage_type_name": "بقايا طعام",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679869/garbage-types/wkhcx2pmtpfhulcivbfr.png",
+            "price_per_kg": "1"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtskeomz0001k104enu4a6c7",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T11:07:08.219Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "FRIDAY",
+      "scheduled_from_time": "1970-01-01T02:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T02:10:00.000Z",
+      "service_price": "9",
+      "worker_share": "6.3",
+      "availability_id": "cmtfqfvfa0004jh04e0x9i31p",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtskeouj0002k104qcu6zi8b",
+          "collection_request_id": "cmtskeomz0001k104enu4a6c7",
+          "garbage_type_id": "cmsbvouba000nolfaogsj9412",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cmsbvouba000nolfaogsj9412",
+            "garbage_type_name": "بقايا طعام",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679869/garbage-types/wkhcx2pmtpfhulcivbfr.png",
+            "price_per_kg": "1"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtsjxdm50001l2044hsz5j0t",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T10:53:40.781Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "SATURDAY",
+      "scheduled_from_time": "1970-01-01T01:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T04:00:00.000Z",
+      "service_price": "50",
+      "worker_share": "35",
+      "availability_id": "cms0y2wzk0001v1bwz18b68kz",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtsjxdtj0002l204t8fkr8xq",
+          "collection_request_id": "cmtsjxdm50001l2044hsz5j0t",
+          "garbage_type_id": "cms9x261t0001ol1wjssddwl9",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9x261t0001ol1wjssddwl9",
+            "garbage_type_name": "بلاستيك",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679692/garbage-types/q1bqbpd5hlmuwgwiuaap.png",
+            "price_per_kg": "10"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtshihqg000blc048k5rv2q6",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T09:46:07.049Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "SATURDAY",
+      "scheduled_from_time": "1970-01-01T01:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T04:00:00.000Z",
+      "service_price": "50",
+      "worker_share": "35",
+      "availability_id": "cms0y2wzk0001v1bwz18b68kz",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtshihys000clc04ci537smw",
+          "collection_request_id": "cmtshihqg000blc048k5rv2q6",
+          "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+            "garbage_type_name": "زجاج",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679714/garbage-types/gklhnytup2ittjuqvd3c.png",
+            "price_per_kg": "15"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtshflfi0006lc04wy3079ke",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T09:43:51.871Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "SATURDAY",
+      "scheduled_from_time": "1970-01-01T01:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T04:00:00.000Z",
+      "service_price": "50",
+      "worker_share": "35",
+      "availability_id": "cms0y2wzk0001v1bwz18b68kz",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtshflmx0007lc04mu24q0v5",
+          "collection_request_id": "cmtshflfi0006lc04wy3079ke",
+          "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+            "garbage_type_name": "زجاج",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679714/garbage-types/gklhnytup2ittjuqvd3c.png",
+            "price_per_kg": "15"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtsh9r5q0001ju04cu5p1cjw",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T09:39:19.358Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "FRIDAY",
+      "scheduled_from_time": "1970-01-01T02:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T02:10:00.000Z",
+      "service_price": "9",
+      "worker_share": "6.3",
+      "availability_id": "cmtfqfvfa0004jh04e0x9i31p",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtsh9rcq0002ju04n3u1lmbl",
+          "collection_request_id": "cmtsh9r5q0001ju04cu5p1cjw",
+          "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9x6t3s0002ol1wt8rser57",
+            "garbage_type_name": "زجاج",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679714/garbage-types/gklhnytup2ittjuqvd3c.png",
+            "price_per_kg": "15"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtsh07uw0001lc04on1aurga",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T09:31:54.441Z",
+      "quantity": "25",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "FRIDAY",
+      "scheduled_from_time": "1970-01-01T02:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T02:10:00.000Z",
+      "service_price": "9",
+      "worker_share": "6.3",
+      "availability_id": "cmtfqfvfa0004jh04e0x9i31p",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtsh082e0002lc048q3x08gt",
+          "collection_request_id": "cmtsh07uw0001lc04on1aurga",
+          "garbage_type_id": "cmsbvouba000nolfaogsj9412",
+          "expected_weight": "25",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cmsbvouba000nolfaogsj9412",
+            "garbage_type_name": "بقايا طعام",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679869/garbage-types/wkhcx2pmtpfhulcivbfr.png",
+            "price_per_kg": "1"
+          }
+        }
+      ]
+    },
+    {
+      "collection_request_id": "cmtsgh1590001ic0432r5uh71",
+      "user_id": "cms8wrhx20000ol931qkck6rw",
+      "address_id": "cmtfqlxgl0006jh04sld5atmc",
+      "request_date": "2026-09-08T09:16:59.277Z",
+      "quantity": "8",
+      "collection_img": null,
+      "status": "PENDING",
+      "payment_method": "CARD",
+      "scheduled_day": "SATURDAY",
+      "scheduled_from_time": "1970-01-01T01:00:00.000Z",
+      "scheduled_to_time": "1970-01-01T04:00:00.000Z",
+      "service_price": "50",
+      "worker_share": "35",
+      "availability_id": "cms0y2wzk0001v1bwz18b68kz",
+      "address": {
+        "address_id": "cmtfqlxgl0006jh04sld5atmc",
+        "building_num": 2,
+        "floor": "12",
+        "location": "عند السيد",
+        "latitude": "26.1664201",
+        "longitude": "32.7230687",
+        "additional_note": "",
+        "user_id": "cms8wrhx20000ol931qkck6rw",
+        "created_at": "2026-08-30T11:39:43.653Z",
+        "updated_at": "2026-08-30T11:39:43.653Z"
+      },
+      "requestGarbages": [
+        {
+          "request_garbage_id": "cmtsgh1c70002ic04ezoq5ab3",
+          "collection_request_id": "cmtsgh1590001ic0432r5uh71",
+          "garbage_type_id": "cms9xi3nr0004ol1wi525v886",
+          "expected_weight": "4",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9xi3nr0004ol1wi525v886",
+            "garbage_type_name": "حديد",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679779/garbage-types/tddklesyzwbnzfktjogg.png",
+            "price_per_kg": "17"
+          }
+        },
+        {
+          "request_garbage_id": "cmtsgh1c70003ic046d0poovw",
+          "collection_request_id": "cmtsgh1590001ic0432r5uh71",
+          "garbage_type_id": "cms9x261t0001ol1wjssddwl9",
+          "expected_weight": "4",
+          "actual_weight": null,
+          "earned_points": null,
+          "garbageType": {
+            "garbage_type_id": "cms9x261t0001ol1wjssddwl9",
+            "garbage_type_name": "بلاستيك",
+            "garbage_type_image": "https://res.cloudinary.com/mhqdl2ue/image/upload/v1785679692/garbage-types/q1bqbpd5hlmuwgwiuaap.png",
+            "price_per_kg": "10"
+          }
+        }
+      ]
+    }
+  ]
+}

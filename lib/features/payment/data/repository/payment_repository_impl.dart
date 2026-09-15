@@ -1,15 +1,13 @@
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
-import 'package:cash_for_trash/core/services/remote/payment_service.dart';
 import 'package:cash_for_trash/features/payment/data/model/payment_model.dart';
 import 'package:cash_for_trash/features/payment/domain/repository/payment_repository.dart';
 import 'package:dartz/dartz.dart';
 
 class PaymentRepositoryImpl implements PaymentRepository {
   final ApiConsumer apiConsumer;
-  final PaymentService paymentService;
 
-  PaymentRepositoryImpl({required this.apiConsumer, required this.paymentService});
+  PaymentRepositoryImpl({required this.apiConsumer});
 
   @override
   Future<Either<String, bool>> initiatePayment(
