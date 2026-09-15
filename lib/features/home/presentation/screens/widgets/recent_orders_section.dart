@@ -6,8 +6,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RecentOrdersSection extends StatelessWidget {
   final List<CustomerCollectionRequestModel?> collectionRequests;
+  final bool hasMore;
+  final bool isLoadingMore;
+  final VoidCallback? onShowMore;
 
-  const RecentOrdersSection({super.key, required this.collectionRequests});
+  const RecentOrdersSection({
+    super.key,
+    required this.collectionRequests,
+    this.hasMore = false,
+    this.isLoadingMore = false,
+    this.onShowMore,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -127,6 +136,43 @@ class RecentOrdersSection extends StatelessWidget {
               );
             },
           ),
+
+        if (hasMore) ...[
+          SizedBox(height: 16.h),
+          Center(
+            child: isLoadingMore
+                ? SizedBox(
+                    width: 24.r,
+                    height: 24.r,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5.r,
+                      color: context.colorScheme.primary,
+                    ),
+                  )
+                : OutlinedButton(
+                    onPressed: onShowMore,
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: context.colorScheme.primary,
+                        width: 1.2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 8.h,
+                      ),
+                    ),
+                    child: Text(
+                      context.tr('show_more'),
+                      style: context.textTheme.labelLarge?.copyWith(
+                        color: context.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+          ),
+        ],
       ],
     );
   }
