@@ -28,7 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-  String selectedRole = "";
+  String selectedRole = "customer";
 
   @override
   Widget build(BuildContext context) {
@@ -167,46 +167,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 14.h),
-                      Row(
-                        children: [
-                          Text(context.tr('register_as')),
-                          const SizedBox(width: 20),
-                          GestureDetector(
-                            onTap: () => setState(() => selectedRole = "customer"),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  selectedRole == "customer"
-                                      ? Icons.radio_button_checked
-                                      : Icons.radio_button_unchecked,
-                                  color: context.colorScheme.primary,
-                                  size: 20.sp,
-                                ),
-                                SizedBox(width: 6.w),
-                                Text(context.tr('customer')),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          GestureDetector(
-                            onTap: () => setState(() => selectedRole = "worker"),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  selectedRole == "worker"
-                                      ? Icons.radio_button_checked
-                                      : Icons.radio_button_unchecked,
-                                  color: context.colorScheme.primary,
-                                  size: 20.sp,
-                                ),
-                                SizedBox(width: 6.w),
-                                Text(context.tr('worker')),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      // SizedBox(height: 14.h),
+                      // Row(
+                      //   children: [
+                      //     Text(context.tr('register_as')),
+                      //     const SizedBox(width: 20),
+                      //     GestureDetector(
+                      //       onTap: () => setState(() => selectedRole = "customer"),
+                      //       child: Row(
+                      //         children: [
+                      //           Icon(
+                      //             selectedRole == "customer"
+                      //                 ? Icons.radio_button_checked
+                      //                 : Icons.radio_button_unchecked,
+                      //             color: context.colorScheme.primary,
+                      //             size: 20.sp,
+                      //           ),
+                      //           SizedBox(width: 6.w),
+                      //           Text(context.tr('customer')),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     const SizedBox(width: 20),
+                      //     GestureDetector(
+                      //       onTap: () => setState(() => selectedRole = "worker"),
+                      //       child: Row(
+                      //         children: [
+                      //           Icon(
+                      //             selectedRole == "worker"
+                      //                 ? Icons.radio_button_checked
+                      //                 : Icons.radio_button_unchecked,
+                      //             color: context.colorScheme.primary,
+                      //             size: 20.sp,
+                      //           ),
+                      //           SizedBox(width: 6.w),
+                      //           Text(context.tr('worker')),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       SizedBox(height: 16.h),
                       CustomPrimaryButton(
                         text: state is RegisterLoading

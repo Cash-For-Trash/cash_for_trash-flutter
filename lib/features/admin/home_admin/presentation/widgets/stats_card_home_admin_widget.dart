@@ -27,32 +27,37 @@ class StatsCardHomeAdminWidget extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(16.r),
         child: Padding(
-          padding: EdgeInsets.all(16.r),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: EdgeInsets.all(10.r),
+                padding: EdgeInsets.all(8.r),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: Icon(icon, color: color, size: 24.r),
+                child: Icon(icon, color: color, size: 22.r),
               ),
-              SizedBox(height: 12.h),
+              if (value.isNotEmpty)
+                Text(
+                  value,
+                  style: context.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.colorScheme.onSurface,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               Text(
-                value,
-                style: context.textTheme.headlineMedium?.copyWith(
+                title,
+                style: context.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: context.colorScheme.onSurface,
                 ),
-              ),
-              Text(
-                title,
-                style: context.textTheme.bodySmall?.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),

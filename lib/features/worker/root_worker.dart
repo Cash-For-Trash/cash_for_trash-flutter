@@ -3,7 +3,6 @@ import 'package:cash_for_trash/features/profile/presentation/screens/profile_scr
 import 'package:cash_for_trash/features/worker/availability_worker/presentation/screens/availability_worker_screen.dart';
 import 'package:cash_for_trash/features/worker/collection_requests_worker/presentation/screens/collection_requests_worker_screen.dart';
 import 'package:cash_for_trash/features/worker/custom_worker_nav_bar.dart';
-import 'package:cash_for_trash/features/worker/earnings_worker/presentation/screens/earnings_worker_screen.dart';
 import 'package:flutter/material.dart';
 
 class RootWorker extends StatefulWidget {
