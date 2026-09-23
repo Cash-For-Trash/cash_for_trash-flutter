@@ -10,94 +10,91 @@ class QuickActionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.tr('quick_actions'),
-          style: context.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 12.h),
-        SizedBox(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => context.push(AppRoutes.requestCollectionScreen),
+        borderRadius: BorderRadius.circular(24.r),
+        child: Ink(
           width: double.infinity,
-          child: FilledButton.icon(
-            onPressed: () => context.push(AppRoutes.requestCollectionScreen),
-            icon: const Icon(Icons.add_circle_outline_rounded),
-            label: Text(context.tr('request_collection')),
-            style: FilledButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 15.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.r),
+          padding: EdgeInsets.fromLTRB(20.w, 18.h, 16.w, 18.h),
+          decoration: BoxDecoration(
+            color: context.colorScheme.primary,
+            borderRadius: BorderRadius.circular(24.r),
+            boxShadow: [
+              BoxShadow(
+                color: context.colorScheme.primary.withValues(alpha: 0.28),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
               ),
-            ),
+            ],
           ),
-        ),
-        SizedBox(height: 12.h),
-        Row(
-          children: [
-            Expanded(
-              child: _buildActionItem(
-                context,
-                icon: Icons.card_giftcard_rounded,
-                label: context.tr('rewards'),
-                onTap: () => context.push(AppRoutes.rewardsScreen),
-              ),
-            ),
-            SizedBox(width: 12.w),
-            Expanded(
-              child: _buildActionItem(
-                context,
-                icon: Icons.location_on_outlined,
-                label: context.tr('address'),
-                onTap: () => context.push(AppRoutes.addressesScreen),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16.r),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 16.h),
-        decoration: BoxDecoration(
-          color: context.colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: context.colorScheme.outlineVariant.withValues(alpha: 0.45),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: context.colorScheme.primary, size: 24.sp),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Text(
-                label,
-                style: context.textTheme.labelLarge?.copyWith(
-                  color: context.colorScheme.onSurface,
+          child: Row(
+            children: [
+              Container(
+                width: 58.r,
+                height: 58.r,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.onPrimary.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(18.r),
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                child: Icon(
+                  Icons.recycling_rounded,
+                  color: context.colorScheme.onPrimary,
+                  size: 34.sp,
+                ),
               ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 14.sp,
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ],
+              SizedBox(width: 14.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.onPrimary.withValues(
+                          alpha: 0.16,
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Text(
+                        context.tr('start_now'),
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: context.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 7.h),
+                    Text(
+                      context.tr('request_collection'),
+                      style: context.textTheme.titleLarge?.copyWith(
+                        color: context.colorScheme.onPrimary,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    SizedBox(height: 3.h),
+                    Text(
+                      context.tr('request_collection_cta_hint'),
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: context.colorScheme.onPrimary.withValues(
+                          alpha: 0.82,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_rounded,
+                color: context.colorScheme.onPrimary,
+                size: 27.sp,
+              ),
+            ],
+          ),
         ),
       ),
     );

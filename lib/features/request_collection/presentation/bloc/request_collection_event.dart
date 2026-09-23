@@ -1,4 +1,5 @@
-import 'package:cash_for_trash/features/address/data/model/address_model.dart' as address_feature;
+import 'package:cash_for_trash/features/address/data/model/address_model.dart'
+    as address_feature;
 import 'package:cash_for_trash/features/request_collection/data/model/address_model.dart';
 import 'package:cash_for_trash/features/request_collection/data/model/availability_model.dart';
 import 'package:equatable/equatable.dart';
@@ -12,6 +13,15 @@ abstract class RequestCollectionEvent extends Equatable {
 
 class GetGarbageTypesEvent extends RequestCollectionEvent {
   const GetGarbageTypesEvent();
+}
+
+class SelectCollectionTypeEvent extends RequestCollectionEvent {
+  final String collectionType;
+
+  const SelectCollectionTypeEvent(this.collectionType);
+
+  @override
+  List<Object?> get props => [collectionType];
 }
 
 class GetAddressesEvent extends RequestCollectionEvent {

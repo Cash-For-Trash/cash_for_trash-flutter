@@ -1,6 +1,7 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
 import 'package:cash_for_trash/features/payment/presentation/screens/widgets/payment_method_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -33,65 +34,33 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
       child: BlocBuilder<RequestCollectionBloc, RequestCollectionState>(
         builder: (context, state) {
           final isReady =
-              state.selectedWasteTypes.isNotEmpty &&
+              (state.selectedCollectionType != 'recyclable_only' ||
+                  state.selectedWasteTypes.isNotEmpty) &&
               state.selectedAddress != null &&
               state.selectedAvailability != null;
-          final costText =
-              '${context.tr('request_cost_prefix')}${state.cost?.toStringAsFixed(0) ?? '--'} ${context.tr('currency_egp')}';
 
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  color: context.colorScheme.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      costText,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        fontSize: 13.sp,
-                        fontWeight: FontWeight.w600,
-                        color: context.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    if (!isReady)
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline_rounded,
-                            size: 16.sp,
-                            color: context.colorScheme.tertiary,
-                          ),
-                          SizedBox(width: 4.w),
-                          Text(
-                            context.tr('complete_request_details'),
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: context.colorScheme.tertiary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10.h),
               SizedBox(
                 width: double.infinity,
                 height: 52.h,
                 child: ElevatedButton(
                   onPressed: isReady
                       ? () {
-                          PaymentMethodBottomSheet.show(
-                            context,
-                            state.cost ?? 0.0,
-                          );
+                          if (state.selectedCollectionType ==
+                              'recyclable_only') {
+                            context.read<RequestCollectionBloc>().add(
+                              const SubmitCollectionRequestEvent(
+                                paymentMethod: 'CASH',
+                              ),
+                            );
+                          } else {
+                            PaymentMethodBottomSheet.show(
+                              context,
+                              state.cost ?? 0.0,
+                            );
+                          }
                         }
                       : null,
                   style: ElevatedButton.styleFrom(
@@ -106,7 +75,11 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
                     elevation: 0,
                   ),
                   child: Text(
-                    context.tr('proceed_to_payment'),
+                    context.tr(
+                      state.selectedCollectionType == 'recyclable_only'
+                          ? 'confirm_free_request'
+                          : 'proceed_to_payment',
+                    ),
                     style: context.textTheme.titleMedium?.copyWith(
                       color: context.colorScheme.onPrimary,
                       fontWeight: FontWeight.bold,
