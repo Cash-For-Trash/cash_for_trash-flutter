@@ -122,8 +122,7 @@ class RequestCollectionScreen extends StatelessWidget {
                       builder: (context, state) {
                         final showWasteDetails =
                             state.selectedCollectionType == 'recyclable_only' ||
-                            state.selectedCollectionType == 'furniture' ||
-                            state.selectedCollectionType == 'household';
+                            state.selectedCollectionType == 'furniture';
                         if (!showWasteDetails) {
                           return const SizedBox.shrink();
                         }

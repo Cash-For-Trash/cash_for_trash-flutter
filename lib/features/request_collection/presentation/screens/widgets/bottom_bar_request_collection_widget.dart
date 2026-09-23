@@ -33,9 +33,11 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
       ),
       child: BlocBuilder<RequestCollectionBloc, RequestCollectionState>(
         builder: (context, state) {
+          final requiresWasteDetails =
+              state.selectedCollectionType == 'recyclable_only' ||
+              state.selectedCollectionType == 'furniture';
           final isReady =
-              (state.selectedCollectionType != 'recyclable_only' ||
-                  state.selectedWasteTypes.isNotEmpty) &&
+              (!requiresWasteDetails || state.selectedWasteTypes.isNotEmpty) &&
               state.selectedAddress != null &&
               state.selectedAvailability != null;
 

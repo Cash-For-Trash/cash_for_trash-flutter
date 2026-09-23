@@ -139,13 +139,17 @@ class RequestCollectionBloc
     SelectCollectionTypeEvent event,
     Emitter<RequestCollectionState> emit,
   ) {
-    final isRecyclable = event.collectionType == 'recyclable_only';
+    final includesRecyclable =
+        event.collectionType == 'recyclable_only' ||
+        event.collectionType == 'furniture';
     emit(
       state.copyWith(
         selectedCollectionType: event.collectionType,
-        selectedWasteTypes: isRecyclable ? state.selectedWasteTypes : const [],
-        clearExactWeight: !isRecyclable,
-        clearImage: isRecyclable,
+        selectedWasteTypes: includesRecyclable
+            ? state.selectedWasteTypes
+            : const [],
+        clearExactWeight: !includesRecyclable,
+        clearImage: includesRecyclable,
       ),
     );
   }
@@ -283,8 +287,10 @@ class RequestCollectionBloc
     SubmitCollectionRequestEvent event,
     Emitter<RequestCollectionState> emit,
   ) async {
-    if (state.selectedCollectionType == 'recyclable_only' &&
-        state.selectedWasteTypes.isEmpty) {
+    final requiresWasteDetails =
+        state.selectedCollectionType == 'recyclable_only' ||
+        state.selectedCollectionType == 'furniture';
+    if (requiresWasteDetails && state.selectedWasteTypes.isEmpty) {
       emit(
         state.copyWith(
           submitErrorMessage: 'waste_type_required',
