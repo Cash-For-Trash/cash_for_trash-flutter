@@ -20,10 +20,7 @@ import 'package:go_router/go_router.dart';
 class RequestCollectionScreen extends StatelessWidget {
   final bool isFromBottomNav;
 
-  const RequestCollectionScreen({
-    super.key,
-    this.isFromBottomNav = false,
-  });
+  const RequestCollectionScreen({super.key, this.isFromBottomNav = false});
 
   String _resolveError(BuildContext context, String key) {
     final known = {
@@ -46,13 +43,18 @@ class RequestCollectionScreen extends StatelessWidget {
             if (state.submitErrorMessage != null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(_resolveError(context, state.submitErrorMessage!)),
+                  content: Text(
+                    _resolveError(context, state.submitErrorMessage!),
+                  ),
                   backgroundColor: context.colorScheme.error,
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
                 ),
               );
             }
@@ -69,7 +71,10 @@ class RequestCollectionScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
                 ),
               );
               context.go(AppRoutes.homeScreen);
@@ -82,7 +87,10 @@ class RequestCollectionScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.r),
                   ),
-                  margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
                 ),
               );
             } else if (state is PaymentInitiatePaymentCardSuccessState) {
@@ -95,9 +103,7 @@ class RequestCollectionScreen extends StatelessWidget {
         backgroundColor: context.colorScheme.surface,
         body: Column(
           children: [
-            HeaderRequestCollectionWidget(
-              isFromBottomNav: isFromBottomNav,
-            ),
+            HeaderRequestCollectionWidget(isFromBottomNav: isFromBottomNav),
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -108,11 +114,25 @@ class RequestCollectionScreen extends StatelessWidget {
                     SizedBox(height: 16.h),
                     const QuantitySelectionRequestCollectionSection(),
                     SizedBox(height: 16.h),
-                    const ImageUploadRequestCollectionSection(),
-                    SizedBox(height: 16.h),
-                    const LocationRequestCollectionSection(),
-                    SizedBox(height: 16.h),
-                    const TimeSlotRequestCollectionSection(),
+                    _buildExpandableSection(
+                      context,
+                      icon: Icons.local_shipping_outlined,
+                      title: context.tr('pickup_details'),
+                      subtitle: context.tr('pickup_details_hint'),
+                      children: const [
+                        LocationRequestCollectionSection(),
+                        SizedBox(height: 12),
+                        TimeSlotRequestCollectionSection(),
+                      ],
+                    ),
+                    SizedBox(height: 12.h),
+                    _buildExpandableSection(
+                      context,
+                      icon: Icons.photo_camera_outlined,
+                      title: context.tr('waste_picture_optional'),
+                      subtitle: context.tr('optional_photo_hint'),
+                      children: const [ImageUploadRequestCollectionSection()],
+                    ),
                     SizedBox(height: 24.h),
                   ],
                 ),
@@ -121,6 +141,52 @@ class RequestCollectionScreen extends StatelessWidget {
             const BottomBarRequestCollectionWidget(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildExpandableSection(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required List<Widget> children,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withValues(alpha: 0.55),
+        ),
+      ),
+      child: ExpansionTile(
+        initiallyExpanded: false,
+        tilePadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+        childrenPadding: EdgeInsets.fromLTRB(12.w, 0, 12.w, 12.h),
+        shape: const Border(),
+        collapsedShape: const Border(),
+        leading: Container(
+          padding: EdgeInsets.all(9.r),
+          decoration: BoxDecoration(
+            color: context.colorScheme.primaryContainer,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: context.colorScheme.primary, size: 21.sp),
+        ),
+        title: Text(
+          title,
+          style: context.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: context.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        children: children,
       ),
     );
   }

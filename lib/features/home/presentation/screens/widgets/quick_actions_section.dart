@@ -19,35 +19,40 @@ class QuickActionsSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 24.h),
+        SizedBox(height: 12.h),
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton.icon(
+            onPressed: () => context.push(AppRoutes.requestCollectionScreen),
+            icon: const Icon(Icons.add_circle_outline_rounded),
+            label: Text(context.tr('request_collection')),
+            style: FilledButton.styleFrom(
+              padding: EdgeInsets.symmetric(vertical: 15.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 12.h),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildActionItem(
-              context,
-              icon: Icons.delete_outline_rounded,
-              label: context.tr('request_collection'),
-              onTap: () {
-                context.push(AppRoutes.requestCollectionScreen);
-              },
+            Expanded(
+              child: _buildActionItem(
+                context,
+                icon: Icons.card_giftcard_rounded,
+                label: context.tr('rewards'),
+                onTap: () => context.push(AppRoutes.rewardsScreen),
+              ),
             ),
-            _buildActionItem(
-              context,
-              icon: Icons.near_me_outlined,
-              label: context.tr('track_order'),
-            ),
-            _buildActionItem(
-              context,
-              icon: Icons.card_giftcard_rounded,
-              label: context.tr('rewards'),
-              onTap: () {
-                context.push(AppRoutes.rewardsScreen);
-              },
-            ),
-            _buildActionItem(
-              context,
-              icon: Icons.verified_user_outlined,
-              label: context.tr('my_subscription'),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: _buildActionItem(
+                context,
+                icon: Icons.location_on_outlined,
+                label: context.tr('address'),
+                onTap: () => context.push(AppRoutes.addressesScreen),
+              ),
             ),
           ],
         ),
@@ -61,33 +66,36 @@ class QuickActionsSection extends StatelessWidget {
     required String label,
     VoidCallback? onTap,
   }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16.r),
-        child: Column(
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16.r),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 16.h),
+        decoration: BoxDecoration(
+          color: context.colorScheme.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
+            color: context.colorScheme.outlineVariant.withValues(alpha: 0.45),
+          ),
+        ),
+        child: Row(
           children: [
-            Container(
-              padding: EdgeInsets.all(16.r),
-              decoration: BoxDecoration(
-                color: context.colorScheme.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(16.r),
-              ),
-              child: Icon(
-                icon,
-                color: context.colorScheme.primary,
-                size: 26.sp,
+            Icon(icon, color: context.colorScheme.primary, size: 24.sp),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Text(
+                label,
+                style: context.textTheme.labelLarge?.copyWith(
+                  color: context.colorScheme.onSurface,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            SizedBox(height: 8.h),
-            Text(
-              label,
-              style: context.textTheme.labelMedium?.copyWith(
-                color: context.colorScheme.onSurface,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14.sp,
+              color: context.colorScheme.onSurfaceVariant,
             ),
           ],
         ),

@@ -119,6 +119,7 @@ class RequestCollectionBloc
             availabilities: response.data,
             selectedAvailability: firstAvailability,
             selectedTimeSlot: firstAvailability?.id ?? '',
+            cost: firstAvailability?.servicePrice,
           ),
         );
       },
@@ -186,6 +187,7 @@ class RequestCollectionBloc
       state.copyWith(
         selectedAvailability: event.availability,
         selectedTimeSlot: event.availability.id,
+        cost: event.availability.servicePrice,
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:cash_for_trash/features/home/data/model/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CurrentOrderSection extends StatelessWidget {
+class CurrentOrderSection extends StatefulWidget {
   final List<CustomerCollectionRequestModel?> currentCollectionRequest;
   final bool hasMore;
   final bool isLoadingMore;
@@ -17,6 +17,13 @@ class CurrentOrderSection extends StatelessWidget {
     this.isLoadingMore = false,
     this.onShowMore,
   });
+
+  @override
+  State<CurrentOrderSection> createState() => _CurrentOrderSectionState();
+}
+
+class _CurrentOrderSectionState extends State<CurrentOrderSection> {
+  int _visibleCount = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +57,11 @@ class CurrentOrderSection extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: currentCollectionRequest.length,
+            itemCount: widget.currentCollectionRequest.length < _visibleCount
+                ? widget.currentCollectionRequest.length
+                : _visibleCount,
             itemBuilder: (context, index) {
-              final order = currentCollectionRequest[index];
+              final order = widget.currentCollectionRequest[index];
 
               if (order == null) {
                 return const SizedBox.shrink();
@@ -129,31 +138,19 @@ class CurrentOrderSection extends StatelessWidget {
                     ],
                   ),
 
-                  SizedBox(height: 16.h),
-
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4.r),
-                    child: LinearProgressIndicator(
-                      value: 0.25,
-                      minHeight: 6.h,
-                      backgroundColor: context.colorScheme.outline,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        context.colorScheme.primary,
-                      ),
-                    ),
-                  ),
-
-                  if (index != currentCollectionRequest.length - 1)
+                  if (index != widget.currentCollectionRequest.length - 1 &&
+                      index != _visibleCount - 1)
                     SizedBox(height: 16.h),
                 ],
               );
             },
           ),
 
-          if (hasMore) ...[
+          if (widget.hasMore ||
+              _visibleCount < widget.currentCollectionRequest.length) ...[
             SizedBox(height: 16.h),
             Center(
-              child: isLoadingMore
+              child: widget.isLoadingMore
                   ? SizedBox(
                       width: 24.r,
                       height: 24.r,
@@ -162,8 +159,16 @@ class CurrentOrderSection extends StatelessWidget {
                         color: context.colorScheme.primary,
                       ),
                     )
-                  : OutlinedButton(
-                      onPressed: onShowMore,
+                  : OutlinedButton.icon(
+                      onPressed: () {
+                        if (_visibleCount <
+                            widget.currentCollectionRequest.length) {
+                          setState(() => _visibleCount += 3);
+                        } else {
+                          widget.onShowMore?.call();
+                        }
+                      },
+                      icon: const Icon(Icons.expand_more_rounded),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(
                           color: context.colorScheme.primary,
@@ -172,12 +177,9 @@ class CurrentOrderSection extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 8.h,
-                        ),
+                        minimumSize: Size(double.infinity, 48.h),
                       ),
-                      child: Text(
+                      label: Text(
                         context.tr('show_more'),
                         style: context.textTheme.labelLarge?.copyWith(
                           color: context.colorScheme.primary,

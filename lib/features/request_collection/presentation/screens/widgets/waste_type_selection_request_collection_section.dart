@@ -294,5 +294,4 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -16,7 +16,7 @@ class GetCustomerCollectionRecentRequests extends HomeEvent {
 
   const GetCustomerCollectionRecentRequests({
     this.page = 1,
-    this.pageSize = 4,
+    this.pageSize = 5,
     this.status = "PENDING",
     this.isLoadMore = false,
   });
@@ -33,7 +33,7 @@ class GetCustomerCollectionRequests extends HomeEvent {
 
   const GetCustomerCollectionRequests({
     this.page = 1,
-    this.pageSize = 10,
+    this.pageSize = 5,
     this.status,
     this.isLoadMore = false,
   });
@@ -41,6 +41,5 @@ class GetCustomerCollectionRequests extends HomeEvent {
   @override
   List<Object?> get props => [page, pageSize, status, isLoadMore];
 }
-
 
 class GetCustomerProfile extends HomeEvent {}

@@ -12,9 +12,6 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onPrimary = context.colorScheme.onPrimary;
-    final warning =
-        context.extraColors.warning ?? context.colorScheme.secondary;
-
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -88,85 +85,44 @@ class HomeHeader extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 60.r,
-                          height: 60.r,
-                          child: CircularProgressIndicator(
-                            value: (data?.levelProgress ?? 0) / 100,
-                            strokeWidth: 5.r,
-                            backgroundColor: onPrimary.withValues(alpha: 0.24),
-                            color: onPrimary,
-                          ),
-                        ),
-                        Text(
-                          "${((data?.levelProgress ?? 0)).toInt()}%",
-                          style: context.textTheme.titleSmall?.copyWith(
-                            color: onPrimary,
-                          ),
-                        ),
-                      ],
+                    Container(
+                      padding: EdgeInsets.all(12.r),
+                      decoration: BoxDecoration(
+                        color: onPrimary.withValues(alpha: 0.16),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.eco_rounded,
+                        color: onPrimary,
+                        size: 28.sp,
+                      ),
                     ),
-                    SizedBox(width: 16.w),
+                    SizedBox(width: 14.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            context.tr('to_next_level'),
+                            context.tr('green_points'),
                             style: context.textTheme.bodySmall?.copyWith(
                               color: onPrimary.withValues(alpha: 0.7),
                             ),
                           ),
+                          SizedBox(height: 2.h),
                           Text(
-                            "${data?.points ?? 0} / ${data?.nextLevelPoints ?? 1}",
-                            style: context.textTheme.titleSmall?.copyWith(
+                            data?.points ?? '0',
+                            style: context.textTheme.headlineMedium?.copyWith(
                               color: onPrimary,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Container(
-                      width: 1.2,
-                      height: 48.h,
-                      color: onPrimary.withValues(alpha: 0.2),
-                    ),
-                    SizedBox(width: 16.w),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          context.tr('current_points'),
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: onPrimary.withValues(alpha: 0.7),
-                          ),
-                        ),
-                        Text(
-                          "${data?.points ?? 0}",
-                          style: context.textTheme.headlineLarge?.copyWith(
-                            color: onPrimary,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.star_rounded,
-                              color: warning,
-                              size: 16.r,
-                            ),
-                            SizedBox(width: 4.w),
-                            Text(
-                              context.tr(data?.level ?? '??'),
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: onPrimary.withValues(alpha: 0.7),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      color: onPrimary.withValues(alpha: 0.7),
+                      size: 22.sp,
                     ),
                   ],
                 ),

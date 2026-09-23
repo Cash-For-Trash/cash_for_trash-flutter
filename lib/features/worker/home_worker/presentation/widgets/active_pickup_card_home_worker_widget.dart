@@ -5,10 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActivePickupCardHomeWorkerWidget extends StatelessWidget {
   final VoidCallback onTap;
+  final int pickupCount;
 
   const ActivePickupCardHomeWorkerWidget({
     super.key,
     required this.onTap,
+    required this.pickupCount,
   });
 
   @override
@@ -55,11 +57,23 @@ class ActivePickupCardHomeWorkerWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 12.h),
-          Text(
-            context.tr('todays_pickups'),
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
+          Row(
+            children: [
+              Text(
+                '$pickupCount',
+                style: context.textTheme.displaySmall?.copyWith(
+                  color: context.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Text(
+                context.tr('todays_pickups'),
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
           ),
           SizedBox(height: 12.h),
           SizedBox(

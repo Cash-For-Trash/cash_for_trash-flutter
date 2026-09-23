@@ -32,18 +32,53 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
       ),
       child: BlocBuilder<RequestCollectionBloc, RequestCollectionState>(
         builder: (context, state) {
+          final isReady =
+              state.selectedWasteTypes.isNotEmpty &&
+              state.selectedAddress != null &&
+              state.selectedAvailability != null;
           final costText =
-              '${context.tr('request_cost_prefix')}${state.cost ?? '??'} ${context.tr('currency_egp')}';
+              '${context.tr('request_cost_prefix')}${state.cost?.toStringAsFixed(0) ?? '--'} ${context.tr('currency_egp')}';
 
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                costText,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: context.colorScheme.onSurfaceVariant,
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                decoration: BoxDecoration(
+                  color: context.colorScheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      costText,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    if (!isReady)
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            size: 16.sp,
+                            color: context.colorScheme.tertiary,
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            context.tr('complete_request_details'),
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.tertiary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               ),
               SizedBox(height: 10.h),
@@ -51,27 +86,33 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
                 width: double.infinity,
                 height: 52.h,
                 child: ElevatedButton(
-                  onPressed: () {
-                    PaymentMethodBottomSheet.show(context, state.cost ?? 0.0);
-                  },
+                  onPressed: isReady
+                      ? () {
+                          PaymentMethodBottomSheet.show(
+                            context,
+                            state.cost ?? 0.0,
+                          );
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.colorScheme.primary,
                     foregroundColor: context.colorScheme.onPrimary,
-                    disabledBackgroundColor: context.colorScheme.primary
-                        .withValues(alpha: 0.6),
+                    disabledBackgroundColor: context.colorScheme.outlineVariant,
+                    disabledForegroundColor:
+                        context.colorScheme.onSurfaceVariant,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     elevation: 0,
                   ),
                   child: Text(
-                          context.tr('proceed_to_payment'),
-                          style: context.textTheme.titleMedium?.copyWith(
-                            color: context.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ),
-                        ),
+                    context.tr('proceed_to_payment'),
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
                 ),
               ),
             ],
