@@ -28,6 +28,7 @@ class _AvailabilityWorkerScreenState extends State<AvailabilityWorkerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           context.tr('availability_management'),
           style: context.textTheme.titleLarge?.copyWith(

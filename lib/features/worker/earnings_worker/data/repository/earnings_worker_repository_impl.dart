@@ -1,3 +1,4 @@
+import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:cash_for_trash/features/worker/earnings_worker/data/model/earnings_worker_model.dart';
@@ -11,8 +12,13 @@ class EarningsWorkerRepositoryImpl implements EarningsWorkerRepository {
 
   @override
   Future<Either<String, EarningsWorkerModel>> getWorkerEarnings() async {
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String profilePath = (workerId != null && workerId.isNotEmpty)
+        ? EndPoint.supervisorWorkerDetails(workerId)
+        : EndPoint.userProfile;
+
     final pricingResult = await apiConsumer.get<Map<String, dynamic>>(EndPoint.pricing);
-    final profileResult = await apiConsumer.get<Map<String, dynamic>>(EndPoint.userProfile);
+    final profileResult = await apiConsumer.get<Map<String, dynamic>>(profilePath);
 
     Map<String, dynamic> pricingData = {};
     pricingResult.fold((_) {}, (json) {

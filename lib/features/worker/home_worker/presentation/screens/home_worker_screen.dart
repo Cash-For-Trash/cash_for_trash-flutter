@@ -23,6 +23,7 @@ class HomeWorkerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           context.tr('worker_dashboard'),
           style: context.textTheme.titleLarge?.copyWith(

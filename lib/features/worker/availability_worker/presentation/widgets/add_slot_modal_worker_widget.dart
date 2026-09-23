@@ -15,7 +15,8 @@ class AddSlotModalWorkerWidget extends StatefulWidget {
   });
 
   @override
-  State<AddSlotModalWorkerWidget> createState() => _AddSlotModalWorkerWidgetState();
+  State<AddSlotModalWorkerWidget> createState() =>
+      _AddSlotModalWorkerWidgetState();
 }
 
 class _AddSlotModalWorkerWidgetState extends State<AddSlotModalWorkerWidget> {
@@ -39,7 +40,9 @@ class _AddSlotModalWorkerWidgetState extends State<AddSlotModalWorkerWidget> {
     super.initState();
     selectedDay = days.first;
     if (widget.areas.isNotEmpty) {
-      selectedAreaId = widget.areas.first['area_id'] as String? ?? widget.areas.first['id'] as String?;
+      selectedAreaId =
+          widget.areas.first['area_id'] as String? ??
+          widget.areas.first['id'] as String?;
     }
   }
 
@@ -65,7 +68,9 @@ class _AddSlotModalWorkerWidgetState extends State<AddSlotModalWorkerWidget> {
               width: 40.w,
               height: 4.h,
               decoration: BoxDecoration(
-                color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                color: context.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.3,
+                ),
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
@@ -83,11 +88,19 @@ class _AddSlotModalWorkerWidgetState extends State<AddSlotModalWorkerWidget> {
           DropdownButtonFormField<String>(
             initialValue: selectedDay,
             decoration: InputDecoration(
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.w,
+                vertical: 10.h,
+              ),
             ),
             items: days.map((day) {
-              return DropdownMenuItem(value: day, child: Text(day));
+              return DropdownMenuItem(
+                value: day,
+                child: Text(context.tr(day.toLowerCase())),
+              );
             }).toList(),
             onChanged: (val) {
               if (val != null) setState(() => selectedDay = val);
@@ -95,16 +108,25 @@ class _AddSlotModalWorkerWidgetState extends State<AddSlotModalWorkerWidget> {
           ),
           if (widget.areas.isNotEmpty) ...[
             SizedBox(height: 12.h),
-            Text(context.tr('select_area'), style: context.textTheme.labelLarge),
+            Text(
+              context.tr('select_area'),
+              style: context.textTheme.labelLarge,
+            ),
             SizedBox(height: 6.h),
             DropdownButtonFormField<String>(
               initialValue: selectedAreaId,
               decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12.w,
+                  vertical: 10.h,
+                ),
               ),
               items: widget.areas.map((area) {
-                final id = area['area_id'] as String? ?? area['id'] as String? ?? '';
+                final id =
+                    area['area_id'] as String? ?? area['id'] as String? ?? '';
                 final name = area['name'] as String? ?? 'Area';
                 return DropdownMenuItem(value: id, child: Text(name));
               }).toList(),
@@ -120,13 +142,21 @@ class _AddSlotModalWorkerWidgetState extends State<AddSlotModalWorkerWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(context.tr('from_time'), style: context.textTheme.labelLarge),
+                    Text(
+                      context.tr('from_time'),
+                      style: context.textTheme.labelLarge,
+                    ),
                     SizedBox(height: 6.h),
                     TextFormField(
                       initialValue: fromTime,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 10.h,
+                        ),
                       ),
                       onChanged: (val) => fromTime = val,
                     ),
@@ -138,13 +168,21 @@ class _AddSlotModalWorkerWidgetState extends State<AddSlotModalWorkerWidget> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(context.tr('to_time'), style: context.textTheme.labelLarge),
+                    Text(
+                      context.tr('to_time'),
+                      style: context.textTheme.labelLarge,
+                    ),
                     SizedBox(height: 6.h),
                     TextFormField(
                       initialValue: toTime,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 10.h,
+                        ),
                       ),
                       onChanged: (val) => toTime = val,
                     ),

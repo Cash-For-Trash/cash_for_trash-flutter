@@ -41,6 +41,7 @@ class _CollectionRequestsWorkerScreenState extends State<CollectionRequestsWorke
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           context.tr('todays_pickups'),
           style: context.textTheme.titleLarge?.copyWith(

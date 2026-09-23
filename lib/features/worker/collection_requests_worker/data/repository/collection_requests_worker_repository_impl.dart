@@ -1,3 +1,4 @@
+import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:cash_for_trash/features/request_collection/data/model/garbage_type_model.dart';
@@ -15,9 +16,19 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
   Future<Either<String, List<CollectionRequestWorkerModel>>> getAssignedCollectionRequests({
     String? status,
   }) async {
-    final result = await apiConsumer.get<Map<String, dynamic>>(
-      status == null ? EndPoint.workerCollectionRequests : EndPoint.workerCollectionRequestsByStatus(status),
-    );
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String path;
+    if (workerId != null && workerId.isNotEmpty) {
+      path = status == null
+          ? EndPoint.workerCollectionRequestsSupervisor(workerId)
+          : EndPoint.workerCollectionRequestsByStatusSupervisor(workerId, status);
+    } else {
+      path = status == null
+          ? EndPoint.workerCollectionRequests
+          : EndPoint.workerCollectionRequestsByStatus(status);
+    }
+
+    final result = await apiConsumer.get<Map<String, dynamic>>(path);
 
     return result.fold(
       (error) => Left(error),
@@ -39,8 +50,13 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
   Future<Either<String, CollectionRequestWorkerModel>> getWorkerCollectionRequestDetails(
     String requestId,
   ) async {
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String path = (workerId != null && workerId.isNotEmpty)
+        ? EndPoint.workerCollectionRequestDetailsSupervisor(workerId, requestId)
+        : EndPoint.workerCollectionRequestDetails(requestId);
+
     return await apiConsumer.get<CollectionRequestWorkerModel>(
-      EndPoint.workerCollectionRequestDetails(requestId),
+      path,
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
         return CollectionRequestWorkerModel.fromJson(dataObj);
@@ -66,8 +82,13 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
     String requestId,
     String status,
   ) async {
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String path = (workerId != null && workerId.isNotEmpty)
+        ? EndPoint.workerCollectionRequestDetailsSupervisor(workerId, requestId)
+        : EndPoint.workerCollectionRequestDetails(requestId);
+
     return await apiConsumer.patch<CollectionRequestWorkerModel>(
-      EndPoint.workerCollectionRequestDetails(requestId),
+      path,
       data: {ApiKey.status: status},
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
@@ -81,8 +102,13 @@ class CollectionRequestsWorkerRepositoryImpl implements CollectionRequestsWorker
     String requestId,
     List<GarbageWeightWorkerModel> weights,
   ) async {
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String path = (workerId != null && workerId.isNotEmpty)
+        ? EndPoint.workerCollectionRequestDetailsSupervisor(workerId, requestId)
+        : EndPoint.workerCollectionRequestDetails(requestId);
+
     return await apiConsumer.patch<CollectionRequestWorkerModel>(
-      EndPoint.workerCollectionRequestDetails(requestId),
+      path,
       data: {
         ApiKey.requestGarbages: weights.map((w) => w.toJson()).toList(),
       },
