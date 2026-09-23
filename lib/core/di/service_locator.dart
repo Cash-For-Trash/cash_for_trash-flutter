@@ -76,6 +76,10 @@ import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.d
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
+import 'package:cash_for_trash/features/supervisor/data/repository/supervisor_repository_impl.dart';
+import 'package:cash_for_trash/features/supervisor/domain/repository/supervisor_repository.dart';
+import 'package:cash_for_trash/features/supervisor/presentation/bloc/supervisor_bloc.dart';
+
 import '../services/remote/firebase_consumer.dart';
 
 final sl = GetIt.instance;
@@ -256,5 +260,13 @@ Future<void> setupServiceLocator() async {
   );
   sl.registerFactory<PaymentBloc>(
     () => PaymentBloc(repository: sl()),
+  );
+
+  // Supervisor Feature
+  sl.registerLazySingleton<SupervisorRepository>(
+    () => SupervisorRepositoryImpl(apiConsumer: sl()),
+  );
+  sl.registerFactory<SupervisorBloc>(
+    () => SupervisorBloc(repository: sl()),
   );
 }

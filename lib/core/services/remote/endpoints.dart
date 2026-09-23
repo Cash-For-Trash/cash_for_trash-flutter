@@ -34,6 +34,7 @@ class EndPoint {
   // admin
   static String adminWorkers = "/admin/workers";
   static String adminCustomers = "/admin/customers";
+  static String supervisorWorkers = "/supervisor/workers";
   static String workerApprove = "/workers";
   static String rewardsAdmin = "/rewards";
   static String rewardRedeems = "/reward-redeems";
@@ -49,6 +50,27 @@ class EndPoint {
   static String workerCollectionRequestsByStatus(String status) =>
       "/workers/collection-requests/status/$status";
 
+  // supervisor targeted worker endpoints
+  static String supervisorWorkerDetails(String workerId) =>
+      "/supervisor/workers/$workerId";
+
+  static String workerCollectionRequestsSupervisor(String workerId) =>
+      "/workers/$workerId/collection-requests";
+  static String workerCollectionRequestsByStatusSupervisor(
+          String workerId, String status) =>
+      "/workers/$workerId/collection-requests/status/$status";
+  static String workerCollectionRequestDetailsSupervisor(
+          String workerId, String requestId) =>
+      "/workers/$workerId/collection-requests/$requestId";
+
+  static String availabilitiesMySupervisor(String workerId) =>
+      "/availabilities/worker/$workerId";
+  static String availabilitiesCreateSupervisor(String workerId) =>
+      "/availabilities/$workerId";
+  static String availabilitiesUpdateSupervisor(
+          String workerId, String availabilityId) =>
+      "/availabilities/worker/$workerId/$availabilityId";
+
   static String collectionAvailabilities(String addressId) =>
       "/collection-requests/addresses/$addressId/availabilities";
 
@@ -60,7 +82,6 @@ class EndPoint {
   static String rewards = "/rewards";
   static String customerPoints = "/customer/points";
   static String customerLeaderboard = "/customer/leaderboard";
-  
 }
 
 class ApiKey {

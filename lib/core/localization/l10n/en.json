@@ -332,5 +332,21 @@
     "tuesday": "Tuesday",
     "wednesday": "Wednesday",
     "thursday": "Thursday",
-    "friday": "Friday"
+    "friday": "Friday",
+    "supervisor_dashboard": "Supervisor Dashboard",
+    "managed_workers": "Managed Workers",
+    "create_worker": "Create Worker",
+    "create_new_worker": "Create New Worker",
+    "total_workers": "Total Workers",
+    "search_workers": "Search workers...",
+    "national_id": "National ID",
+    "mobile": "Mobile Number",
+    "worker_created_success": "Worker created successfully!",
+    "active": "Active",
+    "inactive": "Inactive",
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "approved": "Approved",
+    "unapproved": "Unapproved",
+    "creating_worker": "Creating Worker..."
 }

@@ -56,6 +56,9 @@ import 'package:cash_for_trash/features/payment/presentation/bloc/payment_bloc.d
 import 'package:cash_for_trash/features/rewards/presentation/bloc/rewards_bloc.dart';
 import 'package:cash_for_trash/features/rewards/presentation/screens/rewards_screen.dart';
 import 'package:cash_for_trash/root/root.dart';
+import 'package:cash_for_trash/features/supervisor/presentation/bloc/supervisor_bloc.dart';
+import 'package:cash_for_trash/features/supervisor/presentation/screens/supervisor_workers_screen.dart';
+import 'package:cash_for_trash/features/supervisor/presentation/screens/create_worker_supervisor_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -119,21 +122,31 @@ class RouterGenerator {
       ),
       GoRoute(
         path: AppRoutes.workerHomeScreen,
-        builder: (context, state) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) =>
-                  sl<HomeWorkerBloc>()..add(const GetHomeWorkerDataEvent()),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          final isSupervisorView = extra?['isSupervisorView'] as bool? ?? false;
+          final workerId = extra?['workerId'] as String?;
+          final workerName = extra?['workerName'] as String?;
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) =>
+                    sl<HomeWorkerBloc>()..add(const GetHomeWorkerDataEvent()),
+              ),
+              BlocProvider(
+                create: (context) => sl<CollectionRequestsWorkerBloc>(),
+              ),
+              BlocProvider(create: (context) => sl<AvailabilityWorkerBloc>()),
+              BlocProvider(create: (context) => sl<EarningsWorkerBloc>()),
+              BlocProvider(create: (context) => sl<ProfileBloc>()),
+            ],
+            child: RootWorker(
+              isSupervisorView: isSupervisorView,
+              workerId: workerId,
+              workerName: workerName,
             ),
-            BlocProvider(
-              create: (context) => sl<CollectionRequestsWorkerBloc>(),
-            ),
-            BlocProvider(create: (context) => sl<AvailabilityWorkerBloc>()),
-            BlocProvider(create: (context) => sl<EarningsWorkerBloc>()),
-            BlocProvider(create: (context) => sl<ProfileBloc>()),
-          ],
-          child: const RootWorker(),
-        ),
+          );
+        },
       ),
       GoRoute(
         path: AppRoutes.profileScreen,
@@ -279,6 +292,29 @@ class RouterGenerator {
           return BlocProvider.value(
             value: sl<CollectionRequestsWorkerBloc>(),
             child: PickupDetailsWorkerScreen(request: request),
+          );
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.supervisorWorkersScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => sl<SupervisorBloc>(),
+          child: const SupervisorWorkersScreen(),
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.createWorkerSupervisorScreen,
+        builder: (context, state) {
+          final existingBloc = state.extra as SupervisorBloc?;
+          if (existingBloc != null) {
+            return BlocProvider.value(
+              value: existingBloc,
+              child: const CreateWorkerSupervisorScreen(),
+            );
+          }
+          return BlocProvider(
+            create: (context) => sl<SupervisorBloc>(),
+            child: const CreateWorkerSupervisorScreen(),
           );
         },
       ),

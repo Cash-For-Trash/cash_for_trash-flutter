@@ -47,4 +47,9 @@ class AppRoutes {
       
   static const String rewardsScreen = '/rewards_screen';
   static const String pickupDetailsWorkerScreen = '/pickup_details_worker_screen';
+
+  // Supervisor Routes
+  static const String supervisorWorkersScreen = '/supervisor_workers_screen';
+  static const String createWorkerSupervisorScreen =
+      '/create_worker_supervisor_screen';
 }

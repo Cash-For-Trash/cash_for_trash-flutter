@@ -1,3 +1,4 @@
+import 'package:cash_for_trash/core/services/local/cache_helper.dart';
 import 'package:cash_for_trash/core/services/remote/api_consumer.dart';
 import 'package:cash_for_trash/core/services/remote/endpoints.dart';
 import 'package:cash_for_trash/features/worker/availability_worker/data/model/availability_worker_model.dart';
@@ -11,7 +12,12 @@ class AvailabilityWorkerRepositoryImpl implements AvailabilityWorkerRepository {
 
   @override
   Future<Either<String, List<AvailabilityWorkerModel>>> getMyAvailabilities() async {
-    final result = await apiConsumer.get<Map<String, dynamic>>(EndPoint.myAvailabilities);
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String path = (workerId != null && workerId.isNotEmpty)
+        ? EndPoint.availabilitiesMySupervisor(workerId)
+        : EndPoint.myAvailabilities;
+
+    final result = await apiConsumer.get<Map<String, dynamic>>(path);
     return result.fold(
       (error) => Left(error),
       (json) {
@@ -28,8 +34,13 @@ class AvailabilityWorkerRepositoryImpl implements AvailabilityWorkerRepository {
   Future<Either<String, AvailabilityWorkerModel>> createAvailability(
     AvailabilityWorkerModel availability,
   ) async {
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String path = (workerId != null && workerId.isNotEmpty)
+        ? EndPoint.availabilitiesCreateSupervisor(workerId)
+        : EndPoint.availabilities;
+
     return await apiConsumer.post<AvailabilityWorkerModel>(
-      EndPoint.availabilities,
+      path,
       data: availability.toJson(),
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
@@ -43,8 +54,13 @@ class AvailabilityWorkerRepositoryImpl implements AvailabilityWorkerRepository {
     String id,
     AvailabilityWorkerModel availability,
   ) async {
+    final workerId = CacheHelper.getDataString(key: 'selected_worker_id');
+    final String path = (workerId != null && workerId.isNotEmpty)
+        ? EndPoint.availabilitiesUpdateSupervisor(workerId, id)
+        : '${EndPoint.availabilities}/$id';
+
     return await apiConsumer.patch<AvailabilityWorkerModel>(
-      '${EndPoint.availabilities}/$id',
+      path,
       data: availability.toJson(),
       fromJson: (json) {
         final dataObj = json['data'] is Map<String, dynamic> ? json['data'] as Map<String, dynamic> : json;
