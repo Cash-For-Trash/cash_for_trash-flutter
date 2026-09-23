@@ -12,6 +12,12 @@ class HomeHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onPrimary = context.colorScheme.onPrimary;
+    final pointsValue = data?.pointsValueInEgp;
+    final pointsValueText = pointsValue == null
+        ? null
+        : pointsValue % 1 == 0
+        ? pointsValue.toInt().toString()
+        : pointsValue.toStringAsFixed(2);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -116,6 +122,16 @@ class HomeHeader extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          if (pointsValueText != null) ...[
+                            SizedBox(height: 2.h),
+                            Text(
+                              '$pointsValueText ${context.tr('currency_egp')}',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: onPrimary.withValues(alpha: 0.82),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),

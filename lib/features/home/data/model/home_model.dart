@@ -101,12 +101,13 @@ class CustomerCollectionRequestModel {
 class HeaderDataModel {
   final String userName;
   final String points;
+  final double? pointsValueInEgp;
 
   HeaderDataModel({
     required this.userName,
     required this.points,
+    this.pointsValueInEgp,
   });
-
 
   String get level {
     final pointsValue = double.tryParse(points) ?? 0;
@@ -149,5 +150,4 @@ class HeaderDataModel {
       return 1.0;
     }
   }
-
 }
