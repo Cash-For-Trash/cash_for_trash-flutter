@@ -342,8 +342,18 @@ class RequestCollectionBloc
           ),
         )
         .toList();
+        
+    String requestType = "MIXED";
+    if (state.selectedCollectionType == "household") {
+      requestType = "MIXED";
+    } else if (state.selectedCollectionType == "recyclable_only") {
+      requestType = "RECYCLABLE";
+    } else if (state.selectedCollectionType == "furniture") {
+      requestType = "MIXED";
+    }
 
     final request = CollectionRequestModel(
+      requestType: requestType,
       addressId: state.selectedAddress!.addressId,
       availabilityId: state.selectedAvailability!.availabilityId,
       quantity: effectiveQuantity,

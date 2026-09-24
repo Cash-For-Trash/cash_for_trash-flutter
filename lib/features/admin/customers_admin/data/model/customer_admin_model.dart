@@ -35,7 +35,9 @@ class CustomerAdminModel extends Equatable {
       image: json['image'] as String?,
       isVerified: json['is_verified'] as bool?,
       isActive: json['is_active'] as bool?,
-      points: (json['points'] as num?)?.toInt(),
+      points: (json['customer'] is Map
+              ? (json['customer']['points'] as num?)?.toInt()
+              : (json['points'] as num?)?.toInt()),
       createdAt: json['created_at'] as String?,
     );
   }

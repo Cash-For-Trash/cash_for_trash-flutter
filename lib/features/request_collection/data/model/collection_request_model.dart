@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 class CollectionRequestModel extends Equatable {
+  final String requestType;
   final String addressId;
   final String availabilityId;
-  final String paymentMethod;
+  final String? paymentMethod;
   final double quantity;
   final String? collectionImg;
   final List<CollectionGarbageTypeModel> garbageTypes;
@@ -11,6 +12,7 @@ class CollectionRequestModel extends Equatable {
   const CollectionRequestModel({
     required this.addressId,
     required this.availabilityId,
+    required this.requestType,
     this.paymentMethod = 'CASH',
     required this.quantity,
     this.collectionImg,
@@ -20,6 +22,7 @@ class CollectionRequestModel extends Equatable {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{
       'address_id': addressId,
+      'request_type': requestType,
       'availability_id': availabilityId,
       'payment_method': paymentMethod,
       'quantity': quantity,
@@ -36,6 +39,7 @@ class CollectionRequestModel extends Equatable {
         addressId,
         availabilityId,
         paymentMethod,
+        requestType,
         quantity,
         collectionImg,
         garbageTypes,

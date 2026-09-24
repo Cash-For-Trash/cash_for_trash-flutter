@@ -47,7 +47,7 @@ class HomeAdminScreen extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisSpacing: 12.w,
                   mainAxisSpacing: 12.h,
-                  childAspectRatio: 1.2,
+                  childAspectRatio: 1.1,
                   children: [
                     StatsCardHomeAdminWidget(
                       title: context.tr('admin_workers'),
