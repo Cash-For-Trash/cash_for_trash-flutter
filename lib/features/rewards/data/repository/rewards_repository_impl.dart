@@ -5,6 +5,7 @@ import '../../domain/repository/rewards_repository.dart';
 import '../model/redemption_model.dart';
 import '../model/reward_model.dart';
 import '../model/rewards_leaderboard_model.dart';
+import '../model/customer_points_model.dart';
 
 class RewardsRepositoryImpl implements RewardsRepository {
   final ApiConsumer apiConsumer;
@@ -76,6 +77,17 @@ class RewardsRepositoryImpl implements RewardsRepository {
       }
       return const Right(0);
     });
+  }
+
+  @override
+  Future<Either<String, CustomerPointsModel>> getCustomerPointsSummary() async {
+    final result = await apiConsumer.get<Map<String, dynamic>>(
+      EndPoint.customerPoints,
+    );
+    return result.fold(
+      (error) => Left(error),
+      (json) => Right(CustomerPointsModel.fromJson(json)),
+    );
   }
 
   @override

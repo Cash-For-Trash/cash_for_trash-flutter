@@ -19,36 +19,6 @@ class _RewardsHeaderWidgetState extends State<RewardsHeaderWidget> {
     context.read<RewardsBloc>().add(const GetCustomerPointsEvent());
   }
 
-  _LevelDetails _calculateLevel(int points) {
-    if (points == -1) {
-      return _LevelDetails(
-        levelKey: '??',
-        subText: '--',
-      );
-    }
-    if (points < 1000) {
-      return _LevelDetails(
-        levelKey: 'bronze_level',
-        subText: '${1000 - points} ${context.tr('for_silver')}',
-      );
-    } else if (points < 10000) {
-      return _LevelDetails(
-        levelKey: 'silver_level',
-        subText: '${10000 - points} ${context.tr('for_gold')}',
-      );
-    } else if (points < 50000) {
-      return _LevelDetails(
-        levelKey: 'gold_level',
-        subText: '${50000 - points} ${context.tr('for_platinum')}',
-      );
-    } else {
-      return _LevelDetails(
-        levelKey: 'platinum_level',
-        subText: context.tr('max_level'),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final onPrimary = context.colorScheme.onPrimary;
@@ -72,10 +42,8 @@ class _RewardsHeaderWidgetState extends State<RewardsHeaderWidget> {
               final pointsStr = state.isCustomerPointsLoading
                   ? '...'
                   : points.toString();
-              final levelDetails = _calculateLevel(points);
-
               return Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -118,49 +86,6 @@ class _RewardsHeaderWidgetState extends State<RewardsHeaderWidget> {
                       ),
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                      vertical: 16.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: onPrimary.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(
-                        color: onPrimary.withValues(alpha: 0.3),
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          context.tr('level'),
-                          style: context.textTheme.labelMedium?.copyWith(
-                            color: onPrimary.withValues(alpha: 0.8),
-                            fontSize: 13.sp,
-                          ),
-                        ),
-                        SizedBox(height: 2.h),
-                        Text(
-                          context.tr(levelDetails.levelKey),
-                          style: context.textTheme.titleLarge?.copyWith(
-                            color: onPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp,
-                          ),
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          levelDetails.subText,
-                          style: context.textTheme.labelMedium?.copyWith(
-                            color: onPrimary.withValues(alpha: 0.8),
-                            fontSize: 12.sp,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               );
             },
@@ -169,11 +94,4 @@ class _RewardsHeaderWidgetState extends State<RewardsHeaderWidget> {
       ),
     );
   }
-}
-
-class _LevelDetails {
-  final String levelKey;
-  final String subText;
-
-  _LevelDetails({required this.levelKey, required this.subText});
 }

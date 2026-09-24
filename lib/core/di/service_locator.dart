@@ -92,9 +92,11 @@ Future<void> setupServiceLocator() async {
   // Remote package
   sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(dio: sl()));
 
-
   // Firebase
-  final FirebaseConsumer firebaseConsumer = FirebaseConsumer(apiConsumer: sl(), cacheHelper: sl());
+  final FirebaseConsumer firebaseConsumer = FirebaseConsumer(
+    apiConsumer: sl(),
+    cacheHelper: sl(),
+  );
   await firebaseConsumer.initFirebase();
 
   // Core Cubits
@@ -117,7 +119,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(apiConsumer: sl()),
   );
-  sl.registerFactory<HomeBloc>(() => HomeBloc(repository: sl()));
+  sl.registerFactory<HomeBloc>(
+    () => HomeBloc(repository: sl(), rewardsRepository: sl()),
+  );
 
   // Auth Feature
   sl.registerLazySingleton<RegisterRepository>(
@@ -143,9 +147,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<AddressRepository>(
     () => AddressRepositoryImpl(apiConsumer: sl()),
   );
-  sl.registerFactory<AddressBloc>(
-    () => AddressBloc(repository: sl()),
-  );
+  sl.registerFactory<AddressBloc>(() => AddressBloc(repository: sl()));
 
   // Request Collection Feature
   sl.registerLazySingleton<RequestCollectionRepository>(
@@ -158,9 +160,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<HomeWorkerRepository>(
     () => HomeWorkerRepositoryImpl(apiConsumer: sl()),
   );
-  sl.registerFactory<HomeWorkerBloc>(
-    () => HomeWorkerBloc(repository: sl()),
-  );
+  sl.registerFactory<HomeWorkerBloc>(() => HomeWorkerBloc(repository: sl()));
 
   sl.registerLazySingleton<CollectionRequestsWorkerRepository>(
     () => CollectionRequestsWorkerRepositoryImpl(apiConsumer: sl()),
@@ -203,9 +203,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<AreasAdminRepository>(
     () => AreasAdminRepositoryImpl(apiConsumer: sl()),
   );
-  sl.registerFactory<AreasAdminBloc>(
-    () => AreasAdminBloc(repository: sl()),
-  );
+  sl.registerFactory<AreasAdminBloc>(() => AreasAdminBloc(repository: sl()));
 
   sl.registerLazySingleton<AvailabilitiesAdminRepository>(
     () => AvailabilitiesAdminRepositoryImpl(apiConsumer: sl()),
@@ -246,15 +244,11 @@ Future<void> setupServiceLocator() async {
     () => RewardsRepositoryImpl(apiConsumer: sl()),
   );
 
-  sl.registerFactory<RewardsBloc>(
-    () => RewardsBloc(repository: sl()),
-  );
+  sl.registerFactory<RewardsBloc>(() => RewardsBloc(repository: sl()));
 
   // Payment Feature
   sl.registerLazySingleton<PaymentRepository>(
     () => PaymentRepositoryImpl(apiConsumer: sl()),
   );
-  sl.registerFactory<PaymentBloc>(
-    () => PaymentBloc(repository: sl()),
-  );
+  sl.registerFactory<PaymentBloc>(() => PaymentBloc(repository: sl()));
 }

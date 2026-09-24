@@ -1,6 +1,7 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_bloc.dart';
+import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_event.dart';
 import 'package:cash_for_trash/features/request_collection/presentation/bloc/request_collection_state.dart';
 import 'package:cash_for_trash/features/payment/presentation/screens/widgets/payment_method_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -32,46 +33,61 @@ class BottomBarRequestCollectionWidget extends StatelessWidget {
       ),
       child: BlocBuilder<RequestCollectionBloc, RequestCollectionState>(
         builder: (context, state) {
-          final costText =
-              '${context.tr('request_cost_prefix')}${state.cost ?? '??'} ${context.tr('currency_egp')}';
+          final requiresWasteDetails =
+              state.selectedCollectionType == 'recyclable_only' ||
+              state.selectedCollectionType == 'furniture';
+          final isReady =
+              (!requiresWasteDetails || state.selectedWasteTypes.isNotEmpty) &&
+              state.selectedAddress != null &&
+              state.selectedAvailability != null;
 
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                costText,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              SizedBox(height: 10.h),
               SizedBox(
                 width: double.infinity,
                 height: 52.h,
                 child: ElevatedButton(
-                  onPressed: () {
-                    PaymentMethodBottomSheet.show(context, state.cost ?? 0.0);
-                  },
+                  onPressed: isReady
+                      ? () {
+                          if (state.selectedCollectionType ==
+                              'recyclable_only') {
+                            context.read<RequestCollectionBloc>().add(
+                              const SubmitCollectionRequestEvent(
+                                paymentMethod: 'CASH',
+                              ),
+                            );
+                          } else {
+                            PaymentMethodBottomSheet.show(
+                              context,
+                              state.cost ?? 0.0,
+                            );
+                          }
+                        }
+                      : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: context.colorScheme.primary,
                     foregroundColor: context.colorScheme.onPrimary,
-                    disabledBackgroundColor: context.colorScheme.primary
-                        .withValues(alpha: 0.6),
+                    disabledBackgroundColor: context.colorScheme.outlineVariant,
+                    disabledForegroundColor:
+                        context.colorScheme.onSurfaceVariant,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.r),
                     ),
                     elevation: 0,
                   ),
                   child: Text(
-                          context.tr('proceed_to_payment'),
-                          style: context.textTheme.titleMedium?.copyWith(
-                            color: context.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ),
-                        ),
+                    context.tr(
+                      state.selectedCollectionType == 'recyclable_only'
+                          ? 'confirm_free_request'
+                          : 'proceed_to_payment',
+                    ),
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: context.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
                 ),
               ),
             ],

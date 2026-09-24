@@ -84,84 +84,83 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       },
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                context.colorScheme.onPrimaryContainer,
-                context.colorScheme.primary,
-              ],
-            ),
-          ),
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Hero(
-                tag: 'logo',
-                child: Image.asset(
-                  AppAssets.appLogoPng,
-                  width: 220.w,
+        body:
+            Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        context.colorScheme.onPrimaryContainer,
+                        context.colorScheme.primary,
+                      ],
+                    ),
+                  ),
+                  width: double.infinity,
+                  height: double.infinity,
+                  child:
+                      Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Hero(
+                                    tag: 'logo',
+                                    child: Image.asset(
+                                      AppAssets.appLogoPng,
+                                      width: 220.w,
+                                    ),
+                                  )
+                                  .animate()
+                                  .fadeIn(duration: 500.ms)
+                                  .scale(
+                                    begin: const Offset(.15, .15),
+                                    end: const Offset(1, 1),
+                                    duration: 1200.ms,
+                                    curve: Curves.elasticOut,
+                                  )
+                                  .rotate(
+                                    begin: -.9,
+                                    end: 0,
+                                    duration: 900.ms,
+                                    curve: Curves.easeOutBack,
+                                  )
+                                  .then()
+                                  .shimmer(duration: 800.ms),
+
+                              AnimatedLetters(
+                                text: context.tr(
+                                  'recycle_today_better_tomorrow',
+                                ),
+                                style: context.textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: context.colorScheme.onSecondary,
+                                ),
+                                delay: 2700.ms,
+                              ),
+                            ],
+                          )
+                          .animate(
+                            onComplete: (_) {
+                              setState(() {
+                                _animationCompleted = true;
+                              });
+                              // Trigger navigation checks now that animation is completed
+                              _handleNavigation(
+                                context.read<SplashBloc>().state,
+                              );
+                            },
+                          )
+                          .then(delay: 6.seconds)
+                          .fadeOut(duration: 700.ms),
+                )
+                .animate()
+                .fadeIn(duration: 600.ms)
+                .scale(
+                  begin: const Offset(1.08, 1.08),
+                  end: const Offset(1, 1),
+                  duration: 8.seconds,
+                  curve: Curves.easeOut,
                 ),
-              )
-                  .animate()
-                  .fadeIn(duration: 500.ms)
-                  .scale(
-                    begin: const Offset(.15, .15),
-                    end: const Offset(1, 1),
-                    duration: 1200.ms,
-                    curve: Curves.elasticOut,
-                  )
-                  .rotate(
-                    begin: -.9,
-                    end: 0,
-                    duration: 900.ms,
-                    curve: Curves.easeOutBack,
-                  )
-                  .then()
-                  .shimmer(duration: 800.ms),
-              AnimatedLetters(
-                text: context.tr('cash_for_trash'),
-                style: context.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.onSecondary,
-                ),
-                delay: 1700.ms,
-              ),
-              AnimatedLetters(
-                text: context.tr('recycle_today_better_tomorrow'),
-                style: context.textTheme.bodyLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: context.colorScheme.onSecondary,
-                ),
-                delay: 2700.ms,
-              ),
-            ],
-          )
-              .animate(
-                onComplete: (_) {
-                  setState(() {
-                    _animationCompleted = true;
-                  });
-                  // Trigger navigation checks now that animation is completed
-                  _handleNavigation(context.read<SplashBloc>().state);
-                },
-              )
-              .then(delay: 6.seconds)
-              .fadeOut(duration: 700.ms),
-        )
-            .animate()
-            .fadeIn(duration: 600.ms)
-            .scale(
-              begin: const Offset(1.08, 1.08),
-              end: const Offset(1, 1),
-              duration: 8.seconds,
-              curve: Curves.easeOut,
-            ),
       ),
     );
   }

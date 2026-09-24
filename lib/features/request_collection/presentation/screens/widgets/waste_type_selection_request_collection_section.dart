@@ -202,20 +202,6 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 2.h),
-            Text(
-              '${item.pricePerKg} ${context.tr('currency_egp')}/${context.tr('kg')}',
-              style: context.textTheme.bodySmall?.copyWith(
-                fontSize: 9.5.sp,
-                fontWeight: FontWeight.w600,
-                color: isSelected
-                    ? activeColor.withValues(alpha: 0.9)
-                    : context.colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
           ],
         ),
       ),
@@ -294,5 +280,4 @@ class WasteTypeSelectionRequestCollectionSection extends StatelessWidget {
       ),
     );
   }
-
 }

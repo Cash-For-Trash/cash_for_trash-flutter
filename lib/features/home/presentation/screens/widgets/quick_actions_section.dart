@@ -1,6 +1,7 @@
 import 'package:cash_for_trash/core/extensions/context_extensions.dart';
 import 'package:cash_for_trash/core/localization/app_localizations.dart';
 import 'package:cash_for_trash/core/routing/app_routes.dart';
+import 'package:cash_for_trash/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -10,86 +11,82 @@ class QuickActionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          context.tr('quick_actions'),
-          style: context.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 24.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildActionItem(
-              context,
-              icon: Icons.delete_outline_rounded,
-              label: context.tr('request_collection'),
-              onTap: () {
-                context.push(AppRoutes.requestCollectionScreen);
-              },
-            ),
-            _buildActionItem(
-              context,
-              icon: Icons.near_me_outlined,
-              label: context.tr('track_order'),
-            ),
-            _buildActionItem(
-              context,
-              icon: Icons.card_giftcard_rounded,
-              label: context.tr('rewards'),
-              onTap: () {
-                context.push(AppRoutes.rewardsScreen);
-              },
-            ),
-            _buildActionItem(
-              context,
-              icon: Icons.verified_user_outlined,
-              label: context.tr('my_subscription'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    VoidCallback? onTap,
-  }) {
-    return Expanded(
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16.r),
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.all(16.r),
-              decoration: BoxDecoration(
-                color: context.colorScheme.primary.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(16.r),
+        onTap: () => context.push(AppRoutes.requestCollectionScreen),
+        borderRadius: BorderRadius.circular(24.r),
+        child: Ink(
+          width: double.infinity,
+          padding: EdgeInsets.fromLTRB(20.w, 18.h, 16.w, 18.h),
+          decoration: BoxDecoration(
+            color: AppColors.info,
+            borderRadius: BorderRadius.circular(24.r),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.info.withValues(alpha: 0.28),
+                blurRadius: 18,
+                offset: const Offset(0, 8),
               ),
-              child: Icon(
-                icon,
-                color: context.colorScheme.primary,
-                size: 26.sp,
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 58.r,
+                height: 58.r,
+                decoration: BoxDecoration(
+                  color: context.colorScheme.onPrimary.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(18.r),
+                ),
+                child: Icon(
+                  Icons.recycling_rounded,
+                  color: context.colorScheme.onPrimary,
+                  size: 34.sp,
+                ),
               ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              label,
-              style: context.textTheme.labelMedium?.copyWith(
-                color: context.colorScheme.onSurface,
+              SizedBox(width: 14.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.onPrimary.withValues(
+                          alpha: 0.16,
+                        ),
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: Text(
+                        context.tr('start_now'),
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: context.colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 7.h),
+                    Text(
+                      context.tr('request_collection'),
+                      style: context.textTheme.titleLarge?.copyWith(
+                        color: context.colorScheme.onPrimary,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+              Icon(
+                Icons.arrow_forward_rounded,
+                color: context.colorScheme.onPrimary,
+                size: 27.sp,
+              ),
+            ],
+          ),
         ),
       ),
     );

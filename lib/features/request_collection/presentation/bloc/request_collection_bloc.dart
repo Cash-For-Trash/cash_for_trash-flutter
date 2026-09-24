@@ -20,6 +20,7 @@ class RequestCollectionBloc
     on<GetAddressesEvent>(_onGetAddresses);
     on<GetAvailabilitiesEvent>(_onGetAvailabilities);
     on<SelectAddressEvent>(_onSelectAddress);
+    on<SelectCollectionTypeEvent>(_onSelectCollectionType);
     on<ToggleWasteTypeEvent>(_onToggleWasteType);
     on<SelectQuantityEvent>(_onSelectQuantity);
     on<SetExactWeightEvent>(_onSetExactWeight);
@@ -119,6 +120,7 @@ class RequestCollectionBloc
             availabilities: response.data,
             selectedAvailability: firstAvailability,
             selectedTimeSlot: firstAvailability?.id ?? '',
+            cost: firstAvailability?.servicePrice,
           ),
         );
       },
@@ -131,6 +133,25 @@ class RequestCollectionBloc
   ) {
     emit(state.copyWith(selectedAddress: event.address));
     add(GetAvailabilitiesEvent(event.address.addressId));
+  }
+
+  void _onSelectCollectionType(
+    SelectCollectionTypeEvent event,
+    Emitter<RequestCollectionState> emit,
+  ) {
+    final includesRecyclable =
+        event.collectionType == 'recyclable_only' ||
+        event.collectionType == 'furniture';
+    emit(
+      state.copyWith(
+        selectedCollectionType: event.collectionType,
+        selectedWasteTypes: includesRecyclable
+            ? state.selectedWasteTypes
+            : const [],
+        clearExactWeight: !includesRecyclable,
+        clearImage: includesRecyclable,
+      ),
+    );
   }
 
   void _onToggleWasteType(
@@ -186,6 +207,7 @@ class RequestCollectionBloc
       state.copyWith(
         selectedAvailability: event.availability,
         selectedTimeSlot: event.availability.id,
+        cost: event.availability.servicePrice,
       ),
     );
   }
@@ -265,7 +287,10 @@ class RequestCollectionBloc
     SubmitCollectionRequestEvent event,
     Emitter<RequestCollectionState> emit,
   ) async {
-    if (state.selectedWasteTypes.isEmpty) {
+    final requiresWasteDetails =
+        state.selectedCollectionType == 'recyclable_only' ||
+        state.selectedCollectionType == 'furniture';
+    if (requiresWasteDetails && state.selectedWasteTypes.isEmpty) {
       emit(
         state.copyWith(
           submitErrorMessage: 'waste_type_required',
@@ -307,12 +332,13 @@ class RequestCollectionBloc
     }
     final effectiveQuantity = state.exactWeight ?? quantityValue;
 
-    final perTypeWeight = effectiveQuantity / state.selectedWasteTypes.length;
     final garbageTypes = state.selectedWasteTypes
         .map(
           (id) => CollectionGarbageTypeModel(
             garbageTypeId: id,
-            estimatedWeight: perTypeWeight,
+            estimatedWeight: state.selectedWasteTypes.isEmpty
+                ? effectiveQuantity
+                : effectiveQuantity / state.selectedWasteTypes.length,
           ),
         )
         .toList();

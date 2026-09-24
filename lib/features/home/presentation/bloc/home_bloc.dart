@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:cash_for_trash/features/home/data/model/home_model.dart';
 import 'package:cash_for_trash/features/home/domain/repository/home_repository.dart';
+import 'package:cash_for_trash/features/rewards/domain/repository/rewards_repository.dart';
 
 part 'home_event.dart';
 
@@ -10,10 +11,13 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final HomeRepository repository;
+  final RewardsRepository rewardsRepository;
 
-  HomeBloc({required this.repository})
+  HomeBloc({required this.repository, required this.rewardsRepository})
     : super(const HomeState(currentOrdersStatus: HomeStatus.initial)) {
-    on<GetCustomerCollectionRecentRequests>(_onGetCustomerCollectionRecentRequests);
+    on<GetCustomerCollectionRecentRequests>(
+      _onGetCustomerCollectionRecentRequests,
+    );
     on<GetCustomerCollectionRequests>(_onGetCustomerCollectionRequests);
     on<GetCustomerProfile>(_onGetCustomerProfile);
   }
@@ -23,14 +27,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     if (event.isLoadMore) {
-      if (state.isFetchingMoreCurrentOrders || !state.hasMoreCurrentOrders) return;
+      if (state.isFetchingMoreCurrentOrders || !state.hasMoreCurrentOrders)
+        return;
       emit(state.copyWith(isFetchingMoreCurrentOrders: true));
     } else {
-      emit(state.copyWith(
-        currentOrdersStatus: HomeStatus.loading,
-        currentOrdersPage: 1,
-        hasMoreCurrentOrders: true,
-      ));
+      emit(
+        state.copyWith(
+          currentOrdersStatus: HomeStatus.loading,
+          currentOrdersPage: 1,
+          hasMoreCurrentOrders: true,
+        ),
+      );
     }
 
     final result = await repository.getCustomerCollectionRequests(
@@ -40,11 +47,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     result.fold(
-      (error) => emit(state.copyWith(
-        currentOrdersStatus: event.isLoadMore ? state.currentOrdersStatus : HomeStatus.error,
-        isFetchingMoreCurrentOrders: false,
-        errorMessage: error,
-      )),
+      (error) => emit(
+        state.copyWith(
+          currentOrdersStatus: event.isLoadMore
+              ? state.currentOrdersStatus
+              : HomeStatus.error,
+          isFetchingMoreCurrentOrders: false,
+          errorMessage: error,
+        ),
+      ),
       (data) {
         final newItems = data.customerCollectionRequests;
         final existingItems = event.isLoadMore
@@ -54,7 +65,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final updatedList = [...existingItems, ...newItems];
 
         final totalItems = data.totalItems > 0 ? data.totalItems : data.total;
-        final bool hasMore = newItems.length >= event.pageSize &&
+        final bool hasMore =
+            newItems.length >= event.pageSize &&
             (totalItems == 0 || updatedList.length < totalItems);
 
         final mergedResponse = CustomerCollectionRequestResponseModel(
@@ -86,14 +98,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     if (event.isLoadMore) {
-      if (state.isFetchingMoreRecentOrders || !state.hasMoreRecentOrders) return;
+      if (state.isFetchingMoreRecentOrders || !state.hasMoreRecentOrders)
+        return;
       emit(state.copyWith(isFetchingMoreRecentOrders: true));
     } else {
-      emit(state.copyWith(
-        recentCollectionRequestsStatus: HomeStatus.loading,
-        recentOrdersPage: 1,
-        hasMoreRecentOrders: true,
-      ));
+      emit(
+        state.copyWith(
+          recentCollectionRequestsStatus: HomeStatus.loading,
+          recentOrdersPage: 1,
+          hasMoreRecentOrders: true,
+        ),
+      );
     }
 
     final result = await repository.getCustomerCollectionRequests(
@@ -103,11 +118,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     result.fold(
-      (error) => emit(state.copyWith(
-        recentCollectionRequestsStatus: event.isLoadMore ? state.recentCollectionRequestsStatus : HomeStatus.error,
-        isFetchingMoreRecentOrders: false,
-        errorMessage: error,
-      )),
+      (error) => emit(
+        state.copyWith(
+          recentCollectionRequestsStatus: event.isLoadMore
+              ? state.recentCollectionRequestsStatus
+              : HomeStatus.error,
+          isFetchingMoreRecentOrders: false,
+          errorMessage: error,
+        ),
+      ),
       (data) {
         final newItems = data.customerCollectionRequests;
         final existingItems = event.isLoadMore
@@ -117,7 +136,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         final updatedList = [...existingItems, ...newItems];
 
         final totalItems = data.totalItems > 0 ? data.totalItems : data.total;
-        final bool hasMore = newItems.length >= event.pageSize &&
+        final bool hasMore =
+            newItems.length >= event.pageSize &&
             (totalItems == 0 || updatedList.length < totalItems);
 
         final mergedResponse = CustomerCollectionRequestResponseModel(
@@ -150,13 +170,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     emit(state.copyWith(profileStatus: HomeStatus.loading));
     final result = await repository.getCustomerProfile();
-    result.fold(
-      (error) => emit(state.copyWith(profileStatus: HomeStatus.error, errorMessage: error)),
-      (data) {
+    await result.fold(
+      (error) async => emit(
+        state.copyWith(profileStatus: HomeStatus.error, errorMessage: error),
+      ),
+      (data) async {
         final profileData = data.data;
+        final pointsResult = await rewardsRepository.getCustomerPointsSummary();
+        final pointsSummary = pointsResult.fold(
+          (_) => null,
+          (summary) => summary,
+        );
         final HeaderDataModel headerDataModel = HeaderDataModel(
-            userName: "${profileData.firstName} ${profileData.lastName}",
-            points: profileData.points,
+          userName: "${profileData.firstName} ${profileData.lastName}",
+          points: pointsSummary?.points.toString() ?? profileData.points,
+          pointsValueInEgp: pointsSummary?.valueInEgp,
         );
 
         emit(
@@ -165,7 +193,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             headerData: headerDataModel,
           ),
         );
-      }
+      },
     );
   }
 }

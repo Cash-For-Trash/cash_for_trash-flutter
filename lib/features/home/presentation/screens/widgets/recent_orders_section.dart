@@ -4,7 +4,7 @@ import 'package:cash_for_trash/features/home/data/model/home_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class RecentOrdersSection extends StatelessWidget {
+class RecentOrdersSection extends StatefulWidget {
   final List<CustomerCollectionRequestModel?> collectionRequests;
   final bool hasMore;
   final bool isLoadingMore;
@@ -17,6 +17,13 @@ class RecentOrdersSection extends StatelessWidget {
     this.isLoadingMore = false,
     this.onShowMore,
   });
+
+  @override
+  State<RecentOrdersSection> createState() => _RecentOrdersSectionState();
+}
+
+class _RecentOrdersSectionState extends State<RecentOrdersSection> {
+  int _visibleCount = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,7 @@ class RecentOrdersSection extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        if (collectionRequests.isEmpty)
+        if (widget.collectionRequests.isEmpty)
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: Center(
@@ -50,9 +57,11 @@ class RecentOrdersSection extends StatelessWidget {
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemCount: collectionRequests.length,
+            itemCount: widget.collectionRequests.length < _visibleCount
+                ? widget.collectionRequests.length
+                : _visibleCount,
             itemBuilder: (context, index) {
-              final order = collectionRequests[index];
+              final order = widget.collectionRequests[index];
               final isCompleted =
                   order?.status.toUpperCase() == "COLLECTED" ||
                   order?.status == "مكتمل";
@@ -131,16 +140,17 @@ class RecentOrdersSection extends StatelessWidget {
                   ),
 
                   // if (index != collectionRequests.length - 1)
-                    SizedBox(height: 32.h),
+                  SizedBox(height: 16.h),
                 ],
               );
             },
           ),
 
-        if (hasMore) ...[
+        if (widget.hasMore ||
+            _visibleCount < widget.collectionRequests.length) ...[
           SizedBox(height: 16.h),
           Center(
-            child: isLoadingMore
+            child: widget.isLoadingMore
                 ? SizedBox(
                     width: 24.r,
                     height: 24.r,
@@ -149,8 +159,15 @@ class RecentOrdersSection extends StatelessWidget {
                       color: context.colorScheme.primary,
                     ),
                   )
-                : OutlinedButton(
-                    onPressed: onShowMore,
+                : OutlinedButton.icon(
+                    onPressed: () {
+                      if (_visibleCount < widget.collectionRequests.length) {
+                        setState(() => _visibleCount += 3);
+                      } else {
+                        widget.onShowMore?.call();
+                      }
+                    },
+                    icon: const Icon(Icons.expand_more_rounded),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(
                         color: context.colorScheme.primary,
@@ -159,12 +176,9 @@ class RecentOrdersSection extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 8.h,
-                      ),
+                      minimumSize: Size(double.infinity, 48.h),
                     ),
-                    child: Text(
+                    label: Text(
                       context.tr('show_more'),
                       style: context.textTheme.labelLarge?.copyWith(
                         color: context.colorScheme.primary,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "64065223454",
+    "project_id": "cashfortrash-be34f",
+    "storage_bucket": "cashfortrash-be34f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64065223454:android:273f8890af155d03c6a70f",
+        "android_client_info": {
+          "package_name": "com.example.cash_for_trash"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4uHNHkiATgf_Zx41-vQwWawjRT0uDwIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

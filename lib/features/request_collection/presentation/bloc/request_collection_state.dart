@@ -19,6 +19,7 @@ class RequestCollectionState extends Equatable {
   final String? availabilitiesErrorMessage;
   final AvailabilityItemModel? selectedAvailability;
 
+  final String selectedCollectionType;
   final List<String> selectedWasteTypes;
   final String selectedQuantity;
   final double? exactWeight;
@@ -47,6 +48,7 @@ class RequestCollectionState extends Equatable {
     this.availabilities = const [],
     this.availabilitiesErrorMessage,
     this.selectedAvailability,
+    this.selectedCollectionType = 'recyclable_only',
     this.selectedWasteTypes = const [],
     this.selectedQuantity = 'medium_qty',
     this.exactWeight,
@@ -78,6 +80,7 @@ class RequestCollectionState extends Equatable {
     String? availabilitiesErrorMessage,
     bool clearAvailabilitiesError = false,
     AvailabilityItemModel? selectedAvailability,
+    String? selectedCollectionType,
     List<String>? selectedWasteTypes,
     String? selectedQuantity,
     double? exactWeight,
@@ -117,6 +120,8 @@ class RequestCollectionState extends Equatable {
           ? null
           : (availabilitiesErrorMessage ?? this.availabilitiesErrorMessage),
       selectedAvailability: selectedAvailability ?? this.selectedAvailability,
+      selectedCollectionType:
+          selectedCollectionType ?? this.selectedCollectionType,
       selectedWasteTypes: selectedWasteTypes ?? this.selectedWasteTypes,
       selectedQuantity: selectedQuantity ?? this.selectedQuantity,
       exactWeight: clearExactWeight ? null : (exactWeight ?? this.exactWeight),
@@ -151,6 +156,7 @@ class RequestCollectionState extends Equatable {
     availabilities,
     availabilitiesErrorMessage,
     selectedAvailability,
+    selectedCollectionType,
     selectedWasteTypes,
     selectedQuantity,
     exactWeight,
